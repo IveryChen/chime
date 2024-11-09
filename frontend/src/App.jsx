@@ -1,11 +1,19 @@
-import React, { Component } from "react";
-import { BrowserRouter } from "react-router-dom";
+import { Component } from "react";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+
+import Home from "../routes/Home";
+import Lobby from "../routes/Lobby";
+
 import "./App.css";
 
 export default class App extends Component {
   render() {
     return (
       <BrowserRouter>
+        <Routes>
+          <Route path="/lobby" element={<Home />} />
+          <Route path="/lobby" element={<Lobby />} />
+        </Routes>
         <h1>Hi</h1>
       </BrowserRouter>
     );
