@@ -1,5 +1,5 @@
-import React, { Component } from "react";
-import spotifyApi, { initializeSpotify } from "../lib/spotify";
+import { Component } from "react";
+import { initializeSpotify } from "../lib/spotify";
 
 class SpotifyAuth extends Component {
   componentDidMount() {
