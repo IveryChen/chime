@@ -40,8 +40,25 @@ app.get("/login", (req, res) => {
     "playlist-read-private",
     "user-top-read",
   ];
-  const authorizeURL = spotifyApi.createAuthorizeURL(scopes);
+  const authorizeURL = spotifyApi.createAuthorizeURL(scopes, undefined, "code");
+
   res.json({ url: authorizeURL });
+});
+
+app.get("/callback", async (req, res) => {
+  const { code } = req.query;
+
+  try {
+    const data = await spotifyApi.authorizationCodeGrant(code);
+
+    // Redirect to frontend with access token
+    res.redirect(
+      `http://localhost:5173?access_token=${data.body.access_token}`
+    );
+  } catch (err) {
+    console.error("Error getting tokens:", err);
+    res.redirect("http://localhost:5173?error=auth_failed");
+  }
 });
 
 // Socket.IO connection handling
