@@ -1,5 +1,5 @@
 import spotifyApi from "../../library/spotify";
-import { api } from "../../library/api";
+import { apiClient } from "../../api/apiClient";
 
 export default async function handleAuth() {
   const storedToken = localStorage.getItem("spotify_access_token");
@@ -20,7 +20,7 @@ export default async function handleAuth() {
   }
 
   try {
-    const data = await api.get("/auth/login");
+    const data = await apiClient.get("/auth/login");
 
     if (data.url) {
       window.location.href = data.url;
