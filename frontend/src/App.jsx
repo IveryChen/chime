@@ -17,7 +17,6 @@ export default class App extends Component {
           <Route path="/home" element={<Home />} />
           <Route path="/lobby" element={<Lobby />} />
         </Routes>
-        <h1>Hi</h1>
       </BrowserRouter>
     );
   }
