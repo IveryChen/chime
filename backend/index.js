@@ -53,11 +53,11 @@ app.get("/callback", async (req, res) => {
 
     // Redirect to frontend with access token
     res.redirect(
-      `http://localhost:5173?access_token=${data.body.access_token}`
+      `http://localhost:5173/spotify-auth?access_token=${data.body.access_token}`
     );
   } catch (err) {
     console.error("Error getting tokens:", err);
-    res.redirect("http://localhost:5173?error=auth_failed");
+    res.redirect("http://localhost:5173/spotify-auth?error=auth_failed");
   }
 });
 

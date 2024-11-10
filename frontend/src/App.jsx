@@ -13,9 +13,9 @@ export default class App extends Component {
     return (
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<SpotifyAuth />} />
-          <Route path="/home" element={<Home />} />
+          <Route path="/" element={<Home />} />
           <Route path="/lobby" element={<Lobby />} />
+          <Route path="/spotify-auth" element={<SpotifyAuth />} />
         </Routes>
       </BrowserRouter>
     );
