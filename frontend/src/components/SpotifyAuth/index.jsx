@@ -17,15 +17,15 @@ export default class SpotifyAuth extends Component {
             return <div>Error: {error.message}</div>;
           }
 
-          if (data.isAuthenticated) {
+          if (data?.isAuthenticated) {
             return <Navigate to="/lobby" replace />;
           }
 
-          if (data.redirectToLogin) {
+          if (data?.redirectToLogin) {
             return <div>Redirecting to Spotify login...</div>;
           }
 
-          return null;
+          return <div>Initializing...</div>;
         }}
       </Async>
     );
