@@ -1,4 +1,4 @@
-import spotifyApi from "../library/spotify";
+import spotifyApi from "../../library/spotify";
 
 export default async function loadUserProfile() {
   try {

@@ -1,7 +1,7 @@
 import { Component } from "react";
 import { Async } from "react-async";
 
-import loadUserProfile from "../../api/loadUserProfile";
+import loadUserProfile from "./loadUserProfile";
 
 export default class Lobby extends Component {
   render() {
