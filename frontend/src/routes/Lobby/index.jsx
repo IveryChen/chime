@@ -55,7 +55,6 @@ export default class Lobby extends Component {
                   </button>
                 </Box>
               )}
-
               {this.state.showJoinGame && (
                 <form onSubmit={this.handleJoinGame}>
                   <Box>
@@ -88,7 +87,6 @@ export default class Lobby extends Component {
                   </button>
                 </form>
               )}
-
               {this.state.showCreateGame && (
                 <Box>
                   <Box>
@@ -105,6 +103,11 @@ export default class Lobby extends Component {
                   <button onClick={this.handleCreateGame}>Create Game</button>
                   <button onClick={this.onChangeHideCreateGame}>Back</button>
                 </Box>
+              )}
+              {this.state.error && (
+                <div className="mt-4 text-red-500 text-center">
+                  {this.state.error}
+                </div>
               )}
             </Box>
           );
