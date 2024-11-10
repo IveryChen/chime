@@ -1,15 +1,7 @@
 import { Component } from "react";
 import { Async } from "react-async";
-import spotifyApi from "../../library/spotify";
 
-const loadUserProfile = async () => {
-  try {
-    const userData = await spotifyApi.getMe();
-    return userData;
-  } catch (error) {
-    throw new Error("Failed to load user profile", error);
-  }
-};
+import loadUserProfile from "../../api/loadUserProfile";
 
 export default class Lobby extends Component {
   render() {
