@@ -1,30 +1,35 @@
-import spotifyApi, { initializeSpotify } from "../../library/spotify";
+import spotifyApi from "../../library/spotify";
+import { api } from "../../library/api";
 
 export default async function handleAuth() {
-  const spotify = initializeSpotify();
+  const storedToken = localStorage.getItem("spotify_access_token");
+
+  if (storedToken) {
+    spotifyApi.setAccessToken(storedToken);
+    return { isAuthenticated: true };
+  }
+
   const params = new URLSearchParams(window.location.search);
   const accessToken = params.get("access_token");
 
   if (accessToken) {
-    // Store token in localStorage
     localStorage.setItem("spotify_access_token", accessToken);
     spotifyApi.setAccessToken(accessToken);
+
     return { isAuthenticated: true };
   }
 
-  // Check for error
-  const error = params.get("error");
-  if (error) {
-    throw new Error(`Authentication failed: ${error}`);
-  }
+  try {
+    const data = await api.get("/auth/login");
 
-  // If no token and no error, start login process
-  if (!spotify.getAccessToken()) {
-    const response = await fetch("http://localhost:3000/login");
-    const data = await response.json();
-    window.location.href = data.url;
-    return { redirectToLogin: true };
+    if (data.url) {
+      window.location.href = data.url;
+      return { redirectToLogin: true };
+    } else {
+      throw new Error("No login URL received");
+    }
+  } catch (error) {
+    console.error("Login error:", error); // Debug
+    throw new Error("Failed to get login URL");
   }
-
-  return { isAuthenticated: false };
 }
