@@ -8,6 +8,12 @@ router = APIRouter()
 @router.get("/login")
 async def login():
     try:
+        print("Environment settings:")
+        print(f"FRONTEND_URL: {settings.FRONTEND_URL}")
+        print(f"API_URL: {settings.API_URL}")
+        print(f"SPOTIFY_REDIRECT_URI: {settings.SPOTIFY_REDIRECT_URI}")
+        print(f"CORS_ORIGIN: {settings.CORS_ORIGIN}")
+
         auth_manager = SpotifyOAuth(
             client_id=settings.SPOTIFY_CLIENT_ID,
             client_secret=settings.SPOTIFY_CLIENT_SECRET,
@@ -25,6 +31,9 @@ async def login():
 @router.get("/callback")
 async def callback(code: str):
     try:
+        print(f"Received callback code: {code[:5]}...")  # Print first 5 chars for safety
+        print(f"Using redirect URI: {settings.SPOTIFY_REDIRECT_URI}")
+
         auth_manager = SpotifyOAuth(
             client_id=settings.SPOTIFY_CLIENT_ID,
             client_secret=settings.SPOTIFY_CLIENT_SECRET,
@@ -41,3 +50,14 @@ async def callback(code: str):
         )
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
+
+@router.get("/health")
+async def health_check():
+    return {
+        "status": "ok",
+        "environment": {
+            "frontend_url": settings.FRONTEND_URL,
+            "api_url": settings.API_URL,
+            "cors_origin": settings.CORS_ORIGIN,
+        }
+    }
