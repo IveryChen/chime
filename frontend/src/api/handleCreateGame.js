@@ -19,7 +19,12 @@ export default async function handleCreateGame(playerName, spotifyToken) {
       throw new Error(data.detail || "Failed to create game room");
     }
 
-    return data.roomCode;
+    return {
+      roomCode: data.room_code,
+      host: data.host,
+      players: data.players,
+      status: data.status,
+    };
   } catch (error) {
     console.error("Error creating game room:", error);
     throw error;
