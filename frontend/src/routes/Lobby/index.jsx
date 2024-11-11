@@ -27,7 +27,8 @@ export default class Lobby extends Component {
 
   onCreateGameError = (error) => this.setState({ error: error.message });
 
-  onCreateGameSuccess = () => {};
+  onCreateGameSuccess = (gameData) =>
+    (window.location.href = `/game/${gameData.roomCode}`);
 
   render() {
     return <Async promiseFn={loadUserProfile}>{this.renderBody}</Async>;
