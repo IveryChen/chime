@@ -6,14 +6,6 @@ export default defineConfig({
   build: {
     outDir: "dist",
     sourcemap: true,
-    rollupOptions: {
-      external: ["react-router-dom"],
-      output: {
-        globals: {
-          "react-router-dom": "ReactRouterDOM",
-        },
-      },
-    },
   },
   resolve: {
     alias: {
