@@ -3,7 +3,6 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 class Settings(BaseSettings):
     SPOTIFY_CLIENT_ID: str
     SPOTIFY_CLIENT_SECRET: str
-
     PORT: int = 8000
     FRONTEND_URL: str = "http://localhost:5173"
     API_URL: str = "http://localhost:8000"
