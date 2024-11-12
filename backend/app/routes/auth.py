@@ -20,7 +20,7 @@ async def login():
             redirect_uri=settings.SPOTIFY_REDIRECT_URI,
             scope="user-read-private user-read-email user-library-read playlist-read-private user-top-read"
         )
-        print("Redirect URI:", settings.SPOTIFY_REDIRECT_URI)  # Debug print
+
         auth_url = auth_manager.get_authorize_url()
         print("Auth URL:", auth_url)  # Debug print
         return {"url": auth_url}
@@ -50,14 +50,3 @@ async def callback(code: str):
         )
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
-
-@router.get("/health")
-async def health_check():
-    return {
-        "status": "ok",
-        "environment": {
-            "frontend_url": settings.FRONTEND_URL,
-            "api_url": settings.API_URL,
-            "cors_origin": settings.CORS_ORIGIN,
-        }
-    }
