@@ -20,7 +20,8 @@ export default async function handleAuth() {
   }
 
   try {
-    const data = await apiClient.get("/auth/login");
+    const data = await apiClient.get("api/auth/login");
+    console.log(data);
 
     if (data.url) {
       window.location.href = data.url;
