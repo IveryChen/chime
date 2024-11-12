@@ -1,6 +1,5 @@
 # Dependencies
-backend/node_modules/
-frontend/node_modules/
+node_modules/
 
 # Environment variables
 .env
@@ -12,15 +11,9 @@ frontend/.env.local
 
 # Virtual environment
 /.venv/
-/backend/venv/
 
 # Cache and Python bytecode
 /.cache/
-/backend/.cache/
-/backend/app/__pycache__/
-/backend/app/routes/__pycache__/
-/backend/app/schemas/__pycache__/
-/backend/app/services/__pycache__/
 
 # Other unwanted files
 *.pyc
