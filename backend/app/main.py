@@ -4,6 +4,9 @@ from fastapi.responses import JSONResponse
 from app.routes import auth, game
 from app.config import settings
 
+import logging
+logging.basicConfig(level=logging.INFO)
+
 app = FastAPI(
     title="Chime Game API",
     docs_url="/docs",
@@ -40,17 +43,6 @@ async def debug_settings():
         }
     }
 
-@app.exception_handler(404)
-async def not_found_handler(request: Request, exc):
-    return JSONResponse(
-        status_code=404,
-        content={
-            "detail": "Not Found",
-            "path": request.url.path,
-            "method": request.method
-        }
-    )
-
 # Include routers
 app.include_router(auth.router, prefix="/api/auth", tags=["auth"])
 app.include_router(game.router, prefix="/api/game", tags=["game"])
@@ -63,4 +55,13 @@ async def root():
             "frontend_url": settings.FRONTEND_URL,
             "api_url": settings.API_URL
         }
+    }
+
+@app.get("/test-api-login")
+async def test_api_login(request: Request):
+    url = "https://chime-production.up.railway.app/api/auth/login"
+    response = await request.get(url)
+    return {
+        "status_code": response.status_code,
+        "content": await response.text()
     }
