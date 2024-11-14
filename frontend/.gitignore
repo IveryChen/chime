@@ -8,6 +8,7 @@ frontend/.env
 frontend/.env.local
 .env.local
 .env.*.local
+.env.production
 
 # Virtual environment
 /.venv/
