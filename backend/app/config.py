@@ -9,10 +9,10 @@ class Settings(BaseSettings):
     PORT: int = int(os.getenv("PORT", 8000))
     ENVIRONMENT: str = os.getenv("ENVIRONMENT", "development")
 
-    FRONTEND_URL: str = os.getenv("FRONTEND_URL", "http://localhost:5173")
-    API_URL: str = os.getenv("API_URL", "http://localhost:8000")
-    CORS_ORIGIN: str = os.getenv("CORS_ORIGIN", "http://localhost:5173")
-    SPOTIFY_REDIRECT_URI: str = os.getenv("SPOTIFY_REDIRECT_URI", "http://localhost:8000/api/auth/callback")
+    FRONTEND_URL: str
+    API_URL: str
+    CORS_ORIGIN: str
+    SPOTIFY_REDIRECT_URI: str
 
     @property
     def is_production(self) -> bool:
@@ -36,7 +36,18 @@ class Settings(BaseSettings):
     model_config = SettingsConfigDict(
         env_file=".env",
         extra='ignore',
-        populate_by_name=True
+        populate_by_name=True,
+        env_file_encoding='utf-8',
+        case_sensitive=False
     )
 
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        # Debug print to see what values we're getting
+        print(f"Environment: {self.ENVIRONMENT}")
+        print(f"Frontend URL: {self.FRONTEND_URL}")
+        print(f"API URL: {self.API_URL}")
+        print(f"CORS Origin: {self.CORS_ORIGIN}")
+        print(f"Spotify Redirect URI: {self.SPOTIFY_REDIRECT_URI}")
+        
 settings = Settings()
