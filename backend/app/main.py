@@ -79,3 +79,15 @@ async def test_api_login(request: Request):
         "status_code": response.status_code,
         "content": await response.text()
     }
+
+@app.get("/debug/env")
+async def debug_environment():
+    return {
+        "environment": settings.ENVIRONMENT,
+        "is_production": settings.is_production,
+        "frontend_url": settings.FRONTEND_URL,
+        "api_url": settings.API_URL,
+        "cors_origin": settings.CORS_ORIGIN,
+        "spotify_redirect_uri": settings.SPOTIFY_REDIRECT_URI,
+        "allowed_origins": settings.allowed_origins
+    }
