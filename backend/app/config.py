@@ -9,10 +9,13 @@ class Settings(BaseSettings):
     PORT: int = int(os.getenv("PORT", 8000))
     ENVIRONMENT: str = os.getenv("ENVIRONMENT", "development")
 
-    FRONTEND_URL: str = None
-    API_URL: str = None
-    CORS_ORIGIN: str = None
-    SPOTIFY_REDIRECT_URI: str = None
+    FRONTEND_URL: str = os.getenv("FRONTEND_URL", "http://localhost:5173")
+    API_URL: str = os.getenv("API_URL", "http://localhost:8000")
+    CORS_ORIGIN: str = os.getenv("CORS_ORIGIN", "http://localhost:5173")
+    SPOTIFY_REDIRECT_URI: str = os.getenv(
+        "SPOTIFY_REDIRECT_URI", 
+        "http://localhost:8000/api/auth/callback"
+    )
 
     @property
     def is_production(self) -> bool:
@@ -39,26 +42,18 @@ class Settings(BaseSettings):
         populate_by_name=True,
     )
 
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        # Set defaults based on environment after initialization
-        if not self.FRONTEND_URL:
-            self.FRONTEND_URL = "https://chime-theta.vercel.app" if self.is_production else "http://localhost:5173"
-        
-        if not self.API_URL:
-            self.API_URL = "https://chime-6r3r.onrender.com" if self.is_production else "http://localhost:8000"
-        
-        if not self.CORS_ORIGIN:
-            self.CORS_ORIGIN = "https://chime-theta.vercel.app" if self.is_production else "http://localhost:5173"
-        
-        if not self.SPOTIFY_REDIRECT_URI:
-            self.SPOTIFY_REDIRECT_URI = (
-                "https://chime-6r3r.onrender.com/api/auth/callback" 
-                if self.is_production 
-                else "http://localhost:8000/api/auth/callback"
-            )
+    def model_post_init(self, _context) -> None:
+        """Post initialization hook to set production values if needed"""
+        if self.is_production:
+            if self.FRONTEND_URL == "http://localhost:5173":
+                self.FRONTEND_URL = "https://chime-theta.vercel.app"
+            if self.API_URL == "http://localhost:8000":
+                self.API_URL = "https://chime-backend.onrender.com"
+            if self.CORS_ORIGIN == "http://localhost:5173":
+                self.CORS_ORIGIN = "https://chime-theta.vercel.app"
+            if self.SPOTIFY_REDIRECT_URI == "http://localhost:8000/api/auth/callback":
+                self.SPOTIFY_REDIRECT_URI = "https://chime-backend.onrender.com/api/auth/callback"
 
-        # Debug print
         print(f"Environment: {self.ENVIRONMENT}")
         print(f"Frontend URL: {self.FRONTEND_URL}")
         print(f"API URL: {self.API_URL}")
