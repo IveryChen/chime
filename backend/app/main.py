@@ -3,7 +3,6 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from app.routes import auth, game
 from app.config import settings
-import os
 
 import logging
 logging.basicConfig(level=logging.DEBUG)
@@ -14,20 +13,10 @@ app = FastAPI(
     redoc_url="/redoc"
 )
 
-RAILWAY_URL = os.getenv("RAILWAY_STATIC_URL")
-
 # CORS middleware
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "http://localhost:5173",
-        "http://127.0.0.1:5173",
-        "http://localhost:3000",
-        "http://localhost:8000",
-        "https://chime-theta.vercel.app",
-        settings.CORS_ORIGIN,
-        RAILWAY_URL if RAILWAY_URL else "*"
-    ],
+    allow_origins=settings.allowed_origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -43,7 +32,9 @@ async def debug_settings():
             "API_URL": settings.API_URL,
             "SPOTIFY_REDIRECT_URI": settings.SPOTIFY_REDIRECT_URI,
             "CORS_ORIGIN": settings.CORS_ORIGIN,
-            "has_spotify_credentials": bool(settings.SPOTIFY_CLIENT_ID and settings.SPOTIFY_CLIENT_SECRET)
+            "has_spotify_credentials": bool(settings.SPOTIFY_CLIENT_ID and settings.SPOTIFY_CLIENT_SECRET),
+            "environment": "production" if settings.is_production else "development",
+            "allowed_origins": settings.allowed_origins  # Add this to debug output
         }
     }
 
@@ -61,13 +52,15 @@ async def root():
         "message": "Chime API is running",
         "environment": {
             "frontend_url": settings.FRONTEND_URL,
-            "api_url": settings.API_URL
+            "api_url": settings.API_URL,
+            "is_production": settings.is_production,
+            "allowed_origins": settings.allowed_origins
         }
     }
 
 @app.get("/test-api-login")
 async def test_api_login(request: Request):
-    url = "https://chime-production.up.railway.app/api/auth/login"
+    url = f"{settings.API_URL}/api/auth/login"  # Use settings.API_URL
     response = await request.get(url)
     return {
         "status_code": response.status_code,
