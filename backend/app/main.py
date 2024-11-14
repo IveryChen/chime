@@ -59,27 +59,6 @@ async def health_check():
 app.include_router(auth.router, prefix="/api/auth", tags=["auth"])
 app.include_router(game.router, prefix="/api/game", tags=["game"])
 
-@app.get("/")
-async def root():
-    return {
-        "message": "Chime API is running",
-        "environment": {
-            "frontend_url": settings.FRONTEND_URL,
-            "api_url": settings.API_URL,
-            "is_production": settings.is_production,
-            "allowed_origins": settings.allowed_origins
-        }
-    }
-
-@app.get("/test-api-login")
-async def test_api_login(request: Request):
-    url = f"{settings.API_URL}/api/auth/login"  # Use settings.API_URL
-    response = await request.get(url)
-    return {
-        "status_code": response.status_code,
-        "content": await response.text()
-    }
-
 @app.get("/debug/env")
 async def debug_environment():
     return {
