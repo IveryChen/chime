@@ -3,15 +3,18 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from app.routes import auth, game
 from app.config import settings
+import os
 
 import logging
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level=logging.DEBUG)
 
 app = FastAPI(
     title="Chime Game API",
     docs_url="/docs",
     redoc_url="/redoc"
 )
+
+RAILWAY_URL = os.getenv("RAILWAY_STATIC_URL")
 
 # CORS middleware
 app.add_middleware(
@@ -22,7 +25,8 @@ app.add_middleware(
         "http://localhost:3000",
         "http://localhost:8000",
         "https://chime-theta.vercel.app",
-        settings.CORS_ORIGIN
+        settings.CORS_ORIGIN,
+        RAILWAY_URL if RAILWAY_URL else "*"
     ],
     allow_credentials=True,
     allow_methods=["*"],
@@ -30,7 +34,7 @@ app.add_middleware(
     expose_headers=["*"]
 )
 
-@app.get("/api/debug")
+@app.get("/debug")
 async def debug_settings():
     """Endpoint to verify current settings"""
     return {
@@ -42,6 +46,10 @@ async def debug_settings():
             "has_spotify_credentials": bool(settings.SPOTIFY_CLIENT_ID and settings.SPOTIFY_CLIENT_SECRET)
         }
     }
+
+@app.get("/health")
+async def health_check():
+    return {"status": "healthy"}
 
 # Include routers
 app.include_router(auth.router, prefix="/api/auth", tags=["auth"])
