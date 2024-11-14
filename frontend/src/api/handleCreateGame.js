@@ -1,4 +1,4 @@
-import { API_URL } from "./api";
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8000/api";
 
 export default async function handleCreateGame(playerName, spotifyToken) {
   try {
@@ -14,10 +14,6 @@ export default async function handleCreateGame(playerName, spotifyToken) {
     });
 
     const data = await response.json();
-
-    if (!response.ok) {
-      throw new Error(data.detail || "Failed to create game room");
-    }
 
     return {
       roomCode: data.room_code,

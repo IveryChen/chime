@@ -1,5 +1,5 @@
-import spotifyApi from "../../library/spotify";
 import { apiClient } from "../../api/apiClient";
+import spotifyApi from "../../library/spotify";
 
 export default async function handleAuth() {
   const storedToken = localStorage.getItem("spotify_access_token");
