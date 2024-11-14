@@ -52,7 +52,7 @@ class Settings(BaseSettings):
             if self.CORS_ORIGIN == "http://localhost:5173":
                 self.CORS_ORIGIN = "https://chime-theta.vercel.app"
             if self.SPOTIFY_REDIRECT_URI == "http://localhost:8000/api/auth/callback":
-                self.SPOTIFY_REDIRECT_URI = "https://chime-6r3r.onrender.com//api/auth/callback"
+                self.SPOTIFY_REDIRECT_URI = "https://chime-6r3r.onrender.com/api/auth/callback"
 
         print(f"Environment: {self.ENVIRONMENT}")
         print(f"Frontend URL: {self.FRONTEND_URL}")
