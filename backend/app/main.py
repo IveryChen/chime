@@ -3,15 +3,28 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from app.routes import auth, game
 from app.config import settings
-
+import sys
 import logging
-logging.basicConfig(level=logging.DEBUG)
+
+logging.basicConfig(
+    level=logging.DEBUG,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+    handlers=[logging.StreamHandler(sys.stdout)]
+)
+logger = logging.getLogger(__name__)
 
 app = FastAPI(
     title="Chime Game API",
     docs_url="/docs",
     redoc_url="/redoc"
 )
+
+@app.on_event("startup")
+async def startup_event():
+    logger.info("Starting up FastAPI application...")
+    logger.info(f"CORS Origins: {settings.allowed_origins}")
+    logger.info(f"Frontend URL: {settings.FRONTEND_URL}")
+    logger.info(f"API URL: {settings.API_URL}")
 
 # CORS middleware
 app.add_middleware(
