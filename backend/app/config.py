@@ -54,10 +54,4 @@ class Settings(BaseSettings):
             if self.SPOTIFY_REDIRECT_URI == "http://localhost:8000/api/auth/callback":
                 self.SPOTIFY_REDIRECT_URI = "https://chime-6r3r.onrender.com/api/auth/callback"
 
-        print(f"Environment: {self.ENVIRONMENT}")
-        print(f"Frontend URL: {self.FRONTEND_URL}")
-        print(f"API URL: {self.API_URL}")
-        print(f"CORS Origin: {self.CORS_ORIGIN}")
-        print(f"Spotify Redirect URI: {self.SPOTIFY_REDIRECT_URI}")
-
 settings = Settings()

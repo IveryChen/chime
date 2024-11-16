@@ -5,20 +5,16 @@ const API_URL = import.meta.env.PROD
 export const apiClient = {
   async request(endpoint, options = {}) {
     const url = `${API_URL}${endpoint}`;
-    console.log("Making request to:", url); // Debug
 
     try {
       const response = await fetch(url, {
         ...options,
-        credentials: "include", // Important for CORS
+        credentials: "include",
         headers: {
           "Content-Type": "application/json",
           ...options.headers,
         },
       });
-
-      // Log response headers for debugging
-      console.log("Response headers:", [...response.headers.entries()]);
 
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));

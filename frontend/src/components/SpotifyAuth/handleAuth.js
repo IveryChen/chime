@@ -21,7 +21,6 @@ export default async function handleAuth() {
 
   try {
     const data = await apiClient.get("/auth/login");
-    console.log(data);
 
     if (data.url) {
       window.location.href = data.url;
@@ -30,7 +29,7 @@ export default async function handleAuth() {
       throw new Error("No login URL received");
     }
   } catch (error) {
-    console.error("Login error:", error); // Debug
+    console.error("Login error:", error);
     throw new Error("Failed to get login URL");
   }
 }
