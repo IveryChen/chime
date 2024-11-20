@@ -2,7 +2,7 @@ import { Component } from "react";
 import { Navigate } from "react-router-dom";
 import { Async } from "react-async";
 
-import handleAuth from "./handleAuth";
+import handleAuth from "../../api/handleAuth";
 
 export default class SpotifyAuth extends Component {
   render() {
