@@ -68,7 +68,6 @@ function render(props, ref) {
   return (
     <Text
       color="gray.0"
-      fontFamily="InterVariable"
       fontSize="14px"
       fontWeight={600}
       lineHeight={1.5}
