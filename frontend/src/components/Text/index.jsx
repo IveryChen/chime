@@ -4,6 +4,7 @@ import { compose, system, typography } from "styled-system";
 
 import Box from "../Box";
 
+const letterSpacing = system({ letterSpacing: true });
 const textDecoration = system({ textDecoration: true });
 const textOverflow = system({ textOverflow: true });
 const textTransform = system({ textTransform: true });
@@ -18,6 +19,7 @@ const truncateProps = {
 
 const Text = styled(Box)(
   compose(
+    letterSpacing,
     textDecoration,
     textOverflow,
     textTransform,
