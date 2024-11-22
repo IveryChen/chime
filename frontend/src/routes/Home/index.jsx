@@ -37,13 +37,22 @@ const StyledBox = styled(Box)`
   }
 `;
 
-const StyledHeading = styled(Text)`
-  font-size: 64px;
+const StyledCassette = styled(Box)`
   width: 100%;
 
   @media (min-width: 768px) {
+    justify-content: center;
+    width: 50%;
+  }
+`;
+
+const StyledHeading = styled(Text)`
+  font-size: 64px;
+  width: 80%;
+
+  @media (min-width: 768px) {
     font-size: 120px;
-    width: 60%;
+    width: 70%;
   }
 `;
 
@@ -90,7 +99,7 @@ export default class Home extends Component {
           <StyledHeading fontWeight="bold" letterSpacing="-2px" lineHeight={1}>
             YOUR GO-TO SPOTIFY MUSIC GAME.
           </StyledHeading>
-          <Box as="img" src={cassette_temp} />
+          <StyledCassette as="img" src={cassette_temp} size="100%" />
           <Text
             alignSelf="start"
             bg="#4CABFF"
