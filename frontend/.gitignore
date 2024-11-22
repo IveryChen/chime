@@ -1,9 +1,6 @@
 # Dependencies
 node_modules/
 
-# src
-src/assets
-
 # Environment variables
 .env
 backend/.env
