@@ -37,6 +37,14 @@ const StyledBox = styled(Box)`
   }
 `;
 
+const StyledButton = styled(Text)`
+  justify-self: center;
+
+  @media (min-width: 768px) {
+    justify-self: start;
+  }
+`;
+
 const StyledCassette = styled(Box)`
   width: 100%;
 
@@ -100,7 +108,7 @@ export default class Home extends Component {
             YOUR GO-TO SPOTIFY MUSIC GAME.
           </StyledHeading>
           <StyledCassette as="img" src={cassette_temp} size="100%" />
-          <Text
+          <StyledButton
             alignSelf="start"
             bg="#4CABFF"
             borderColor="black"
@@ -112,14 +120,13 @@ export default class Home extends Component {
             fontFamily="Bebas Neue"
             fontSize="20px"
             gap="8px"
-            justifySelf="center"
             onClick={this.onClick}
             p="8px"
             userSelect="none"
           >
             I’M READY TO CUE IN
             <Box alignSelf="center" as={FaSpotify} size={24} />
-          </Text>
+          </StyledButton>
         </Box>
       </StyledBox>
     );
