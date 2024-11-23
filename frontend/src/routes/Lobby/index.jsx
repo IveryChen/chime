@@ -4,6 +4,7 @@ import { Async } from "react-async";
 
 import handleCreateGame from "../../api/handleCreateGame";
 import Box from "../../components/Box";
+import Logo from "../../components/Logo";
 import Text from "../../components/Text";
 
 import loadUserProfile from "./loadUserProfile";
@@ -59,12 +60,7 @@ export default class Lobby extends Component {
     return (
       <>
         <Box display="grid" gridTemplateColumns="1fr auto">
-          <Box>
-            <Text fontFamily="Oswald" fontSize="20px" lineHeight={1}>
-              CASSETTE
-            </Text>
-            <Text fontSize="18px">盒式磁帶</Text>
-          </Box>
+          <Logo />
           {user.images?.[0]?.url && (
             <Box
               alt="Profile"
