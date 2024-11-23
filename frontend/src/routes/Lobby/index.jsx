@@ -1,3 +1,4 @@
+import { Root, List, Trigger, Content } from "@radix-ui/react-tabs";
 import { Component } from "react";
 import { Async } from "react-async";
 
@@ -86,93 +87,98 @@ export default class Lobby extends Component {
           >
             WHAT WOULD YOU LIKE TO DO?
           </Text>
-          {!this.state.showJoinGame && !this.state.showCreateGame && (
-            <Box display="flex" gap="4px" justifyContent="center">
-              <button
-                className="bg-blue-500 text-white px-6 py-3 rounded-lg"
-                onClick={this.onChangeShowJoinGame}
-              >
-                Join a Game
-              </button>
-              <button
-                className="bg-green-500 text-white px-6 py-3 rounded-lg"
-                onClick={this.onChangeShowCreateGame}
-              >
-                Create a Game
-              </button>
-            </Box>
-          )}
-          {this.state.showJoinGame && (
-            <form onSubmit={this.handleJoinGame}>
-              <Box>
-                <input
-                  type="text"
-                  placeholder="Enter your name"
-                  value={this.state.playerName}
-                  onChange={(e) =>
-                    this.setState({ playerName: e.target.value })
-                  }
-                  required
-                />
+          <Root defaultValue="join">
+            <List>
+              <Box display="flex" gap="24px" justifyContent="center">
+                <Trigger value="join">
+                  <Text
+                    fontFamily="Bebas Neue"
+                    fontSize="24px"
+                    onClick={this.onChangeShowJoinGame}
+                    pointer="cursor"
+                  >
+                    JOIN
+                  </Text>
+                </Trigger>
+                <Trigger value="create">
+                  <Text
+                    fontFamily="Bebas Neue"
+                    fontSize="24px"
+                    onClick={this.onChangeShowCreateGame}
+                    pointer="cursor"
+                  >
+                    CREATE
+                  </Text>
+                </Trigger>
               </Box>
+            </List>
+            <Content value="join">
+              <form onSubmit={this.handleJoinGame}>
+                <Box>
+                  <input
+                    type="text"
+                    placeholder="Enter your name"
+                    value={this.state.playerName}
+                    onChange={(e) =>
+                      this.setState({ playerName: e.target.value })
+                    }
+                    required
+                  />
+                </Box>
+                <Box>
+                  <input
+                    type="text"
+                    placeholder="Enter room code"
+                    value={this.state.roomCode}
+                    onChange={(e) =>
+                      this.setState({
+                        roomCode: e.target.value.toUpperCase(),
+                      })
+                    }
+                    required
+                  />
+                </Box>
+                <button type="submit">Join Game</button>
+                <button type="button" onClick={this.onChangeHideJoinGame}>
+                  Back
+                </button>
+              </form>
+            </Content>
+            <Content value="create">
               <Box>
-                <input
-                  type="text"
-                  placeholder="Enter room code"
-                  value={this.state.roomCode}
-                  onChange={(e) =>
-                    this.setState({
-                      roomCode: e.target.value.toUpperCase(),
-                    })
-                  }
-                  required
-                />
+                <Box>
+                  <input
+                    type="text"
+                    placeholder="Enter your name"
+                    value={this.state.playerName}
+                    onChange={(e) =>
+                      this.setState({ playerName: e.target.value })
+                    }
+                    required
+                  />
+                </Box>
+                <Async
+                  deferFn={handleCreateGameClick}
+                  onResolve={this.onCreateGameSuccess}
+                  onReject={this.onCreateGameError}
+                >
+                  {({ isPending, run }) => (
+                    <>
+                      <button onClick={run} disabled={isPending}>
+                        {isPending ? "Creating..." : "Create Game"}
+                      </button>
+                      <button
+                        onClick={this.onChangeHideCreateGame}
+                        disabled={isPending}
+                      >
+                        Back
+                      </button>
+                    </>
+                  )}
+                </Async>
               </Box>
-              <button type="submit">Join Game</button>
-              <button type="button" onClick={this.onChangeHideJoinGame}>
-                Back
-              </button>
-            </form>
-          )}
-          {this.state.showCreateGame && (
-            <Box>
-              <Box>
-                <input
-                  type="text"
-                  placeholder="Enter your name"
-                  value={this.state.playerName}
-                  onChange={(e) =>
-                    this.setState({ playerName: e.target.value })
-                  }
-                  required
-                />
-              </Box>
-              <Async
-                deferFn={handleCreateGameClick}
-                onResolve={this.onCreateGameSuccess}
-                onReject={this.onCreateGameError}
-              >
-                {({ isPending, run }) => (
-                  <>
-                    <button onClick={run} disabled={isPending}>
-                      {isPending ? "Creating..." : "Create Game"}
-                    </button>
-                    <button
-                      onClick={this.onChangeHideCreateGame}
-                      disabled={isPending}
-                    >
-                      Back
-                    </button>
-                  </>
-                )}
-              </Async>
-            </Box>
-          )}
-          {this.state.error && (
-            <div className="mt-4 text-red-500 text-center">
-              {this.state.error}
-            </div>
-          )}
+            </Content>
+          </Root>
         </Box>
       </>
     );
