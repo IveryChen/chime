@@ -11,22 +11,12 @@ import loadUserProfile from "./loadUserProfile";
 
 export default class Lobby extends Component {
   state = {
-    showJoinGame: false,
-    showCreateGame: false,
     roomCode: "",
     playerName: "",
     error: null,
   };
 
   onChangeRoomCode = () => {};
-
-  onChangeHideJoinGame = () => this.setState({ showJoinGame: false });
-
-  onChangeShowJoinGame = () => this.setState({ showJoinGame: true });
-
-  onChangeHideCreateGame = () => this.setState({ showCreateGame: false });
-
-  onChangeShowCreateGame = () => this.setState({ showCreateGame: true });
 
   onCreateGameError = (error) => this.setState({ error: error.message });
 
@@ -90,7 +80,6 @@ export default class Lobby extends Component {
                   <Text
                     fontFamily="Bebas Neue"
                     fontSize="24px"
-                    onClick={this.onChangeShowJoinGame}
                     pointer="cursor"
                   >
                     JOIN
@@ -100,7 +89,6 @@ export default class Lobby extends Component {
                   <Text
                     fontFamily="Bebas Neue"
                     fontSize="24px"
-                    onClick={this.onChangeShowCreateGame}
                     pointer="cursor"
                   >
                     CREATE
@@ -134,10 +122,7 @@ export default class Lobby extends Component {
                     required
                   />
                 </Box>
-                <button type="submit">Join Game</button>
-                <button type="button" onClick={this.onChangeHideJoinGame}>
-                  Back
-                </button>
+                <Text>Join Game</Text>
               </form>
             </Content>
             <Content value="create">
@@ -159,17 +144,9 @@ export default class Lobby extends Component {
                   onReject={this.onCreateGameError}
                 >
                   {({ isPending, run }) => (
-                    <>
-                      <button onClick={run} disabled={isPending}>
-                        {isPending ? "Creating..." : "Create Game"}
-                      </button>
-                      <button
-                        onClick={this.onChangeHideCreateGame}
-                        disabled={isPending}
-                      >
-                        Back
-                      </button>
-                    </>
+                    <button onClick={run} disabled={isPending}>
+                      {isPending ? "Creating..." : "Create Game"}
+                    </button>
                   )}
                 </Async>
               </Box>
