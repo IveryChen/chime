@@ -4,6 +4,7 @@ import { Component } from "react";
 import { Async } from "react-async";
 
 import Box from "../../components/Box";
+import Header from "../../components/Header";
 import Logo from "../../components/Logo";
 import Text from "../../components/Text";
 
@@ -44,20 +45,9 @@ class Lobby extends Component {
 
     return (
       <>
-        <Box display="grid" gridTemplateColumns="1fr auto">
+        <Header>
           <Logo />
-          {user.images?.[0]?.url && (
-            <Box
-              alt="Profile"
-              as="img"
-              borderRadius="50%"
-              borderStyle="solid"
-              borderWidth={1}
-              size={48}
-              src={user.images[0].url}
-            />
-          )}
-        </Box>
+        </Header>
         <Box display="grid" justifyItems="center" gap="64px">
           <Text
             fontSize={40}
