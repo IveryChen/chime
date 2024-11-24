@@ -13,6 +13,7 @@ export default class IconButton extends React.PureComponent {
           borderRadius="16px"
           borderStyle="solid"
           borderWidth={1}
+          cursor="pointer"
           display="flex"
           fontFamily="Bebas Neue"
           fontSize="24px"
