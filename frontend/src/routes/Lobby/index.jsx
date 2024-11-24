@@ -1,3 +1,4 @@
+import styled from "@emotion/styled";
 import { Root, List, Trigger, Content } from "@radix-ui/react-tabs";
 import { Component } from "react";
 import { Async } from "react-async";
@@ -10,9 +11,30 @@ import CreateForm from "./CreateForm";
 import JoinForm from "./JoinForm";
 import loadUserProfile from "./loadUserProfile";
 
+const StyledTrigger = styled(Trigger)`
+  all: unset;
+  background: transparent;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+
+  &[data-state="active"] {
+    all: unset;
+    color: red;
+  }
+
+  &[data-state="inactive"] {
+    all: unset;
+  }
+
+  &:hover {
+  }
+`;
+
 export default class Lobby extends Component {
   state = {
     roomCode: "",
+    tab: "join",
     playerName: "",
     error: null,
   };
@@ -35,7 +57,7 @@ export default class Lobby extends Component {
     if (error) return <div>Error: {error.message}</div>;
     if (!user) return <div>No user data found</div>;
 
-    const { playerName, roomCode } = this.state;
+    const { playerName, roomCode, tab } = this.state;
 
     return (
       <>
@@ -55,44 +77,41 @@ export default class Lobby extends Component {
         </Box>
         <Box display="grid" justifyItems="center" gap="64px">
           <Text
-            textAlign="center"
             fontSize={40}
             letterSpacing="-2px"
             lineHeight={1}
+            textAlign="center"
             width="50%"
           >
             WHAT WOULD YOU LIKE TO DO?
           </Text>
-          <Root defaultValue="join">
+          <Root
+            defaultValue="join"
+            onValueChange={(tab) => this.setState({ tab })}
+          >
             <Box display="grid" gap="24px">
               <List>
                 <Box display="flex" gap="24px" justifyContent="center">
-                  <Trigger
-                    style={{ backgroundColor: "transparent" }}
-                    value="join"
-                  >
+                  <StyledTrigger value="join">
                     <Text
-                      color="black"
+                      color={tab === "join" ? "black" : "#806B01"}
                       fontFamily="Bebas Neue"
                       fontSize="24px"
                       pointer="cursor"
                     >
                       JOIN
                     </Text>
-                  </Trigger>
-                  <Trigger
-                    style={{ backgroundColor: "transparent" }}
-                    value="create"
-                  >
+                  </StyledTrigger>
+                  <StyledTrigger value="create">
                     <Text
-                      color="black"
+                      color={tab === "create" ? "black" : "#806B01"}
                       fontFamily="Bebas Neue"
                       fontSize="24px"
                       pointer="cursor"
                     >
                       CREATE
                     </Text>
-                  </Trigger>
+                  </StyledTrigger>
                 </Box>
               </List>
               <Box
