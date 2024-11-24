@@ -10,7 +10,7 @@ export default class JoinForm extends React.PureComponent {
       this.props;
 
     return (
-      <Box display="grid" gap="16px">
+      <Box display="grid" gap="32px">
         <Input
           background="#F7FFF9"
           label="ENTER YOUR NAME"

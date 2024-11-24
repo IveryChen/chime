@@ -72,6 +72,7 @@ export default class Lobby extends Component {
                     value="join"
                   >
                     <Text
+                      color="black"
                       fontFamily="Bebas Neue"
                       fontSize="24px"
                       pointer="cursor"
@@ -84,6 +85,7 @@ export default class Lobby extends Component {
                     value="create"
                   >
                     <Text
+                      color="black"
                       fontFamily="Bebas Neue"
                       fontSize="24px"
                       pointer="cursor"

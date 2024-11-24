@@ -31,7 +31,7 @@ export default class CreateForm extends React.PureComponent {
     };
 
     return (
-      <Box display="grid" gap="16px">
+      <Box display="grid" gap="32px">
         <Input
           background="#F7FFF9"
           label="ENTER YOUR NAME"
@@ -48,7 +48,7 @@ export default class CreateForm extends React.PureComponent {
               bg="#F9E04D"
               disabled={isPending}
               justifySelf="end"
-              label="JOIN GAME"
+              label="CREATE GAME"
               onClick={run}
             />
           )}
