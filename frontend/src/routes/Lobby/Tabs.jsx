@@ -36,7 +36,6 @@ export default class Tabs extends React.PureComponent {
             <StyledTrigger value="join">
               <AnnotatedText
                 isSelected={tab === "join"}
-                color={tab === "join" ? "black" : "#806B01"}
                 fontFamily="Bebas Neue"
                 fontSize="24px"
                 pointer="cursor"
@@ -47,7 +46,6 @@ export default class Tabs extends React.PureComponent {
             <StyledTrigger value="create">
               <AnnotatedText
                 isSelected={tab === "create"}
-                color={tab === "create" ? "black" : "#806B01"}
                 fontFamily="Bebas Neue"
                 fontSize="24px"
                 pointer="cursor"

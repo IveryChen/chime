@@ -48,7 +48,11 @@ export default class AnnotatedText extends React.PureComponent {
   render() {
     const { isSelected, children, ...restProps } = this.props;
     return (
-      <Text ref={this.textRef} {...restProps}>
+      <Text
+        color={isSelected ? "black" : "#806B01"}
+        ref={this.textRef}
+        {...restProps}
+      >
         {children}
       </Text>
     );
