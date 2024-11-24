@@ -4,9 +4,11 @@ import Box from "../../components/Box";
 import Text from "../../components/Text";
 
 export default class Logo extends Component {
+  onClick = () => (window.location.href = "/");
+
   render() {
     return (
-      <Box>
+      <Box cursor="pointer" onClick={this.onClick}>
         <Text fontFamily="Oswald" fontSize="20px" lineHeight={1}>
           CASSETTE
         </Text>
