@@ -1,5 +1,4 @@
-import styled from "@emotion/styled";
-import { Root, List, Trigger, Content } from "@radix-ui/react-tabs";
+import { Root, Content } from "@radix-ui/react-tabs";
 import { Component } from "react";
 import { Async } from "react-async";
 
@@ -9,27 +8,8 @@ import Text from "../../components/Text";
 
 import CreateForm from "./CreateForm";
 import JoinForm from "./JoinForm";
+import Tabs from "./Tabs";
 import loadUserProfile from "./loadUserProfile";
-
-const StyledTrigger = styled(Trigger)`
-  all: unset;
-  background: transparent;
-  border: none;
-  padding: 0;
-  cursor: pointer;
-
-  &[data-state="active"] {
-    all: unset;
-    color: red;
-  }
-
-  &[data-state="inactive"] {
-    all: unset;
-  }
-
-  &:hover {
-  }
-`;
 
 export default class Lobby extends Component {
   state = {
@@ -90,30 +70,7 @@ export default class Lobby extends Component {
             onValueChange={(tab) => this.setState({ tab })}
           >
             <Box display="grid" gap="24px">
-              <List>
-                <Box display="flex" gap="24px" justifyContent="center">
-                  <StyledTrigger value="join">
-                    <Text
-                      color={tab === "join" ? "black" : "#806B01"}
-                      fontFamily="Bebas Neue"
-                      fontSize="24px"
-                      pointer="cursor"
-                    >
-                      JOIN
-                    </Text>
-                  </StyledTrigger>
-                  <StyledTrigger value="create">
-                    <Text
-                      color={tab === "create" ? "black" : "#806B01"}
-                      fontFamily="Bebas Neue"
-                      fontSize="24px"
-                      pointer="cursor"
-                    >
-                      CREATE
-                    </Text>
-                  </StyledTrigger>
-                </Box>
-              </List>
+              <Tabs tab={tab} />
               <Box
                 bg="white"
                 borderRadius="24px"
