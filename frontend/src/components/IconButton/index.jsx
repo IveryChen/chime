@@ -5,7 +5,7 @@ import Text from "../../components/Text";
 
 export default class IconButton extends React.PureComponent {
   render() {
-    const { Icon, label, ...restProps } = this.props;
+    const { Icon, disabled, onClick, label, ...restProps } = this.props;
     return (
       <Text
         alignItems="center"
@@ -18,6 +18,8 @@ export default class IconButton extends React.PureComponent {
         fontSize="24px"
         gap="6px"
         lineHeight={1}
+        onClick={onClick}
+        opacity={disabled ? 0.6 : 1}
         p="8px"
         {...restProps}
       >

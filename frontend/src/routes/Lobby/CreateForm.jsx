@@ -3,8 +3,8 @@ import { Async } from "react-async";
 
 import handleCreateGame from "../../api/handleCreateGame";
 import Box from "../../components/Box";
+import IconButton from "../../components/IconButton";
 import Input from "../../components/Input";
-import Text from "../../components/Text";
 
 export default class CreateForm extends React.PureComponent {
   render() {
@@ -31,10 +31,10 @@ export default class CreateForm extends React.PureComponent {
     };
 
     return (
-      <Box>
+      <Box display="grid" gap="16px">
         <Input
-          label="Enter your name"
-          placeholder="Enter your name"
+          background="#F7FFF9"
+          label="ENTER YOUR NAME"
           value={playerName}
           onChange={onChangePlayerName}
         />
@@ -44,9 +44,13 @@ export default class CreateForm extends React.PureComponent {
           onReject={onCreateGameError}
         >
           {({ isPending, run }) => (
-            <Text fontFamily="Bebas Neue" onClick={run} disabled={isPending}>
-              {isPending ? "Creating..." : "Create Game"}
-            </Text>
+            <IconButton
+              bg="#F9E04D"
+              disabled={isPending}
+              justifySelf="end"
+              label="JOIN GAME"
+              onClick={run}
+            />
           )}
         </Async>
       </Box>

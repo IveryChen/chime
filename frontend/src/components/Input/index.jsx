@@ -12,7 +12,7 @@ const StyledInput = styled.input`
   border-style: ${(props) => props.borderStyle || "solid"};
   border-width: ${(props) => props.borderWidth || "1px"};
   background: ${(props) => props.background || "transparent"};
-  color: ${(props) => props.color || "white"};
+  color: ${(props) => props.color || "black"};
   font-size: ${(props) => props.fontSize || "16px"};
   font-family: ${(props) => props.fontFamily || "inherit"};
 

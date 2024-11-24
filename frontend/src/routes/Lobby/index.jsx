@@ -53,7 +53,7 @@ export default class Lobby extends Component {
             />
           )}
         </Box>
-        <Box display="grid" justifyItems="center">
+        <Box display="grid" justifyItems="center" gap="64px">
           <Text
             textAlign="center"
             fontSize={40}
@@ -64,57 +64,59 @@ export default class Lobby extends Component {
             WHAT WOULD YOU LIKE TO DO?
           </Text>
           <Root defaultValue="join">
-            <List>
-              <Box display="flex" gap="24px" justifyContent="center">
-                <Trigger
-                  style={{ backgroundColor: "transparent" }}
-                  value="join"
-                >
-                  <Text
-                    fontFamily="Bebas Neue"
-                    fontSize="24px"
-                    pointer="cursor"
+            <Box display="grid" gap="24px">
+              <List>
+                <Box display="flex" gap="24px" justifyContent="center">
+                  <Trigger
+                    style={{ backgroundColor: "transparent" }}
+                    value="join"
                   >
-                    JOIN
-                  </Text>
-                </Trigger>
-                <Trigger
-                  style={{ backgroundColor: "transparent" }}
-                  value="create"
-                >
-                  <Text
-                    fontFamily="Bebas Neue"
-                    fontSize="24px"
-                    pointer="cursor"
+                    <Text
+                      fontFamily="Bebas Neue"
+                      fontSize="24px"
+                      pointer="cursor"
+                    >
+                      JOIN
+                    </Text>
+                  </Trigger>
+                  <Trigger
+                    style={{ backgroundColor: "transparent" }}
+                    value="create"
                   >
-                    CREATE
-                  </Text>
-                </Trigger>
+                    <Text
+                      fontFamily="Bebas Neue"
+                      fontSize="24px"
+                      pointer="cursor"
+                    >
+                      CREATE
+                    </Text>
+                  </Trigger>
+                </Box>
+              </List>
+              <Box
+                bg="white"
+                borderRadius="24px"
+                borderStyle="solid"
+                borderWidth={1}
+                p="16px"
+              >
+                <Content value="join">
+                  <JoinForm
+                    onChangePlayerName={this.onChangePlayerName}
+                    onChangeRoomCode={this.onChangeRoomCode}
+                    playerName={playerName}
+                    roomCode={roomCode}
+                  />
+                </Content>
+                <Content value="create">
+                  <CreateForm
+                    onChangePlayerName={this.onChangePlayerName}
+                    onCreateGameError={this.onCreateGameError}
+                    onCreateGameSuccess={this.onCreateGameSuccess}
+                    playerName={playerName}
+                  />
+                </Content>
               </Box>
-            </List>
-            <Box
-              bg="white"
-              borderRadius="24px"
-              borderStyle="solid"
-              borderWidth={1}
-              p="16px"
-            >
-              <Content value="join">
-                <JoinForm
-                  onChangePlayerName={this.onChangePlayerName}
-                  onChangeRoomCode={this.onChangeRoomCode}
-                  playerName={playerName}
-                  roomCode={roomCode}
-                />
-              </Content>
-              <Content value="create">
-                <CreateForm
-                  onChangePlayerName={this.onChangePlayerName}
-                  onCreateGameError={this.onCreateGameError}
-                  onCreateGameSuccess={this.onCreateGameSuccess}
-                  playerName={playerName}
-                />
-              </Content>
             </Box>
           </Root>
         </Box>
