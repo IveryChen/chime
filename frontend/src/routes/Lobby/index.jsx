@@ -1,4 +1,5 @@
 import { Root, Content } from "@radix-ui/react-tabs";
+import { branch } from "baobab-react/higher-order";
 import { Component } from "react";
 import { Async } from "react-async";
 
@@ -11,7 +12,7 @@ import JoinForm from "./JoinForm";
 import Tabs from "./Tabs";
 import loadUserProfile from "./loadUserProfile";
 
-export default class Lobby extends Component {
+class Lobby extends Component {
   state = {
     roomCode: "",
     tab: "join",
@@ -32,12 +33,14 @@ export default class Lobby extends Component {
     return <Async promiseFn={loadUserProfile}>{this.renderBody}</Async>;
   }
 
-  renderBody = ({ data: user, error, isPending }) => {
-    if (isPending) return <div>Loading...</div>;
-    if (error) return <div>Error: {error.message}</div>;
-    if (!user) return <div>No user data found</div>;
+  renderBody = ({ error, isPending }) => {
+    if (isPending) return <Box>Loading...</Box>;
+    if (error) return <Box>Error: {error.message}</Box>;
 
+    const { user } = this.props;
     const { playerName, roomCode, tab } = this.state;
+
+    if (!user) return <Box>No user data found</Box>;
 
     return (
       <>
@@ -102,3 +105,5 @@ export default class Lobby extends Component {
     );
   };
 }
+
+export default branch({ user: ["user"] }, Lobby);
