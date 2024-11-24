@@ -33,6 +33,7 @@ export default class CreateForm extends React.PureComponent {
     return (
       <Box>
         <Input
+          label="Enter your name"
           placeholder="Enter your name"
           value={playerName}
           onChange={onChangePlayerName}

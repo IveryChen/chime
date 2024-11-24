@@ -1,5 +1,6 @@
 import React from "react";
 
+import Box from "../../components/Box";
 import Input from "../../components/Input";
 import Text from "../../components/Text";
 
@@ -9,20 +10,22 @@ export default class JoinForm extends React.PureComponent {
       this.props;
 
     return (
-      <form>
+      <Box display="grid" gap="16px">
         <Input
-          placeholder="Enter your name"
+          background="#F7FFF9"
+          label="ENTER YOUR NAME"
           value={playerName}
           onChange={onChangePlayerName}
         />
         <Input
-          placeholder="Enter room code"
+          background="#F7FFF9"
+          label="ENTER ROOM CODE"
           value={roomCode}
           onChange={onChangeRoomCode}
           toUpperCase
         />
         <Text fontFamily="Bebas Neue">Join Game</Text>
-      </form>
+      </Box>
     );
   }
 }
