@@ -17,6 +17,7 @@
     "@remix-run/router": "^1.21.0",
     "@styled-system/should-forward-prop": "^5.1.5",
     "baobab": "^2.6.1",
+    "baobab-react": "^4.0.2",
     "lodash": "^4.17.21",
     "react": "^18.2.0",
     "react-async": "^10.0.1",
