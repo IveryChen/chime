@@ -2,8 +2,8 @@ import styled from "@emotion/styled";
 import { List, Trigger } from "@radix-ui/react-tabs";
 import React from "react";
 
+import AnnotatedText from "../../components/AnnotatedText";
 import Box from "../../components/Box";
-import Text from "../../components/Text";
 
 const StyledTrigger = styled(Trigger)`
   all: unset;
@@ -34,24 +34,26 @@ export default class Tabs extends React.PureComponent {
         <List>
           <Box display="flex" gap="24px" justifyContent="center">
             <StyledTrigger value="join">
-              <Text
+              <AnnotatedText
+                isSelected={tab === "join"}
                 color={tab === "join" ? "black" : "#806B01"}
                 fontFamily="Bebas Neue"
                 fontSize="24px"
                 pointer="cursor"
               >
                 JOIN
-              </Text>
+              </AnnotatedText>
             </StyledTrigger>
             <StyledTrigger value="create">
-              <Text
+              <AnnotatedText
+                isSelected={tab === "create"}
                 color={tab === "create" ? "black" : "#806B01"}
                 fontFamily="Bebas Neue"
                 fontSize="24px"
                 pointer="cursor"
               >
                 CREATE
-              </Text>
+              </AnnotatedText>
             </StyledTrigger>
           </Box>
         </List>
