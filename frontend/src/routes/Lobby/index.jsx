@@ -7,6 +7,7 @@ import Box from "../../components/Box";
 import Logo from "../../components/Logo";
 import Text from "../../components/Text";
 
+import JoinForm from "./JoinForm";
 import loadUserProfile from "./loadUserProfile";
 
 export default class Lobby extends Component {
@@ -31,6 +32,8 @@ export default class Lobby extends Component {
     if (isPending) return <div>Loading...</div>;
     if (error) return <div>Error: {error.message}</div>;
     if (!user) return <div>No user data found</div>;
+
+    const { playerName, roomCode } = this.state;
 
     const handleCreateGameClick = async () => {
       const { playerName } = this.state;
@@ -76,7 +79,10 @@ export default class Lobby extends Component {
           <Root defaultValue="join">
             <List>
               <Box display="flex" gap="24px" justifyContent="center">
-                <Trigger value="join">
+                <Trigger
+                  style={{ backgroundColor: "transparent" }}
+                  value="join"
+                >
                   <Text
                     fontFamily="Bebas Neue"
                     fontSize="24px"
@@ -85,7 +91,10 @@ export default class Lobby extends Component {
                     JOIN
                   </Text>
                 </Trigger>
-                <Trigger value="create">
+                <Trigger
+                  style={{ backgroundColor: "transparent" }}
+                  value="create"
+                >
                   <Text
                     fontFamily="Bebas Neue"
                     fontSize="24px"
@@ -97,33 +106,7 @@ export default class Lobby extends Component {
               </Box>
             </List>
             <Content value="join">
-              <form onSubmit={this.handleJoinGame}>
-                <Box>
-                  <input
-                    type="text"
-                    placeholder="Enter your name"
-                    value={this.state.playerName}
-                    onChange={(e) =>
-                      this.setState({ playerName: e.target.value })
-                    }
-                    required
-                  />
-                </Box>
-                <Box>
-                  <input
-                    type="text"
-                    placeholder="Enter room code"
-                    value={this.state.roomCode}
-                    onChange={(e) =>
-                      this.setState({
-                        roomCode: e.target.value.toUpperCase(),
-                      })
-                    }
-                    required
-                  />
-                </Box>
-                <Text>Join Game</Text>
-              </form>
+              <JoinForm playerName={playerName} roomCode={roomCode} />
             </Content>
             <Content value="create">
               <Box>
@@ -144,9 +127,13 @@ export default class Lobby extends Component {
                   onReject={this.onCreateGameError}
                 >
                   {({ isPending, run }) => (
-                    <button onClick={run} disabled={isPending}>
+                    <Text
+                      fontFamily="Bebas Neue"
+                      onClick={run}
+                      disabled={isPending}
+                    >
                       {isPending ? "Creating..." : "Create Game"}
-                    </button>
+                    </Text>
                   )}
                 </Async>
               </Box>
