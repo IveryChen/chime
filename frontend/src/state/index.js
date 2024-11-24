@@ -1,5 +1,5 @@
 import Baobab from "baobab";
 
 export default new Baobab({
-  userInfo: {},
+  user: null,
 });
