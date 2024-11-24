@@ -92,22 +92,30 @@ export default class Lobby extends Component {
                 </Trigger>
               </Box>
             </List>
-            <Content value="join">
-              <JoinForm
-                onChangePlayerName={this.onChangePlayerName}
-                onChangeRoomCode={this.onChangeRoomCode}
-                playerName={playerName}
-                roomCode={roomCode}
-              />
-            </Content>
-            <Content value="create">
-              <CreateForm
-                onChangePlayerName={this.onChangePlayerName}
-                onCreateGameError={this.onCreateGameError}
-                onCreateGameSuccess={this.onCreateGameSuccess}
-                playerName={playerName}
-              />
-            </Content>
+            <Box
+              bg="white"
+              borderRadius="24px"
+              borderStyle="solid"
+              borderWidth={1}
+              p="16px"
+            >
+              <Content value="join">
+                <JoinForm
+                  onChangePlayerName={this.onChangePlayerName}
+                  onChangeRoomCode={this.onChangeRoomCode}
+                  playerName={playerName}
+                  roomCode={roomCode}
+                />
+              </Content>
+              <Content value="create">
+                <CreateForm
+                  onChangePlayerName={this.onChangePlayerName}
+                  onCreateGameError={this.onCreateGameError}
+                  onCreateGameSuccess={this.onCreateGameSuccess}
+                  playerName={playerName}
+                />
+              </Content>
+            </Box>
           </Root>
         </Box>
       </>

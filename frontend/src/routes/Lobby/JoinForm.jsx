@@ -1,8 +1,8 @@
 import React from "react";
 
 import Box from "../../components/Box";
+import IconButton from "../../components/IconButton";
 import Input from "../../components/Input";
-import Text from "../../components/Text";
 
 export default class JoinForm extends React.PureComponent {
   render() {
@@ -24,7 +24,7 @@ export default class JoinForm extends React.PureComponent {
           onChange={onChangeRoomCode}
           toUpperCase
         />
-        <Text fontFamily="Bebas Neue">Join Game</Text>
+        <IconButton bg="#F9E04D" label="JOIN GAME" justifySelf="end" />
       </Box>
     );
   }
