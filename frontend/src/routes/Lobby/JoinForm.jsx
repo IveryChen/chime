@@ -1,9 +1,9 @@
-import { Component } from "react";
+import React from "react";
 
 import Box from "../../components/Box";
 import Text from "../../components/Text";
 
-export default class JoinForm extends Component {
+export default class JoinForm extends React.PureComponent {
   render() {
     const { onChangePlayerName, onChangeRoomCode, playerName, roomCode } =
       this.props;

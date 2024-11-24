@@ -2,11 +2,11 @@ import { Root, List, Trigger, Content } from "@radix-ui/react-tabs";
 import { Component } from "react";
 import { Async } from "react-async";
 
-import handleCreateGame from "../../api/handleCreateGame";
 import Box from "../../components/Box";
 import Logo from "../../components/Logo";
 import Text from "../../components/Text";
 
+import CreateForm from "./CreateForm";
 import JoinForm from "./JoinForm";
 import loadUserProfile from "./loadUserProfile";
 
@@ -36,21 +36,6 @@ export default class Lobby extends Component {
     if (!user) return <div>No user data found</div>;
 
     const { playerName, roomCode } = this.state;
-
-    const handleCreateGameClick = async () => {
-      const { playerName } = this.state;
-      if (!playerName.trim()) {
-        throw new Error("Please enter your name");
-      }
-
-      const spotifyToken = localStorage.getItem("spotify_access_token");
-
-      if (!spotifyToken) {
-        throw new Error("Spotify authentication required");
-      }
-
-      return handleCreateGame(playerName, spotifyToken);
-    };
 
     return (
       <>
@@ -116,34 +101,12 @@ export default class Lobby extends Component {
               />
             </Content>
             <Content value="create">
-              <Box>
-                <Box>
-                  <input
-                    type="text"
-                    placeholder="Enter your name"
-                    value={this.state.playerName}
-                    onChange={(e) =>
-                      this.setState({ playerName: e.target.value })
-                    }
-                    required
-                  />
-                </Box>
-                <Async
-                  deferFn={handleCreateGameClick}
-                  onResolve={this.onCreateGameSuccess}
-                  onReject={this.onCreateGameError}
-                >
-                  {({ isPending, run }) => (
-                    <Text
-                      fontFamily="Bebas Neue"
-                      onClick={run}
-                      disabled={isPending}
-                    >
-                      {isPending ? "Creating..." : "Create Game"}
-                    </Text>
-                  )}
-                </Async>
-              </Box>
+              <CreateForm
+                onChangePlayerName={this.onChangePlayerName}
+                onCreateGameError={this.onCreateGameError}
+                onCreateGameSuccess={this.onCreateGameSuccess}
+                playerName={playerName}
+              />
             </Content>
           </Root>
         </Box>
