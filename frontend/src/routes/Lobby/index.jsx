@@ -17,7 +17,9 @@ export default class Lobby extends Component {
     error: null,
   };
 
-  onChangeRoomCode = () => {};
+  onChangeRoomCode = (roomCode) => this.setState({ roomCode });
+
+  onChangePlayerName = (playerName) => this.setState({ playerName });
 
   onCreateGameError = (error) => this.setState({ error: error.message });
 
@@ -106,7 +108,12 @@ export default class Lobby extends Component {
               </Box>
             </List>
             <Content value="join">
-              <JoinForm playerName={playerName} roomCode={roomCode} />
+              <JoinForm
+                onChangePlayerName={this.onChangePlayerName}
+                onChangeRoomCode={this.onChangeRoomCode}
+                playerName={playerName}
+                roomCode={roomCode}
+              />
             </Content>
             <Content value="create">
               <Box>

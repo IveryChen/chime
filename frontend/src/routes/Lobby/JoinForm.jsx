@@ -5,7 +5,9 @@ import Text from "../../components/Text";
 
 export default class JoinForm extends Component {
   render() {
-    const { playerName, roomCode } = this.props;
+    const { onChangePlayerName, onChangeRoomCode, playerName, roomCode } =
+      this.props;
+
     return (
       <form>
         <Box>
@@ -13,7 +15,7 @@ export default class JoinForm extends Component {
             type="text"
             placeholder="Enter your name"
             value={playerName}
-            // onChange={(e) => this.setState({ playerName: e.target.value })}
+            onChange={(e) => onChangePlayerName(e.target.value)}
             required
           />
         </Box>
@@ -22,11 +24,7 @@ export default class JoinForm extends Component {
             type="text"
             placeholder="Enter room code"
             value={roomCode}
-            // onChange={(e) =>
-            //   this.setState({
-            //     roomCode: e.target.value.toUpperCase(),
-            //   })
-            // }
+            onChange={(e) => onChangeRoomCode(e.target.value.toUpperCase())}
             required
           />
         </Box>
