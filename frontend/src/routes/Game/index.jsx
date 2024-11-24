@@ -1,8 +1,10 @@
 import React from "react";
 import { branch } from "baobab-react/higher-order";
 
+import Box from "../../components/Box";
 import Header from "../../components/Header";
 import Logo from "../../components/Logo";
+import Text from "../../components/Text";
 import { withRouter } from "../../utils/withRouter";
 
 class Game extends React.PureComponent {
@@ -25,8 +27,12 @@ class Game extends React.PureComponent {
         <Header>
           <Logo />
         </Header>
-        <h1>Game Room: {roomCode}</h1>
-        {/* Your game UI */}
+        <Box display="grid" justifyContent="center">
+          <Text fontWeight="bold" fontStyle="italic" fontSize="42px">
+            {roomCode}
+          </Text>
+          <Box display="flex" gap="16px" flexWrap="wrap"></Box>
+        </Box>
       </>
     );
   }

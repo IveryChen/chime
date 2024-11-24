@@ -28,11 +28,11 @@ const StyledBox = styled(Box)`
     grid-template-columns: auto 1fr;
     height: 100%;
 
-    > :first-child {
+    > :first-of-type {
       order: 2;
     }
 
-    > :nth-child(2) {
+    > :nth-of-type(2) {
       order: 1;
     }
   }
