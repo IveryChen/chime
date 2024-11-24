@@ -1,5 +1,5 @@
 import styled from "@emotion/styled";
-import { Component } from "react";
+import React from "react";
 import { FaSpotify } from "react-icons/fa6";
 
 import cassette_temp from "../../assets/cassette_temp.png";
@@ -80,7 +80,7 @@ const StyledTextChinese = styled(Text)`
   }
 `;
 
-export default class Home extends Component {
+export default class Home extends React.PureComponent {
   onClick = () => (window.location.href = "/spotify-auth");
 
   render() {
