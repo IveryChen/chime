@@ -3,6 +3,7 @@ import { Async } from "react-async";
 
 import handleCreateGame from "../../api/handleCreateGame";
 import Box from "../../components/Box";
+import Input from "../../components/Input";
 import Text from "../../components/Text";
 
 export default class CreateForm extends React.PureComponent {
@@ -31,15 +32,11 @@ export default class CreateForm extends React.PureComponent {
 
     return (
       <Box>
-        <Box>
-          <input
-            type="text"
-            placeholder="Enter your name"
-            value={playerName}
-            onChange={(e) => onChangePlayerName(e.target.value)}
-            required
-          />
-        </Box>
+        <Input
+          placeholder="Enter your name"
+          value={playerName}
+          onChange={onChangePlayerName}
+        />
         <Async
           deferFn={handleCreateGameClick}
           onResolve={onCreateGameSuccess}
