@@ -1,13 +1,9 @@
 import React from "react";
-import { useParams } from "react-router-dom";
 import { branch } from "baobab-react/higher-order";
 
-function withRouter(Component) {
-  return function ComponentWithRouter(props) {
-    const params = useParams();
-    return <Component {...props} params={params} />;
-  };
-}
+import Header from "../../components/Header";
+import Logo from "../../components/Logo";
+import { withRouter } from "../../utils/withRouter";
 
 class Game extends React.PureComponent {
   componentDidMount() {
@@ -25,15 +21,17 @@ class Game extends React.PureComponent {
     const { roomCode } = this.props.params;
 
     return (
-      <div>
+      <>
+        <Header>
+          <Logo />
+        </Header>
         <h1>Game Room: {roomCode}</h1>
         {/* Your game UI */}
-      </div>
+      </>
     );
   }
 }
 
-// Export with both router and Baobab state
 export default withRouter(
   branch(
     {

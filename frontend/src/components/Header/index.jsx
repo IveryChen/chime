@@ -2,6 +2,7 @@ import { branch } from "baobab-react/higher-order";
 import { Component } from "react";
 
 import Box from "../../components/Box";
+import { withRouter } from "../../utils/withRouter";
 
 class Header extends Component {
   render() {
@@ -26,4 +27,4 @@ class Header extends Component {
   }
 }
 
-export default branch({ user: ["user"] }, Header);
+export default withRouter(branch({ user: ["user"] }, Header));

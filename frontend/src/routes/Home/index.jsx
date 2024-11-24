@@ -5,6 +5,7 @@ import { FaSpotify } from "react-icons/fa6";
 import cassette_temp from "../../assets/cassette_temp.png";
 import Box from "../../components/Box";
 import Text from "../../components/Text";
+import { withRouter } from "../../utils/withRouter";
 
 const StyledBar = styled(Box)`
   align-items: center;
@@ -80,8 +81,8 @@ const StyledTextChinese = styled(Text)`
   }
 `;
 
-export default class Home extends React.PureComponent {
-  onClick = () => (window.location.href = "/spotify-auth");
+class Home extends React.PureComponent {
+  onClick = () => this.props.navigate(`/spotify-auth`);
 
   render() {
     return (
@@ -132,3 +133,5 @@ export default class Home extends React.PureComponent {
     );
   }
 }
+
+export default withRouter(Home);

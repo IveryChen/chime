@@ -7,6 +7,7 @@ import Box from "../../components/Box";
 import Header from "../../components/Header";
 import Logo from "../../components/Logo";
 import Text from "../../components/Text";
+import { withRouter } from "../../utils/withRouter";
 
 import CreateForm from "./CreateForm";
 import JoinForm from "./JoinForm";
@@ -28,7 +29,7 @@ class Lobby extends Component {
   onCreateGameError = (error) => this.setState({ error: error.message });
 
   onCreateGameSuccess = (gameData) =>
-    (window.location.href = `/game/${gameData.roomCode}`);
+    this.props.navigate(`/game/${gameData.roomCode}`);
 
   render() {
     return <Async promiseFn={loadUserProfile}>{this.renderBody}</Async>;
@@ -96,4 +97,4 @@ class Lobby extends Component {
   };
 }
 
-export default branch({ user: ["user"] }, Lobby);
+export default withRouter(branch({ user: ["user"] }, Lobby));
