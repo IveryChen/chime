@@ -1,4 +1,5 @@
 import spotifyApi from "../../library/spotify";
+import state from "../../state";
 
 export default async function loadUserProfile() {
   try {
@@ -12,7 +13,7 @@ export default async function loadUserProfile() {
     // Try to get user profile
     try {
       const userData = await spotifyApi.getMe();
-      return userData;
+      state.select("user").set(userData);
     } catch (error) {
       // If we get a 401, token might be expired
       if (error.status === 401) {
