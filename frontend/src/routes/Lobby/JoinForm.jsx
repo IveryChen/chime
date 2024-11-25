@@ -60,7 +60,7 @@ export default class JoinForm extends React.PureComponent {
               justifySelf="end"
               onClick={run}
             />
-          )}{" "}
+          )}
         </Async>
       </Box>
     );
