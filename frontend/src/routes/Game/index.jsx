@@ -1,5 +1,6 @@
-import React from "react";
 import { branch } from "baobab-react/higher-order";
+import { map } from "lodash";
+import React from "react";
 
 import Box from "../../components/Box";
 import Header from "../../components/Header";
@@ -11,18 +12,18 @@ import { withRouter } from "../../utils/withRouter";
 class Game extends React.PureComponent {
   componentDidMount() {
     const { roomCode } = this.props.params;
-    const { user } = this.props;
-    // Connect to your multiplayer socket here using the roomCode
-    // Example: socket.emit('join-room', roomCode);
+    const { room } = this.props;
+
     socketService.connect();
 
-    socketService.joinRoom(roomCode, {
-      id: user.id,
-      name: user.display_name,
-      avatar: user.images?.[0]?.url,
-      spotify_token: localStorage.getItem("spotify_access_token"),
-      is_host: false,
-    });
+    // socketService.joinRoom(roomCode, {
+    //   id: room.host.id,
+    //   name: room.host.name,
+    //   avatar: room.host.avatar,
+    //   spotify_token: localStorage.getItem("spotify_access_token"),
+    //   //   this line might be wrong
+    //   is_host: false,
+    // });
   }
 
   componentWillUnmount() {
@@ -33,7 +34,14 @@ class Game extends React.PureComponent {
 
   render() {
     const { roomCode } = this.props.params;
-    const { players } = this.props;
+    const { rooms } = this.props;
+    const room = rooms[roomCode];
+
+    if (!room) {
+      return null;
+    }
+
+    const { players } = room;
 
     return (
       <>
@@ -45,14 +53,14 @@ class Game extends React.PureComponent {
             {roomCode}
           </Text>
           <Box display="flex" gap="16px" flexWrap="wrap">
-            {players?.map((player) => (
+            {map(players, (player) => (
               <Box
-                // key={player.id}
+                key={player.id}
                 display="flex"
                 flexDirection="column"
                 alignItems="center"
               >
-                {/* {player.avatar && (
+                {player.avatar && (
                   <Box
                     as="img"
                     src={player.avatar}
@@ -60,9 +68,9 @@ class Game extends React.PureComponent {
                     size={48}
                     borderRadius="50%"
                   />
-                )} */}
-                {/* <Text>{player.name}</Text> */}
-                {/* {player.is_host && <Text fontSize="12px">(Host)</Text>} */}
+                )}
+                <Text>{player.name}</Text>
+                {player.is_host && <Text fontSize="12px">(Host)</Text>}
               </Box>
             ))}
           </Box>
@@ -75,9 +83,9 @@ class Game extends React.PureComponent {
 export default withRouter(
   branch(
     {
+      currentRoom: ["games", "currentRoom"],
+      rooms: ["games", "rooms"],
       user: ["user"],
-      players: ["game", "players"],
-      gameState: ["game", "state"],
     },
     Game
   )

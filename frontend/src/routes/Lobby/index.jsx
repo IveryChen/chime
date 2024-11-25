@@ -7,6 +7,7 @@ import Box from "../../components/Box";
 import Header from "../../components/Header";
 import Logo from "../../components/Logo";
 import Text from "../../components/Text";
+import state from "../../state";
 import { withRouter } from "../../utils/withRouter";
 
 import CreateForm from "./CreateForm";
@@ -28,8 +29,39 @@ class Lobby extends Component {
 
   onCreateGameError = (error) => this.setState({ error: error.message });
 
-  onCreateGameSuccess = (gameData) =>
-    this.props.navigate(`/game/${gameData.roomCode}`);
+  onCreateGameSuccess = (gameRoom) => {
+    console.log("gameRoom here is", gameRoom);
+
+    state.select("games", "rooms", gameRoom.roomCode).set({
+      roomCode: gameRoom.roomCode,
+      host: {
+        name: gameRoom.host.name,
+        spotify_token: localStorage.getItem("spotify_access_token"),
+        is_host: true,
+        id: gameRoom.host.id,
+        avatar: gameRoom.host.avatar,
+      },
+      players: [
+        {
+          name: gameRoom.host.name,
+          spotify_token: localStorage.getItem("spotify_access_token"),
+          is_host: true,
+          id: gameRoom.host.id,
+          avatar: gameRoom.host.avatar,
+        },
+      ],
+      status: "waiting",
+      gameState: {
+        currentRound: 1,
+        scores: {},
+        currentPlayer: gameRoom.host.name,
+      },
+    });
+
+    state.select("games", "currentRoom").set(gameRoom.roomCode);
+
+    this.props.navigate(`/game/${gameRoom.roomCode}`);
+  };
 
   render() {
     return <Async promiseFn={loadUserProfile}>{this.renderBody}</Async>;
