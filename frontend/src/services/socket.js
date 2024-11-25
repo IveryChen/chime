@@ -17,6 +17,7 @@ class SocketService {
       withCredentials: true,
       reconnection: true,
       reconnectionAttempts: 5,
+      autoConnect: true,
       reconnectionDelay: 1000,
       forceNew: true,
     });
