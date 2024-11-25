@@ -5,6 +5,9 @@ class Player(BaseModel):
     name: str
     spotify_token: str
     is_host: bool = False
+    socket_id: Optional[str] = None
+    id: Optional[str] = None
+    avatar: Optional[str] = None
 
 class GameRoom(BaseModel):
     room_code: str
