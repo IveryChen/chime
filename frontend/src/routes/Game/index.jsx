@@ -12,18 +12,18 @@ import { withRouter } from "../../utils/withRouter";
 class Game extends React.PureComponent {
   componentDidMount() {
     const { roomCode } = this.props.params;
-    const { room } = this.props;
+    const { rooms } = this.props;
+    const room = rooms[roomCode];
 
     socketService.connect();
 
-    // socketService.joinRoom(roomCode, {
-    //   id: room.host.id,
-    //   name: room.host.name,
-    //   avatar: room.host.avatar,
-    //   spotify_token: localStorage.getItem("spotify_access_token"),
-    //   //   this line might be wrong
-    //   is_host: false,
-    // });
+    socketService.joinRoom(roomCode, {
+      id: room.host.id,
+      name: room.host.name,
+      avatar: room.host.avatar,
+      spotify_token: localStorage.getItem("spotify_access_token"),
+      is_host: room.host.is_host,
+    });
   }
 
   componentWillUnmount() {
