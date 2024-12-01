@@ -13,10 +13,11 @@ export default class IconButton extends React.PureComponent {
         borderStyle="solid"
         borderWidth={1}
         cursor="pointer"
-        display="flex"
+        display="grid"
         fontFamily="Bebas Neue"
         fontSize="24px"
         gap="6px"
+        gridTemplateColumns="auto 1fr"
         lineHeight={1}
         onClick={onClick}
         opacity={disabled ? 0.6 : 1}
