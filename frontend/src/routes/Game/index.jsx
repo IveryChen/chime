@@ -34,6 +34,8 @@ class Game extends React.PureComponent {
     socketService.disconnect();
   }
 
+  onChangeGameStage = (gameStage) => this.setState({ gameStage });
+
   render() {
     const { roomCode } = this.props.params;
     const { rooms } = this.props;
@@ -52,7 +54,11 @@ class Game extends React.PureComponent {
           <Logo />
         </Header>
         {gameStage === "lobby" && (
-          <LobbyView players={players} roomCode={roomCode} />
+          <LobbyView
+            onChangeGameStage={this.onChangeGameStage}
+            players={players}
+            roomCode={roomCode}
+          />
         )}
       </Box>
     );

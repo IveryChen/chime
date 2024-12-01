@@ -8,6 +8,8 @@ import IconButton from "../../components/IconButton";
 import Text from "../../components/Text";
 
 export default class LobbyView extends React.PureComponent {
+  onClick = () => this.props.onChangeGameStage("playlist");
+
   render() {
     const { players, roomCode } = this.props;
 
@@ -49,6 +51,7 @@ export default class LobbyView extends React.PureComponent {
           Icon={LiaArrowRightSolid}
           justifySelf="end"
           label="START"
+          onClick={this.onClick}
         />
       </Box>
     );
