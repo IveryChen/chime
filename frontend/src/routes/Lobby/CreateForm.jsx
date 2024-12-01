@@ -2,6 +2,7 @@ import React from "react";
 import { Async } from "react-async";
 
 import handleCreateGame from "../../api/handleCreateGame";
+import theme from "../../constants/colours";
 import Box from "../../components/Box";
 import IconButton from "../../components/IconButton";
 import Input from "../../components/Input";
@@ -45,7 +46,7 @@ export default class CreateForm extends React.PureComponent {
         >
           {({ isPending, run }) => (
             <IconButton
-              bg="#F9E04D"
+              bg={theme.yellow}
               disabled={isPending}
               justifySelf="end"
               label="CREATE GAME"

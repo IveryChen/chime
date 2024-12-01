@@ -3,6 +3,7 @@ import React from "react";
 import { FaSpotify } from "react-icons/fa6";
 
 import cassette_temp from "../../assets/cassette_temp.png";
+import theme from "../../constants/colours";
 import Box from "../../components/Box";
 import Text from "../../components/Text";
 import { withRouter } from "../../utils/withRouter";
@@ -111,7 +112,7 @@ class Home extends React.PureComponent {
           <StyledCassette as="img" src={cassette_temp} size="100%" />
           <StyledButton
             alignSelf="start"
-            bg="#4CABFF"
+            bg={theme.blue}
             borderColor="black"
             borderRadius="20px"
             borderStyle="solid"
