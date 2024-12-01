@@ -1,9 +1,12 @@
 import { branch } from "baobab-react/higher-order";
 import { map } from "lodash";
 import React from "react";
+import { LiaArrowRightSolid } from "react-icons/lia";
 
+import theme from "../../constants/colours";
 import Box from "../../components/Box";
 import Header from "../../components/Header";
+import IconButton from "../../components/IconButton";
 import Logo from "../../components/Logo";
 import Text from "../../components/Text";
 import socketService from "../../services/socket";
@@ -44,12 +47,17 @@ class Game extends React.PureComponent {
     const { players } = room;
 
     return (
-      <>
+      <Box display="grid" gridTemplateRows="auto 1fr" height="100%">
         <Header>
           <Logo />
         </Header>
-        <Box display="grid" justifyContent="center">
-          <Text fontWeight="bold" fontStyle="italic" fontSize="42px">
+        <Box display="grid" gridTemplateRows="auto 1fr auto">
+          <Text
+            fontSize="42px"
+            fontStyle="italic"
+            fontWeight="bold"
+            justifySelf="center"
+          >
             {roomCode}
           </Text>
           <Box display="flex" gap="16px" flexWrap="wrap">
@@ -67,16 +75,22 @@ class Game extends React.PureComponent {
                     borderRadius="50%"
                     borderStyle="solid"
                     borderWidth={1}
-                    size={48}
+                    size={64}
                   />
                 )}
-                <Text>{player.name}</Text>
-                {player.is_host && <Text fontSize="12px">(Host)</Text>}
+                <Text fontSize="20px">{player.name}</Text>
+                {player.is_host && <Text fontSize="16px">(Host)</Text>}
               </Box>
             ))}
           </Box>
+          <IconButton
+            bg={theme.blue}
+            Icon={LiaArrowRightSolid}
+            justifySelf="end"
+            label="START"
+          />
         </Box>
-      </>
+      </Box>
     );
   }
 }
