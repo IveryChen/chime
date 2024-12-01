@@ -10,9 +10,20 @@ class GameService:
     def generate_room_code(self) -> str:
         return ''.join(random.choices(string.ascii_uppercase + string.digits, k=6))
 
+    def generate_color(self) -> str:
+            return f"#{random.randint(0, 0xFFFFFF):06x}"
+
+    def create_player(self, name: str, spotify_token: str, is_host: bool = False) -> Player:
+        return Player(
+            name=name,
+            spotify_token=spotify_token,
+            is_host=is_host,
+            avatar=self.generate_color()
+        )
+
     def create_room(self, host_name: str, spotify_token: str) -> GameRoom:
         room_code = self.generate_room_code()
-        host = Player(name=host_name, spotify_token=spotify_token, is_host=True)
+        host = self.create_player(host_name, spotify_token, is_host=True)
         room = GameRoom(
             room_code=room_code,
             host=host,
@@ -29,7 +40,7 @@ class GameService:
         if room.status != "waiting":
             raise ValueError("Game already in progress")
 
-        new_player = Player(name=player_name, spotify_token=spotify_token)
+        new_player = self.create_player(player_name, spotify_token)
         room.players.append(new_player)
         return room
 
