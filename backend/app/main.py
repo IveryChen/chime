@@ -52,3 +52,5 @@ socket_app = socketio.ASGIApp(
     other_asgi_app=app,
     socketio_path='sockets'
 )
+
+app = socket_app
