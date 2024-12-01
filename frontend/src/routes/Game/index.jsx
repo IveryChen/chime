@@ -62,11 +62,12 @@ class Game extends React.PureComponent {
               >
                 {player.avatar && (
                   <Box
-                    as="img"
-                    src={player.avatar}
                     alt={player.name}
-                    size={48}
+                    bg={player.avatar}
                     borderRadius="50%"
+                    borderStyle="solid"
+                    borderWidth={1}
+                    size={48}
                   />
                 )}
                 <Text>{player.name}</Text>
