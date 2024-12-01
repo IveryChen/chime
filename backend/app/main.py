@@ -53,4 +53,4 @@ socket_app = socketio.ASGIApp(
     socketio_path='sockets'
 )
 
-app = socket_app
+# app = socket_app
