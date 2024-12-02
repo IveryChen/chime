@@ -1,7 +1,7 @@
 import API_URL from "../../constants/apiUrl";
 
 export default async function handleSubmitSelection(props) {
-  const { roomCode, playerId, selectedPlaylists } = props;
+  const { playerId, roomCode, selectedPlaylists } = props;
 
   try {
     const response = await fetch(
@@ -11,7 +11,7 @@ export default async function handleSubmitSelection(props) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           player_id: playerId,
-          playlist_ids: selectedPlaylists,
+          selected_playlists: selectedPlaylists,
         }),
       }
     );
@@ -20,7 +20,11 @@ export default async function handleSubmitSelection(props) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
 
-    return await response.json();
+    const data = await response.json();
+
+    return {
+      status: data.status,
+    };
   } catch (error) {
     console.error("Failed to submit playlist selection:", error);
     throw error;

@@ -25,10 +25,10 @@ export default class PlaylistView extends React.PureComponent {
   };
 
   handleSubmit = () => {
-    const { roomCode, playerId } = this.props;
+    const { playerId, roomCode } = this.props;
     const { selectedPlaylists } = this.state;
 
-    return handleSubmitSelection({ roomCode, playerId, selectedPlaylists });
+    return handleSubmitSelection({ playerId, roomCode, selectedPlaylists });
   };
 
   render() {

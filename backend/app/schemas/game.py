@@ -23,7 +23,6 @@ class JoinRoomRequest(BaseModel):
     spotify_token: str
 
 class PlaylistSelectionRequest(BaseModel):
-    room_code: str
     player_id: str
     selected_playlists: List[str]
 
