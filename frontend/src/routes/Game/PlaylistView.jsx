@@ -6,11 +6,12 @@ import Box from "../../components/Box";
 import Header from "../../components/Header";
 import IconButton from "../../components/IconButton";
 import Logo from "../../components/Logo";
+import Playlist from "../../components/Playlist";
 import Text from "../../components/Text";
 
 import handleSubmitSelection from "./handleSubmitSelection";
 
-export default class Playlist extends React.PureComponent {
+export default class PlaylistView extends React.PureComponent {
   state = {
     selectedPlaylists: [],
   };
@@ -83,34 +84,12 @@ export default class Playlist extends React.PureComponent {
             gridTemplateColumns="1fr 1fr"
             overflow="auto"
           >
-            {map(playlists, (data) => {
+            {map(playlists, (data, index) => {
               if (!data) {
                 return;
               }
 
-              const { images, name, owner } = data;
-
-              return (
-                <Box key={name}>
-                  {images && (
-                    <Box
-                      alt="Profile"
-                      as="img"
-                      aspectRatio={1}
-                      borderStyle="solid"
-                      borderWidth={1}
-                      src={images[0].url}
-                      width="100%"
-                    />
-                  )}
-                  <Text fontSize={12} lineHeight={1} textTransform="uppercase">
-                    {name}
-                  </Text>
-                  <Text fontSize={10} fontWeight="regular" lineHeight={1}>
-                    {owner.display_name}
-                  </Text>
-                </Box>
-              );
+              return <Playlist data={data} key={index} />;
             })}
           </Box>
           <IconButton
