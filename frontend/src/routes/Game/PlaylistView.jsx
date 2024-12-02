@@ -1,4 +1,4 @@
-import { map } from "lodash";
+import { includes, map } from "lodash";
 import React from "react";
 
 import theme from "../../constants/colours";
@@ -18,7 +18,9 @@ export default class PlaylistView extends React.PureComponent {
 
   onChangeSelectedPlaylists = (playlistId) => {
     this.setState((prevState) => ({
-      selectedPlaylists: [...prevState.selectedPlaylists, playlistId],
+      selectedPlaylists: includes(prevState.selectedPlaylists, playlistId)
+        ? prevState.selectedPlaylists.filter((id) => id !== playlistId)
+        : [...prevState.selectedPlaylists, playlistId],
     }));
   };
 
@@ -31,6 +33,7 @@ export default class PlaylistView extends React.PureComponent {
 
   render() {
     const { players, playlists } = this.props;
+    const { selectedPlaylists } = this.state;
 
     return (
       <>
@@ -89,7 +92,14 @@ export default class PlaylistView extends React.PureComponent {
                 return;
               }
 
-              return <Playlist data={data} key={index} />;
+              return (
+                <Playlist
+                  data={data}
+                  key={index}
+                  onChangeSelectedPlaylists={this.onChangeSelectedPlaylists}
+                  selectedPlaylists={selectedPlaylists}
+                />
+              );
             })}
           </Box>
           <IconButton

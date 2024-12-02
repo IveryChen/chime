@@ -1,22 +1,27 @@
+import { includes } from "lodash";
 import React from "react";
 
 import Box from "../../components/Box";
 import Text from "../../components/Text";
 
 export default class Playlist extends React.PureComponent {
+  onClick = () => this.props.onChangeSelectedPlaylists(this.props.data.id);
+
   render() {
-    const { data } = this.props;
-    const { images, name, owner } = data;
+    const { data, selectedPlaylists } = this.props;
+    const { id, images, name, owner } = data;
+    const isSelected = includes(selectedPlaylists, id);
 
     return (
-      <Box>
+      <Box onClick={this.onClick}>
         {images && (
           <Box
             alt="Profile"
             as="img"
             aspectRatio={1}
+            borderColor={isSelected ? "red" : "black"}
             borderStyle="solid"
-            borderWidth={1}
+            borderWidth={isSelected ? 2 : 1}
             src={images[0].url}
             width="100%"
           />
