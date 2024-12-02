@@ -1,5 +1,6 @@
 import { includes } from "lodash";
 import React from "react";
+import { MdCheck } from "react-icons/md";
 
 import Box from "../../components/Box";
 import Text from "../../components/Text";
@@ -15,16 +16,35 @@ export default class Playlist extends React.PureComponent {
     return (
       <Box onClick={this.onClick}>
         {images && (
-          <Box
-            alt="Profile"
-            as="img"
-            aspectRatio={1}
-            borderColor={isSelected ? "red" : "black"}
-            borderStyle="solid"
-            borderWidth={isSelected ? 2 : 1}
-            src={images[0].url}
-            width="100%"
-          />
+          <Box position="relative">
+            <Box
+              alt="Profile"
+              as="img"
+              aspectRatio={1}
+              borderStyle="solid"
+              borderWidth={1}
+              src={images[0].url}
+              width="100%"
+            />
+            {isSelected && (
+              <Box
+                alignContent="center"
+                bg="white"
+                borderRadius="50%"
+                borderStyle="solid"
+                borderWidth={1}
+                display="grid"
+                justifyContent="center"
+                p={0}
+                position="absolute"
+                right={2}
+                size={24}
+                top={2}
+              >
+                <Box as={MdCheck} size={16} />
+              </Box>
+            )}
+          </Box>
         )}
         <Text fontSize={12} lineHeight={1} textTransform="uppercase">
           {name}
