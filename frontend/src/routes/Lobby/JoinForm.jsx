@@ -1,11 +1,12 @@
 import React from "react";
 import { Async } from "react-async";
 
-import handleJoinGame from "../../api/handleJoinGame";
 import theme from "../../constants/colours";
 import Box from "../../components/Box";
 import IconButton from "../../components/IconButton";
 import Input from "../../components/Input";
+
+import handleJoinGame from "./handleJoinGame";
 
 export default class JoinForm extends React.PureComponent {
   render() {

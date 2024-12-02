@@ -1,11 +1,12 @@
 import React from "react";
 import { Async } from "react-async";
 
-import handleCreateGame from "../../api/handleCreateGame";
 import theme from "../../constants/colours";
 import Box from "../../components/Box";
 import IconButton from "../../components/IconButton";
 import Input from "../../components/Input";
+
+import handleCreateGame from "./handleCreateGame";
 
 export default class CreateForm extends React.PureComponent {
   render() {
