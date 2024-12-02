@@ -10,12 +10,8 @@ import handleCreateGame from "./handleCreateGame";
 
 export default class CreateForm extends React.PureComponent {
   render() {
-    const {
-      onChangePlayerName,
-      onCreateGameError,
-      onCreateGameSuccess,
-      playerName,
-    } = this.props;
+    const { onChangePlayerName, onGameError, onGameSuccess, playerName } =
+      this.props;
 
     const handleCreateGameClick = async () => {
       const { playerName } = this.props;
@@ -42,8 +38,8 @@ export default class CreateForm extends React.PureComponent {
         />
         <Async
           deferFn={handleCreateGameClick}
-          onResolve={onCreateGameSuccess}
-          onReject={onCreateGameError}
+          onResolve={(gameRoom) => onGameSuccess(gameRoom, true)}
+          onReject={onGameError}
         >
           {({ isPending, run }) => (
             <IconButton

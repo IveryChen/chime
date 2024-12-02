@@ -8,7 +8,8 @@ import socketService from "../../services/socket";
 import { withRouter } from "../../utils/withRouter";
 
 import LobbyView from "./LobbyView";
-import Playlist from "./PlaylistView";
+import PlaylistView from "./PlaylistView";
+
 class Game extends React.PureComponent {
   state = { gameStage: "lobby" };
 
@@ -71,16 +72,18 @@ class Game extends React.PureComponent {
 
   renderPlaylist = ({ data: playlists, isPending }) => {
     const { roomCode } = this.props.params;
-    const { rooms } = this.props;
+    const { rooms, user } = this.props;
     const room = rooms[roomCode];
     const { players } = room;
+    const { player } = user;
 
     return (
-      <Playlist
+      <PlaylistView
         isPending={isPending}
         onChangeGameStage={this.onChangeGameStage}
         players={players}
         playlists={playlists}
+        playerId={player.id}
         roomCode={roomCode}
       />
     );

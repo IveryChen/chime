@@ -1,7 +1,7 @@
 import Baobab from "baobab";
 
 export default new Baobab({
-  user: null,
+  user: { player: null },
   games: {
     rooms: {},
     /*

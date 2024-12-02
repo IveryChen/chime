@@ -13,8 +13,8 @@ export default class JoinForm extends React.PureComponent {
     const {
       onChangePlayerName,
       onChangeRoomCode,
-      onJoinGameError,
-      onJoinGameSuccess,
+      onGameError,
+      onGameSuccess,
       playerName,
       roomCode,
     } = this.props;
@@ -51,8 +51,8 @@ export default class JoinForm extends React.PureComponent {
         />
         <Async
           deferFn={handleJoinGameClick}
-          onResolve={onJoinGameSuccess}
-          onReject={onJoinGameError}
+          onResolve={(gameRoom) => onGameSuccess(gameRoom, false)}
+          onReject={onGameError}
         >
           {({ isPending, run }) => (
             <IconButton
