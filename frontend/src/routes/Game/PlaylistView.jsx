@@ -10,7 +10,7 @@ import Text from "../../components/Text";
 
 export default class Playlist extends React.PureComponent {
   render() {
-    const { players, playlists, roomCode } = this.props;
+    const { players, playlists } = this.props;
 
     return (
       <>
@@ -21,7 +21,7 @@ export default class Playlist extends React.PureComponent {
           display="grid"
           gap="16px"
           gridTemplateRows="auto 1fr auto"
-          py="16px"
+          overflow="hidden"
         >
           <Box
             display="grid"
@@ -42,7 +42,7 @@ export default class Playlist extends React.PureComponent {
                     borderRadius="50%"
                     borderStyle="solid"
                     borderWidth={1}
-                    size={42}
+                    size={36}
                   />
                 )}
                 <Text fontSize="12px">{player.name}</Text>
@@ -50,22 +50,20 @@ export default class Playlist extends React.PureComponent {
             ))}
           </Box>
           <Text
-            fontSize="32px"
+            fontSize={24}
             fontWeight="bold"
             justifySelf="center"
             letterSpacing="-1px"
+            lineHeight={1}
           >
             SELECT PLAYLISTS
-            <Text
-              fontSize="24px"
-              fontWeight="bold"
-              justifySelf="center"
-              lineHeight={1}
-            >
-              {roomCode}
-            </Text>
           </Text>
-          <Box display="grid" gap="16px" gridTemplateColumns="1fr 1fr">
+          <Box
+            display="grid"
+            gap="16px"
+            gridTemplateColumns="1fr 1fr"
+            overflow="auto"
+          >
             {map(playlists, (data) => {
               if (!data) {
                 return;
@@ -86,14 +84,19 @@ export default class Playlist extends React.PureComponent {
                       width="100%"
                     />
                   )}
-                  <Text textTransform="uppercase">{name}</Text>
-                  <Text fontWeight="regular">{owner.display_name}</Text>
+                  <Text fontSize={12} lineHeight={1} textTransform="uppercase">
+                    {name}
+                  </Text>
+                  <Text fontSize={10} fontWeight="regular" lineHeight={1}>
+                    {owner.display_name}
+                  </Text>
                 </Box>
               );
             })}
           </Box>
           <IconButton
             bg={theme.blue}
+            fontSize={16}
             justifySelf="end"
             label="DONE"
             onClick={this.onClick}

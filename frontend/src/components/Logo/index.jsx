@@ -9,10 +9,10 @@ export default class Logo extends Component {
   render() {
     return (
       <Box cursor="pointer" onClick={this.onClick}>
-        <Text fontFamily="Oswald" fontSize="20px" lineHeight={1}>
+        <Text fontFamily="Oswald" fontSize={16} lineHeight={1}>
           CASSETTE
         </Text>
-        <Text fontSize="18px">盒式磁帶</Text>
+        <Text fontSize={16}>盒式磁帶</Text>
       </Box>
     );
   }

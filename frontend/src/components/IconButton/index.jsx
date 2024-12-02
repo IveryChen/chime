@@ -17,11 +17,12 @@ export default class IconButton extends React.PureComponent {
         fontFamily="Bebas Neue"
         fontSize="24px"
         gap="6px"
-        gridTemplateColumns="auto 1fr"
+        gridTemplateColumns={Icon ? "auto 1fr" : "1fr"}
         lineHeight={1}
         onClick={onClick}
         opacity={disabled ? 0.6 : 1}
-        p="8px"
+        px="8px"
+        py="6px"
         {...restProps}
       >
         {label}

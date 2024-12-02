@@ -18,7 +18,7 @@ class Header extends Component {
             borderRadius="50%"
             borderStyle="solid"
             borderWidth={1}
-            size={48}
+            size={42}
             src={user.images[0].url}
           />
         )}
