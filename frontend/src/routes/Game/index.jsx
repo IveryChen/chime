@@ -1,13 +1,14 @@
 import { branch } from "baobab-react/higher-order";
 import React from "react";
+import { Async } from "react-async";
 
+import fetchPlaylists from "../../api/fetchPlaylists";
 import Box from "../../components/Box";
 import socketService from "../../services/socket";
 import { withRouter } from "../../utils/withRouter";
 
 import LobbyView from "./LobbyView";
 import Playlist from "./PlaylistView";
-
 class Game extends React.PureComponent {
   state = { gameStage: "lobby" };
 
@@ -57,15 +58,33 @@ class Game extends React.PureComponent {
           />
         )}
         {gameStage === "playlist" && (
-          <Playlist
-            onChangeGameStage={this.onChangeGameStage}
-            players={players}
-            roomCode={roomCode}
-          />
+          <Async
+            promiseFn={fetchPlaylists}
+            spotifyToken={localStorage.getItem("spotify_access_token")}
+          >
+            {this.renderPlaylist}
+          </Async>
         )}
       </Box>
     );
   }
+
+  renderPlaylist = ({ data: playlists, isPending }) => {
+    const { roomCode } = this.props.params;
+    const { rooms } = this.props;
+    const room = rooms[roomCode];
+    const { players } = room;
+
+    return (
+      <Playlist
+        isPending={isPending}
+        onChangeGameStage={this.onChangeGameStage}
+        players={players}
+        playlists={playlists}
+        roomCode={roomCode}
+      />
+    );
+  };
 }
 
 export default withRouter(
