@@ -8,7 +8,7 @@ class Player(BaseModel):
     socket_id: Optional[str] = None
     id: Optional[str] = None
     avatar: Optional[str] = None
-    selected_playlists: List[str] = []
+    selected_playlists: Optional[List[str]] = None
 
 class GameRoom(BaseModel):
     room_code: str
@@ -16,10 +16,16 @@ class GameRoom(BaseModel):
     players: List[Player]
     status: str = "waiting"  # waiting, playing, finished
 
+# perhaps this should be player_id
 class JoinRoomRequest(BaseModel):
     room_code: str
     player_name: str
     spotify_token: str
+
+class PlaylistSelectionRequest(BaseModel):
+    room_code: str
+    player_id: str
+    selected_playlists: List[str]
 
 class CreateRoomRequest(BaseModel):
     host_name: str = Field(alias="hostName")
