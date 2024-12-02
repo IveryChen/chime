@@ -1,6 +1,4 @@
-const API_URL = import.meta.env.PROD
-  ? "https://chime-6r3r.onrender.com/api"
-  : "http://localhost:8000/api";
+import API_URL from "../constants/apiUrl";
 
 export const apiClient = {
   async request(endpoint, options = {}) {
