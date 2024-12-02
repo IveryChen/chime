@@ -8,7 +8,26 @@ import IconButton from "../../components/IconButton";
 import Logo from "../../components/Logo";
 import Text from "../../components/Text";
 
+import handleSubmitSelection from "./handleSubmitSelection";
+
 export default class Playlist extends React.PureComponent {
+  state = {
+    selectedPlaylists: [],
+  };
+
+  onChangeSelectedPlaylists = (playlistId) => {
+    this.setState((prevState) => ({
+      selectedPlaylists: [...prevState.selectedPlaylists, playlistId],
+    }));
+  };
+
+  handleSubmit = () => {
+    const { roomCode, playerId } = this.props;
+    const { selectedPlaylists } = this.state;
+
+    return handleSubmitSelection({ roomCode, playerId, selectedPlaylists });
+  };
+
   render() {
     const { players, playlists } = this.props;
 
@@ -72,7 +91,7 @@ export default class Playlist extends React.PureComponent {
               const { images, name, owner } = data;
 
               return (
-                <Box>
+                <Box key={name}>
                   {images && (
                     <Box
                       alt="Profile"
@@ -99,7 +118,7 @@ export default class Playlist extends React.PureComponent {
             fontSize={16}
             justifySelf="end"
             label="DONE"
-            onClick={this.onClick}
+            onClick={this.handleSubmit}
           />
         </Box>
       </>
