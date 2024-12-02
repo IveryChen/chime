@@ -9,9 +9,7 @@ import IconButton from "../../components/IconButton";
 import Logo from "../../components/Logo";
 import Text from "../../components/Text";
 
-export default class LobbyView extends React.PureComponent {
-  onClick = () => this.props.onChangeGameStage("playlist");
-
+export default class Playlist extends React.PureComponent {
   render() {
     const { players, roomCode } = this.props;
 
@@ -21,15 +19,11 @@ export default class LobbyView extends React.PureComponent {
           <Logo />
         </Header>
         <Box display="grid" gridTemplateRows="auto 1fr auto">
-          <Text
-            fontSize="42px"
-            fontStyle="italic"
-            fontWeight="bold"
-            justifySelf="center"
+          <Box
+            display="grid"
+            gap="16px"
+            gridTemplateColumns="repeat(auto-fill, minmax(1fr))"
           >
-            {roomCode}
-          </Text>
-          <Box display="flex" gap="16px" flexWrap="wrap">
             {map(players, (player) => (
               <Box
                 alignItems="center"
@@ -44,14 +38,29 @@ export default class LobbyView extends React.PureComponent {
                     borderRadius="50%"
                     borderStyle="solid"
                     borderWidth={1}
-                    size={64}
+                    size={42}
                   />
                 )}
-                <Text fontSize="20px">{player.name}</Text>
-                {player.is_host && <Text fontSize="16px">(Host)</Text>}
+                <Text fontSize="12px">{player.name}</Text>
               </Box>
             ))}
           </Box>
+          <Text
+            fontSize="36px"
+            fontWeight="bold"
+            justifySelf="center"
+            letterSpacing="-1px"
+          >
+            SELECT PLAYLISTS
+            <Text
+              fontSize="24px"
+              fontWeight="bold"
+              justifySelf="center"
+              lineHeight={1}
+            >
+              {roomCode}
+            </Text>
+          </Text>
           <IconButton
             bg={theme.blue}
             Icon={LiaArrowRightSolid}

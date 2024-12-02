@@ -2,12 +2,11 @@ import { branch } from "baobab-react/higher-order";
 import React from "react";
 
 import Box from "../../components/Box";
-import Header from "../../components/Header";
-import Logo from "../../components/Logo";
 import socketService from "../../services/socket";
 import { withRouter } from "../../utils/withRouter";
 
 import LobbyView from "./LobbyView";
+import Playlist from "./PlaylistView";
 
 class Game extends React.PureComponent {
   state = { gameStage: "lobby" };
@@ -50,11 +49,15 @@ class Game extends React.PureComponent {
 
     return (
       <Box display="grid" gridTemplateRows="auto 1fr" height="100%">
-        <Header>
-          <Logo />
-        </Header>
         {gameStage === "lobby" && (
           <LobbyView
+            onChangeGameStage={this.onChangeGameStage}
+            players={players}
+            roomCode={roomCode}
+          />
+        )}
+        {gameStage === "playlist" && (
+          <Playlist
             onChangeGameStage={this.onChangeGameStage}
             players={players}
             roomCode={roomCode}
