@@ -47,3 +47,24 @@ def register_sio_events(sio):
             await sio.emit('players-update', {'players': [p.dict() for p in room.players]}, room=room_code)
             if len(room.players) == 0:
                 del game_service.rooms[room_code]
+
+    @sio.event
+    async def select_playlists(sid, data):
+        room_code = data['roomCode']
+        player_id = data['playerId']
+        playlist_ids = data['playlistIds']
+
+        room = game_service.get_room(room_code)
+        for player in room.players:
+            if player.id == player_id:
+                player.selected_playlists = playlist_ids
+                break
+
+        # Broadcast updated player status to all players in the room
+        await sio.emit('players-update', {'players': [p.dict() for p in room.players]}, room=room_code)
+
+        # Check if all players have selected playlists
+        all_selected = all(player.selected_playlists for player in room.players)
+        if all_selected:
+            room.status = "playing"
+            await sio.emit('game-status-update', {'status': 'playing'}, room=room_code)
