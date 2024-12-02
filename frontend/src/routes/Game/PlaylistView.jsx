@@ -1,6 +1,5 @@
 import { map } from "lodash";
 import React from "react";
-import { LiaArrowRightSolid } from "react-icons/lia";
 
 import theme from "../../constants/colours";
 import Box from "../../components/Box";
@@ -11,14 +10,19 @@ import Text from "../../components/Text";
 
 export default class Playlist extends React.PureComponent {
   render() {
-    const { players, roomCode } = this.props;
+    const { players, playlists, roomCode } = this.props;
 
     return (
       <>
         <Header>
           <Logo />
         </Header>
-        <Box display="grid" gridTemplateRows="auto 1fr auto">
+        <Box
+          display="grid"
+          gap="16px"
+          gridTemplateRows="auto 1fr auto"
+          py="16px"
+        >
           <Box
             display="grid"
             gap="16px"
@@ -46,7 +50,7 @@ export default class Playlist extends React.PureComponent {
             ))}
           </Box>
           <Text
-            fontSize="36px"
+            fontSize="32px"
             fontWeight="bold"
             justifySelf="center"
             letterSpacing="-1px"
@@ -61,11 +65,37 @@ export default class Playlist extends React.PureComponent {
               {roomCode}
             </Text>
           </Text>
+          <Box display="grid" gap="16px" gridTemplateColumns="1fr 1fr">
+            {map(playlists, (data) => {
+              if (!data) {
+                return;
+              }
+
+              const { images, name, owner } = data;
+
+              return (
+                <Box>
+                  {images && (
+                    <Box
+                      alt="Profile"
+                      as="img"
+                      aspectRatio={1}
+                      borderStyle="solid"
+                      borderWidth={1}
+                      src={images[0].url}
+                      width="100%"
+                    />
+                  )}
+                  <Text textTransform="uppercase">{name}</Text>
+                  <Text fontWeight="regular">{owner.display_name}</Text>
+                </Box>
+              );
+            })}
+          </Box>
           <IconButton
             bg={theme.blue}
-            Icon={LiaArrowRightSolid}
             justifySelf="end"
-            label="START"
+            label="DONE"
             onClick={this.onClick}
           />
         </Box>
