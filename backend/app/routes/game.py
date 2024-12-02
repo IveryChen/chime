@@ -1,6 +1,7 @@
 from fastapi import APIRouter, HTTPException
 from app.schemas.game import CreateRoomRequest, JoinRoomRequest, GameRoom
 from app.services.game import game_service
+from typing import List
 
 router = APIRouter()
 
@@ -34,3 +35,16 @@ async def get_room(room_code: str) -> GameRoom:
     if room_code not in game_service.rooms:
         raise HTTPException(status_code=404, detail="Room not found")
     return game_service.rooms[room_code]
+
+@router.post("/select-playlists/{room_code}")
+async def select_playlists(room_code: str, player_id: str, playlist_ids: List[str]):
+    room = game_service.get_room(room_code)
+    for player in room.players:
+        if player.id == player_id:
+            player.selected_playlists = playlist_ids
+            break
+    # Check if all players have selected playlists
+    all_selected = all(player.selected_playlists for player in room.players)
+    if all_selected:
+        room.status = "playing"
+    return {"status": "success"}
