@@ -8,6 +8,7 @@ class Player(BaseModel):
     socket_id: Optional[str] = None
     id: Optional[str] = None
     avatar: Optional[str] = None
+    selected_playlists: List[str] = []
 
 class GameRoom(BaseModel):
     room_code: str
