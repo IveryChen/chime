@@ -6,6 +6,7 @@ import Box from "../../components/Box";
 import Header from "../../components/Header";
 import IconButton from "../../components/IconButton";
 import Logo from "../../components/Logo";
+import Players from "../../components/Players";
 import Playlist from "../../components/Playlist";
 import Text from "../../components/Text";
 
@@ -28,7 +29,15 @@ export default class PlaylistView extends React.PureComponent {
     const { playerId, roomCode } = this.props;
     const { selectedPlaylists } = this.state;
 
-    return handleSubmitSelection({ playerId, roomCode, selectedPlaylists });
+    const status = handleSubmitSelection({
+      playerId,
+      roomCode,
+      selectedPlaylists,
+    });
+
+    console.log(status);
+
+    this.props.onChangeGameStage("game");
   };
 
   render() {
@@ -46,32 +55,7 @@ export default class PlaylistView extends React.PureComponent {
           gridTemplateRows="auto 1fr auto"
           overflow="hidden"
         >
-          <Box
-            display="grid"
-            gap="16px"
-            gridTemplateColumns="repeat(auto-fill, minmax(1fr))"
-          >
-            {map(players, (player) => (
-              <Box
-                alignItems="center"
-                display="flex"
-                flexDirection="column"
-                key={player.id}
-              >
-                {player.avatar && (
-                  <Box
-                    alt={player.name}
-                    bg={player.avatar}
-                    borderRadius="50%"
-                    borderStyle="solid"
-                    borderWidth={1}
-                    size={36}
-                  />
-                )}
-                <Text fontSize="12px">{player.name}</Text>
-              </Box>
-            ))}
-          </Box>
+          <Players data={players} />
           <Text
             fontSize={24}
             fontWeight="bold"

@@ -7,6 +7,7 @@ import Box from "../../components/Box";
 import socketService from "../../services/socket";
 import { withRouter } from "../../utils/withRouter";
 
+import GameView from "./GameView";
 import LobbyView from "./LobbyView";
 import PlaylistView from "./PlaylistView";
 
@@ -65,6 +66,13 @@ class Game extends React.PureComponent {
           >
             {this.renderPlaylist}
           </Async>
+        )}
+        {gameStage === "game" && (
+          <GameView
+            onChangeGameStage={this.onChangeGameStage}
+            players={players}
+            roomCode={roomCode}
+          />
         )}
       </Box>
     );
