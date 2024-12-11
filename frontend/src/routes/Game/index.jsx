@@ -16,17 +16,16 @@ class Game extends React.PureComponent {
 
   componentDidMount() {
     const { roomCode } = this.props.params;
-    const { rooms } = this.props;
-    const room = rooms[roomCode];
+    const { currentRoom } = this.props;
 
     socketService.connect();
 
     socketService.joinRoom(roomCode, {
-      id: room.host.id,
-      name: room.host.name,
-      avatar: room.host.avatar,
+      id: currentRoom.host.id,
+      name: currentRoom.host.name,
+      avatar: currentRoom.host.avatar,
       spotify_token: localStorage.getItem("spotify_access_token"),
-      is_host: room.host.is_host,
+      is_host: currentRoom.host.is_host,
     });
   }
 
@@ -40,15 +39,14 @@ class Game extends React.PureComponent {
 
   render() {
     const { roomCode } = this.props.params;
-    const { rooms } = this.props;
+    const { currentRoom } = this.props;
     const { gameStage } = this.state;
-    const room = rooms[roomCode];
 
-    if (!room) {
+    if (!currentRoom) {
       return null;
     }
 
-    const { players } = room;
+    const { players } = currentRoom;
 
     return (
       <Box display="grid" gridTemplateRows="auto 1fr" height="100%">
@@ -80,9 +78,8 @@ class Game extends React.PureComponent {
 
   renderPlaylist = ({ data: playlists, isPending }) => {
     const { roomCode } = this.props.params;
-    const { rooms, user } = this.props;
-    const room = rooms[roomCode];
-    const { players } = room;
+    const { currentRoom, user } = this.props;
+    const { players } = currentRoom;
     const { player } = user;
 
     return (
@@ -102,7 +99,6 @@ export default withRouter(
   branch(
     {
       currentRoom: ["games", "currentRoom"],
-      rooms: ["games", "rooms"],
       user: ["user"],
     },
     Game

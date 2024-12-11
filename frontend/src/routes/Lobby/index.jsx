@@ -29,7 +29,6 @@ class Lobby extends Component {
 
   onGameError = (error) => this.setState({ error: error.message });
 
-  //TODO: I doubt i need all this information
   onGameSuccess = (gameRoom, isHost = false) => {
     const playerData = isHost
       ? gameRoom.host
@@ -43,19 +42,19 @@ class Lobby extends Component {
       avatar: playerData.avatar,
     };
 
-    state.select("games", "rooms", gameRoom.roomCode).set({
-      roomCode: gameRoom.roomCode,
+    state.select("games", "currentRoom").set({
       host: gameRoom.host,
-      players: gameRoom.players,
-      status: "waiting",
       gameState: {
+        currentPlayer: null,
         currentRound: 1,
+        roundState: {},
         scores: {},
-        currentPlayer: currentPlayerData.name,
+        timestamp: null,
       },
+      players: gameRoom.players,
+      roomCode: gameRoom.roomCode,
+      status: "waiting",
     });
-
-    state.select("games", "currentRoom").set(gameRoom.roomCode);
 
     state.select("user", "player").set(currentPlayerData);
 

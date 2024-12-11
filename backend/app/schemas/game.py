@@ -1,5 +1,6 @@
 from pydantic import BaseModel, Field
-from typing import List, Optional
+from typing import List, Dict, Optional
+from datetime import datetime
 
 class Player(BaseModel):
     name: str
@@ -10,11 +11,19 @@ class Player(BaseModel):
     avatar: Optional[str] = None
     selected_playlists: Optional[List[str]] = None
 
+class GameState(BaseModel):
+    current_round: int
+    scores: Dict[str, int]  # player_id -> score
+    current_player: str     # player_id
+    round_state: dict      # flexible dict for round-specific state
+    timestamp: datetime
+
 class GameRoom(BaseModel):
     room_code: str
     host: Player
     players: List[Player]
     status: str = "waiting"  # waiting, playing, finished
+    game_state: Optional[GameState] = None
 
 # perhaps this should be player_id
 class JoinRoomRequest(BaseModel):
