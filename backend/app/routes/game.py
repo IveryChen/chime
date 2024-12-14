@@ -29,20 +29,3 @@ async def join_room(request: JoinRoomRequest) -> GameRoom:
         raise HTTPException(status_code=404, detail=str(e))
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
-
-@router.post("/select-playlists/{room_code}")
-async def select_playlists(room_code: str, request: PlaylistSelectionRequest) -> Dict[str, str]:
-    player_id = request.player_id
-    selected_playlists = request.selected_playlists
-
-    room = game_service.get_room(room_code)
-
-    for player in room.players:
-        if player.id == player_id:
-            player.selected_playlists = selected_playlists
-            break
-    # Check if all players have selected playlists
-    all_selected = all(player.selected_playlists for player in room.players)
-    if all_selected:
-        room.status = "playing"
-    return {"status": "success"}

@@ -55,16 +55,31 @@ def register_sio_events(sio):
         playlist_ids = data['playlistIds']
 
         room = game_service.get_room(room_code)
+
         for player in room.players:
+            print(f"Player {player.id}: selected_playlists = {player.selected_playlists}")
+
             if player.id == player_id:
                 player.selected_playlists = playlist_ids
+
+                await sio.emit('playlist_submitted', {
+                    'player_id': player_id,
+                    'submitted': True
+                }, room=room_code)
                 break
+
+        all_selected = all(player.selected_playlists for player in room.players)
+        # this line is not printing ??
+        print(f"\nAll selected check: {all_selected}")
+        print(f"Room status before check: {room.status}")
+
+        if all_selected:
+            room.status = "playing"
+            print(f"Room status after check: {room.status}")
+            # Emit that everyone has submitted and game can start
+            await sio.emit('all_playlists_submitted', {
+                'status': 'success'
+            }, room=room_code)
 
         # Broadcast updated player status to all players in the room
         await sio.emit('players-update', {'players': [p.dict() for p in room.players]}, room=room_code)
-
-        # Check if all players have selected playlists
-        all_selected = all(player.selected_playlists for player in room.players)
-        if all_selected:
-            room.status = "playing"
-            await sio.emit('game-status-update', {'status': 'playing'}, room=room_code)
