@@ -6,7 +6,7 @@ import Text from "../../components/Text";
 
 export default class Players extends React.PureComponent {
   render() {
-    const { data } = this.props;
+    const { data, submittedPlayers = new Set() } = this.props;
 
     return (
       <Box
@@ -20,6 +20,8 @@ export default class Players extends React.PureComponent {
             display="flex"
             flexDirection="column"
             key={player.id}
+            opacity={submittedPlayers.has(player.id) ? 1 : 0.5}
+            transition="opacity 0.2s"
           >
             {player.avatar && (
               <Box
