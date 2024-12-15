@@ -27,7 +27,6 @@ const StyledBox = styled(Box)`
 
   @media (min-width: 768px) {
     grid-template-columns: auto 1fr;
-    height: 100%;
 
     > :first-of-type {
       order: 2;
@@ -57,7 +56,7 @@ const StyledCassette = styled(Box)`
 `;
 
 const StyledHeading = styled(Text)`
-  font-size: 64px;
+  font-size: 48px;
   width: 80%;
 
   @media (min-width: 768px) {
@@ -87,7 +86,7 @@ class Home extends React.PureComponent {
 
   render() {
     return (
-      <StyledBox display="grid" gap="32px">
+      <StyledBox display="grid" gap="16px">
         <StyledBar
           bg="#F7FFF9"
           borderColor="black"
@@ -105,7 +104,7 @@ class Home extends React.PureComponent {
             盒式磁帶
           </StyledTextChinese>
         </StyledBar>
-        <Box display="grid" gap="32px" height="100%">
+        <Box display="grid" gap="16px">
           <StyledHeading fontWeight="bold" letterSpacing="-2px" lineHeight={1}>
             YOUR GO-TO SPOTIFY MUSIC GAME.
           </StyledHeading>

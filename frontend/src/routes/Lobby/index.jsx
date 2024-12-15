@@ -79,7 +79,7 @@ class Lobby extends Component {
         <Header>
           <Logo />
         </Header>
-        <Box display="grid" justifyItems="center" gap="64px">
+        <Box display="grid" justifyItems="center" gap="32px">
           <Text
             fontSize={40}
             letterSpacing="-2px"
