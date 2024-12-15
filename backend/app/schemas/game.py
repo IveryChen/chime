@@ -14,7 +14,7 @@ class Player(BaseModel):
 class GameState(BaseModel):
     current_round: int
     scores: Dict[str, int]  # player_id -> score
-    current_player: str     # player_id
+    current_player: Player
     round_state: dict      # flexible dict for round-specific state
     timestamp: datetime
 
@@ -41,3 +41,6 @@ class CreateRoomRequest(BaseModel):
 
     class Config:
         populate_by_name = True
+        json_encoders = {
+            datetime: lambda v: v.strftime('%Y-%m-%d %H:%M:%S')
+        }
