@@ -8,13 +8,13 @@ import { theme } from "../../constants/constants";
 export default class PlaylistTitle extends React.PureComponent {
   onClick = () => {
     this.props.run();
-    this.props.onChangePlaylistTracks(this.props.data.id);
+    this.props.onChangeCurrentPlaylistId(this.props.data.id);
   };
 
   render() {
-    const { data, disabled, playlistTracks } = this.props;
+    const { data, disabled, currentPlaylistId } = this.props;
     const { id, name, owner } = data;
-    const isSelected = playlistTracks === id;
+    const isSelected = currentPlaylistId === id;
     const color = isSelected ? theme.blue : disabled ? "gray" : "black";
 
     return (
