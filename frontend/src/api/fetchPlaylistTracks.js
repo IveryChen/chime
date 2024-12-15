@@ -1,5 +1,6 @@
-export default async function fetchPlaylistTracks(props, abortController) {
-  const { playlistId, spotifyToken } = props;
+export default async function fetchPlaylistTracks(__, args, abortController) {
+  const { playlistId, spotifyToken } = args;
+
   const response = await fetch(
     `https://api.spotify.com/v1/playlists/${playlistId}/tracks`,
     {
