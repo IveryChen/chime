@@ -1,5 +1,7 @@
 from app.services.game import game_service
-from app.schemas.game import Player
+from app.schemas.game import Player, GameState
+from datetime import datetime
+import random
 
 def register_sio_events(sio):
     @sio.event
@@ -86,3 +88,33 @@ def register_sio_events(sio):
 
         # Broadcast updated player status to all players in the room
         await sio.emit('players-update', {'players': [p.dict() for p in room.players]}, room=room_code)
+
+    @sio.event
+    async def initialize_game(sid, data):
+        try:
+            room_code = data['roomCode']
+            room = game_service.get_room(room_code)
+
+            if not room.game_state:
+                random.shuffle(room.players)
+                current_player = room.players[0]
+
+                room.game_state = GameState(
+                    current_round=1,
+                    scores={p.id: 0 for p in room.players},
+                    current_player=current_player,
+                    round_state={},
+                    timestamp=datetime.now()
+                )
+
+            game_state_dict = room.game_state.dict()
+            game_state_dict['timestamp'] = game_state_dict['timestamp'].isoformat()
+
+            await sio.emit('game_state_update', {
+                'game_state': game_state_dict
+            }, room=room_code)
+
+        except Exception as e:
+            print(f"Error in initialize_game: {str(e)}")
+            import traceback
+            traceback.print_exc()
