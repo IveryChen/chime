@@ -11,6 +11,10 @@ import socketService from "../../services/socket";
 import GameStatus from "./GameStatus";
 
 export default class GameView extends React.PureComponent {
+  state = {
+    gameState: null,
+  };
+
   componentDidMount() {
     const { roomCode } = this.props;
 
@@ -23,18 +27,18 @@ export default class GameView extends React.PureComponent {
   }
 
   handleGameStateUpdate = (data) => {
-    const { game_state } = data;
-
-    console.log("Received game state:", game_state);
+    const { gameState } = data;
+    this.setState({ gameState });
   };
 
   render() {
     const { players, roomCode } = this.props;
+    const { gameState } = this.state;
 
     return (
       <>
         <Header>
-          <GameStatus roomCode={roomCode} />
+          <GameStatus gameState={gameState} roomCode={roomCode} />
         </Header>
         <Box display="grid" gridTemplateRows="1fr auto">
           <Players data={players} />
