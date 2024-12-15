@@ -2,7 +2,7 @@ import { map } from "lodash";
 import React from "react";
 import { LiaArrowRightSolid } from "react-icons/lia";
 
-import theme from "../../constants/colours";
+import { theme } from "../../constants/constants";
 import Box from "../../components/Box";
 import Header from "../../components/Header";
 import IconButton from "../../components/IconButton";

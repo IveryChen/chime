@@ -1,7 +1,7 @@
 import React from "react";
 import { Async } from "react-async";
 
-import theme from "../../constants/colours";
+import { theme } from "../../constants/constants";
 import Box from "../../components/Box";
 import IconButton from "../../components/IconButton";
 import Input from "../../components/Input";

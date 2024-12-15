@@ -2,7 +2,7 @@ import { includes, map } from "lodash";
 import React from "react";
 import { Async } from "react-async";
 
-import theme from "../../constants/colours";
+import { theme } from "../../constants/constants";
 import Box from "../../components/Box";
 import Header from "../../components/Header";
 import IconButton from "../../components/IconButton";

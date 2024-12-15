@@ -3,7 +3,7 @@ import React from "react";
 import { FaSpotify } from "react-icons/fa6";
 
 import cassette_temp from "../../assets/cassette_temp.png";
-import theme from "../../constants/colours";
+import { theme } from "../../constants/constants";
 import Box from "../../components/Box";
 import Text from "../../components/Text";
 import { withRouter } from "../../utils/withRouter";
