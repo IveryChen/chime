@@ -48,15 +48,10 @@ class SocketService {
   }
 
   on(event, handler) {
-    console.log(`Registering handler for ${event}`, handler);
     this.eventHandlers.set(event, handler);
 
     if (this.isConnected && this.socket) {
-      console.log(`Socket is connected, attaching handler for ${event}`);
-      this.socket.on(event, (...args) => {
-        console.log(`Event ${event} received with args:`, args);
-        handler(...args);
-      });
+      this.socket.on(event, handler);
     }
   }
 

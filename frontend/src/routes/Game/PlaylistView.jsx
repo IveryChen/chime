@@ -20,13 +20,11 @@ export default class PlaylistView extends React.PureComponent {
   };
 
   componentDidMount() {
-    console.log("PlaylistView mounting");
-    const boundHandler = this.handleAllPlaylistsSubmitted.bind(this);
-    socketService.on("all_playlists_submitted", boundHandler);
+    socketService.on(
+      "all_playlists_submitted",
+      this.handleAllPlaylistsSubmitted
+    );
     socketService.on("playlist_submitted", this.handlePlaylistSubmitted);
-
-    // Debug existing handlers
-    console.log("Current handlers:", socketService.eventHandlers);
   }
 
   componentWillUnmount() {
