@@ -30,7 +30,6 @@ class SocketService {
       this.isConnected = true;
 
       if (this.pendingRoomJoin) {
-        console.log("Executing pending room join");
         const { roomCode, player } = this.pendingRoomJoin;
         this.joinRoom(roomCode, player);
         this.pendingRoomJoin = null;
@@ -44,10 +43,6 @@ class SocketService {
     this.socket.on("disconnect", (reason) => {
       console.log("Disconnected:", reason);
       this.isConnected = false;
-    });
-
-    this.socket.onAny((eventName, ...args) => {
-      console.log(`Socket received event: ${eventName}`, args);
     });
 
     this.socket.on("players-update", ({ players }) => {
@@ -83,10 +78,6 @@ class SocketService {
     }
 
     this.socket.emit("join-room", { roomCode, player });
-
-    this.socket.once("players-update", (data) => {
-      console.log(`Joined room ${roomCode}, received players update:`, data);
-    });
   }
 
   leaveRoom(roomCode) {
