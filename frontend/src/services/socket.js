@@ -10,6 +10,7 @@ class SocketService {
     this.socket = null;
     this.isConnected = false;
     this.eventHandlers = new Map();
+    this.pendingRoomJoin = null;
   }
 
   connect() {
@@ -27,6 +28,13 @@ class SocketService {
     this.socket.on("connect", () => {
       console.log("Connected to socket server");
       this.isConnected = true;
+
+      if (this.pendingRoomJoin) {
+        console.log("Executing pending room join");
+        const { roomCode, player } = this.pendingRoomJoin;
+        this.joinRoom(roomCode, player);
+        this.pendingRoomJoin = null;
+      }
 
       this.eventHandlers.forEach((handler, event) => {
         this.socket.on(event, handler);
@@ -69,8 +77,16 @@ class SocketService {
   }
 
   joinRoom(roomCode, player) {
-    if (!this.socket) return;
+    if (!this.socket || !this.isConnected) {
+      this.pendingRoomJoin = { roomCode, player };
+      return;
+    }
+
     this.socket.emit("join-room", { roomCode, player });
+
+    this.socket.once("players-update", (data) => {
+      console.log(`Joined room ${roomCode}, received players update:`, data);
+    });
   }
 
   leaveRoom(roomCode) {
