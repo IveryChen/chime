@@ -1,23 +1,23 @@
 import { includes } from "lodash";
 import React from "react";
-import { FaRegEye } from "react-icons/fa6";
 import { MdCheck } from "react-icons/md";
 
 import Box from "../../components/Box";
-import Text from "../../components/Text";
+
+import PlaylistTitle from "./PlaylistTitle";
 
 export default class Playlist extends React.PureComponent {
   onClick = () => this.props.onChangeSelectedPlaylists(this.props.data.id);
 
   render() {
     const { data, selectedPlaylists } = this.props;
-    const { id, images, name, owner } = data;
+    const { id, images } = data;
     const isSelected = includes(selectedPlaylists, id);
 
     return (
-      <Box onClick={this.onClick}>
+      <Box>
         {images && (
-          <Box position="relative">
+          <Box onClick={this.onClick} position="relative">
             <Box
               alt="Profile"
               as="img"
@@ -47,17 +47,7 @@ export default class Playlist extends React.PureComponent {
             )}
           </Box>
         )}
-        <Box display="grid" gridTemplateColumns="1fr auto">
-          <Box>
-            <Text fontSize={12} lineHeight={1} textTransform="uppercase">
-              {name}
-            </Text>
-            <Text fontSize={10} fontWeight="regular" lineHeight={1}>
-              {owner.display_name}
-            </Text>
-          </Box>
-          <Box as={FaRegEye} size={12} />
-        </Box>
+        <PlaylistTitle data={data} />
       </Box>
     );
   }
