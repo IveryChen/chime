@@ -14,6 +14,7 @@ import socketService from "../../services/socket";
 
 export default class PlaylistView extends React.PureComponent {
   state = {
+    playlistDetails: null,
     selectedPlaylists: [],
     status: null,
     submittedPlayers: new Set(),
@@ -64,6 +65,10 @@ export default class PlaylistView extends React.PureComponent {
         ? prev.selectedPlaylists.filter((id) => id !== playlistId)
         : [...prev.selectedPlaylists, playlistId],
     }));
+  };
+
+  onChangePlaylistDetails = (playlistDetails) => {
+    this.setState({ playlistDetails });
   };
 
   submitPlaylists = async () => {
@@ -117,8 +122,8 @@ export default class PlaylistView extends React.PureComponent {
 
   renderBody = ({ isPending, run }) => {
     const { playlists, players, playerId } = this.props;
-    const { selectedPlaylists } = this.state;
-    const { submittedPlayers, status } = this.state;
+    const { playlistDetails, selectedPlaylists, submittedPlayers, status } =
+      this.state;
     const hasSubmitted = submittedPlayers.has(playerId);
 
     return (
@@ -146,7 +151,9 @@ export default class PlaylistView extends React.PureComponent {
               <Playlist
                 data={data}
                 key={index}
+                onChangePlaylistDetails={this.onChangePlaylistDetails}
                 onChangeSelectedPlaylists={this.onChangeSelectedPlaylists}
+                playlistDetails={playlistDetails}
                 selectedPlaylists={selectedPlaylists}
               />
             );

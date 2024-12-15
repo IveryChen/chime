@@ -61,9 +61,17 @@ export default class Playlist extends React.PureComponent {
   }
 
   renderBody = ({ isPending, data: tracksData, run }) => {
-    const { data } = this.props;
+    const { data, onChangePlaylistDetails, playlistDetails } = this.props;
     console.log("tracksData", tracksData);
 
-    return <PlaylistTitle data={data} run={run} />;
+    return (
+      <PlaylistTitle
+        data={data}
+        disabled={isPending}
+        onChangePlaylistDetails={onChangePlaylistDetails}
+        playlistDetails={playlistDetails}
+        run={run}
+      />
+    );
   };
 }
