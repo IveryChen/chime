@@ -42,6 +42,10 @@ class GameService:
         if room.status != "waiting":
             raise ValueError("Game already in progress")
 
+        for existing_player in room.players:
+            if existing_player.name == player_name:
+                return room
+
         new_player = self.create_player(name=player_name, spotify_token=spotify_token)
         room.players.append(new_player)
         return room
