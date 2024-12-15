@@ -6,10 +6,28 @@ import Box from "../../components/Box";
 import Header from "../../components/Header";
 import IconButton from "../../components/IconButton";
 import Players from "../../components/Players";
+import socketService from "../../services/socket";
 
 import GameStatus from "./GameStatus";
 
 export default class GameView extends React.PureComponent {
+  componentDidMount() {
+    const { roomCode } = this.props;
+
+    socketService.emit("initialize_game", { roomCode });
+    socketService.on("game_state_update", this.handleGameStateUpdate);
+  }
+
+  componentWillUnmount() {
+    socketService.off("game_state_update", this.handleGameStateUpdate);
+  }
+
+  handleGameStateUpdate = (data) => {
+    const { game_state } = data;
+
+    console.log("Received game state:", game_state);
+  };
+
   render() {
     const { players, roomCode } = this.props;
 
@@ -24,7 +42,7 @@ export default class GameView extends React.PureComponent {
             bg={theme.blue}
             Icon={LiaArrowRightSolid}
             justifySelf="end"
-            label="START"
+            label="SPEAK TO GUESS"
           />
         </Box>
       </>
