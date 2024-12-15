@@ -3,6 +3,17 @@ from app.schemas.game import Player, GameState
 from datetime import datetime
 import random
 
+def to_camel_case(snake_str):
+    components = snake_str.split('_')
+    return components[0] + ''.join(x.title() for x in components[1:])
+
+def convert_to_camel_case(obj):
+    if isinstance(obj, dict):
+        return {to_camel_case(k): convert_to_camel_case(v) for k, v in obj.items()}
+    elif isinstance(obj, list):
+        return [convert_to_camel_case(item) for item in obj]
+    return obj
+
 def register_sio_events(sio):
     @sio.event
     async def connect(sid, environ):
@@ -110,8 +121,10 @@ def register_sio_events(sio):
             game_state_dict = room.game_state.dict()
             game_state_dict['timestamp'] = game_state_dict['timestamp'].isoformat()
 
+            camel_case_game_state = convert_to_camel_case(game_state_dict)
+
             await sio.emit('game_state_update', {
-                'game_state': game_state_dict
+                'gameState': camel_case_game_state
             }, room=room_code)
 
         except Exception as e:
