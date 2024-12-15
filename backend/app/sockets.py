@@ -17,25 +17,30 @@ def register_sio_events(sio):
                     await sio.emit('players-update', {'players': [p.dict() for p in room.players]}, room=room_code)
                     break
 
-    @sio.event
-    async def join_room(sid, data):
-        room_code = data['roomCode']
-        player_name = data['player']['name']
-        spotify_token = data['player']['spotify_token']
-        
+    async def join_room_handler(sid, data):
         try:
-            room = game_service.join_room(room_code, player_name, spotify_token)
-            # Update the player's socket_id
-            for player in room.players:
-                if player.name == player_name:
-                    player.socket_id = sid
-                    player.id = sid  # Using sid as player id
+            room_code = data['roomCode']
+            player = data['player']
+
+            room = game_service.join_room(room_code, player['name'], player['spotify_token'])
+            print("Room joined successfully")
+
+            for p in room.players:
+                if p.name == player['name']:
+                    p.socket_id = sid
                     break
-            
+
             await sio.enter_room(sid, room_code)
-            await sio.emit('players-update', {'players': [p.dict() for p in room.players]}, room=room_code)
+            await sio.emit('players-update',
+                {'players': [p.dict() for p in room.players]},
+                room=room_code
+            )
+
         except ValueError as e:
+            print(f"Game error: {str(e)}")
             await sio.emit('error', {'message': str(e)}, room=sid)
+
+    sio.on('join-room', join_room_handler)
 
     @sio.event
     async def leave_room(sid, data):
@@ -69,8 +74,6 @@ def register_sio_events(sio):
                 break
 
         all_selected = all(player.selected_playlists for player in room.players)
-        # this line is not printing ??
-        print(f"\nAll selected check: {all_selected}")
         print(f"Room status before check: {room.status}")
 
         if all_selected:
