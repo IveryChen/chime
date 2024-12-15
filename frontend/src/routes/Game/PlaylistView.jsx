@@ -9,6 +9,7 @@ import IconButton from "../../components/IconButton";
 import Logo from "../../components/Logo";
 import Players from "../../components/Players";
 import Playlist from "../../components/Playlist";
+import PlaylistModal from "../../components/PlaylistModal";
 import Text from "../../components/Text";
 import socketService from "../../services/socket";
 
@@ -134,6 +135,7 @@ export default class PlaylistView extends React.PureComponent {
             {players.length} ready)
           </Text>
         )}
+        <PlaylistModal />
         <Box
           display="grid"
           gap="16px"
