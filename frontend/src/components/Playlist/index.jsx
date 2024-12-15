@@ -1,7 +1,9 @@
 import { includes } from "lodash";
 import React from "react";
+import { Async } from "react-async";
 import { MdCheck } from "react-icons/md";
 
+import fetchPlaylistTracks from "../../api/fetchPlaylistTracks";
 import Box from "../../components/Box";
 
 import PlaylistTitle from "./PlaylistTitle";
@@ -47,8 +49,21 @@ export default class Playlist extends React.PureComponent {
             )}
           </Box>
         )}
-        <PlaylistTitle data={data} />
+        <Async
+          deferFn={fetchPlaylistTracks}
+          playlistId={id}
+          spotifyToken={localStorage.getItem("spotify_access_token")}
+        >
+          {this.renderBody}
+        </Async>
       </Box>
     );
   }
+
+  renderBody = ({ isPending, data: tracksData, run }) => {
+    const { data } = this.props;
+    console.log("tracksData", tracksData);
+
+    return <PlaylistTitle data={data} run={run} />;
+  };
 }

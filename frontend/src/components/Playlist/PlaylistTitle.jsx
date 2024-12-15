@@ -5,12 +5,16 @@ import Box from "../../components/Box";
 import Text from "../../components/Text";
 
 export default class PlaylistTitle extends React.PureComponent {
+  onClick = () => {
+    this.props.run();
+  };
+
   render() {
     const { data } = this.props;
     const { name, owner } = data;
 
     return (
-      <Box display="grid" gridTemplateColumns="1fr auto">
+      <Box display="grid" gridTemplateColumns="1fr auto" onClick={this.onClick}>
         <Box>
           <Text fontSize={12} lineHeight={1} textTransform="uppercase">
             {name}
