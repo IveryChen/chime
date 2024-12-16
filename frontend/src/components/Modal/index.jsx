@@ -1,6 +1,8 @@
 import styled from "@emotion/styled";
 import React from "react";
+
 import Box from "../../components/Box";
+import { theme } from "../../constants/constants";
 
 const StyledBox = styled(Box)`
   backdrop-filter: blur(1px);
@@ -25,13 +27,14 @@ export default class Modal extends React.PureComponent {
         top={0}
       >
         <Box
-          bg="white"
+          bg={theme.lightgray}
+          borderStyle="solid"
           borderRadius="8px"
-          maxHeight="80vh"
-          maxWidth="90vw"
+          maxHeight="90%"
+          maxWidth="90%"
           onClick={(e) => e.stopPropagation()}
           overflow="auto"
-          p="20px"
+          p="16px"
         >
           {children}
         </Box>
