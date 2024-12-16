@@ -1,9 +1,7 @@
 import { includes } from "lodash";
 import React from "react";
-import { Async } from "react-async";
 import { MdCheck } from "react-icons/md";
 
-import fetchPlaylistTracks from "../../api/fetchPlaylistTracks";
 import Box from "../../components/Box";
 
 import PlaylistTitle from "./PlaylistTitle";
@@ -12,7 +10,14 @@ export default class Playlist extends React.PureComponent {
   onClick = () => this.props.onChangeSelectedPlaylists(this.props.data.id);
 
   render() {
-    const { data, selectedPlaylists } = this.props;
+    const {
+      currentPlaylistId,
+      data,
+      disabled,
+      onChangeCurrentPlaylistId,
+      run,
+      selectedPlaylists,
+    } = this.props;
     const { id, images } = data;
     const isSelected = includes(selectedPlaylists, id);
 
@@ -26,6 +31,7 @@ export default class Playlist extends React.PureComponent {
               aspectRatio={1}
               borderStyle="solid"
               borderWidth={1}
+              opacity={disabled ? 0.5 : 1}
               src={images[0].url}
               width="100%"
             />
@@ -49,29 +55,14 @@ export default class Playlist extends React.PureComponent {
             )}
           </Box>
         )}
-        <Async
-          deferFn={fetchPlaylistTracks}
-          playlistId={id}
-          spotifyToken={localStorage.getItem("spotify_access_token")}
-        >
-          {this.renderBody}
-        </Async>
+        <PlaylistTitle
+          currentPlaylistId={currentPlaylistId}
+          data={data}
+          disabled={disabled}
+          onChangeCurrentPlaylistId={onChangeCurrentPlaylistId}
+          run={run}
+        />
       </Box>
     );
   }
-
-  renderBody = ({ isPending, data: tracksData, run }) => {
-    const { currentPlaylistId, data, onChangeCurrentPlaylistId } = this.props;
-    console.log("tracksData", tracksData);
-
-    return (
-      <PlaylistTitle
-        currentPlaylistId={currentPlaylistId}
-        data={data}
-        disabled={isPending}
-        onChangeCurrentPlaylistId={onChangeCurrentPlaylistId}
-        run={run}
-      />
-    );
-  };
 }

@@ -2,6 +2,7 @@ import { includes, map } from "lodash";
 import React from "react";
 import { Async } from "react-async";
 
+import fetchPlaylistTracks from "../../api/fetchPlaylistTracks";
 import { theme } from "../../constants/constants";
 import Box from "../../components/Box";
 import Header from "../../components/Header";
@@ -20,6 +21,8 @@ export default class PlaylistView extends React.PureComponent {
     status: null,
     submittedPlayers: new Set(),
   };
+
+  onClose = () => this.setState({ currentPlaylistId: null });
 
   componentDidMount() {
     socketService.on(
@@ -123,8 +126,7 @@ export default class PlaylistView extends React.PureComponent {
 
   renderBody = ({ isPending, run }) => {
     const { playlists, players, playerId } = this.props;
-    const { currentPlaylistId, selectedPlaylists, submittedPlayers, status } =
-      this.state;
+    const { submittedPlayers, status } = this.state;
     const hasSubmitted = submittedPlayers.has(playerId);
 
     return (
@@ -135,7 +137,6 @@ export default class PlaylistView extends React.PureComponent {
             {players.length} ready)
           </Text>
         )}
-        <PlaylistModal />
         <Box
           display="grid"
           gap="16px"
@@ -144,20 +145,22 @@ export default class PlaylistView extends React.PureComponent {
           opacity={hasSubmitted ? 0.5 : 1}
           pointerEvents={hasSubmitted ? "none" : "auto"}
         >
-          {map(playlists, (data, index) => {
-            if (!data) {
+          {map(playlists, (playlistData, index) => {
+            if (!playlistData) {
               return;
             }
 
             return (
-              <Playlist
-                currentPlaylistId={currentPlaylistId}
-                data={data}
+              <Async
+                deferFn={fetchPlaylistTracks}
                 key={index}
-                onChangeCurrentPlaylistId={this.onChangeCurrentPlaylistId}
-                onChangeSelectedPlaylists={this.onChangeSelectedPlaylists}
-                selectedPlaylists={selectedPlaylists}
-              />
+                playlistId={playlistData.id}
+                spotifyToken={localStorage.getItem("spotify_access_token")}
+              >
+                {(asyncProps) =>
+                  this.renderPlaylist({ ...asyncProps, playlistData })
+                }
+              </Async>
             );
           })}
         </Box>
@@ -169,6 +172,26 @@ export default class PlaylistView extends React.PureComponent {
           label="DONE"
           onClick={run}
         />
+      </>
+    );
+  };
+
+  renderPlaylist = ({ isPending, data: tracksData, playlistData, run }) => {
+    const { currentPlaylistId, selectedPlaylists } = this.state;
+
+    return (
+      <>
+        <Playlist
+          currentPlaylistId={currentPlaylistId}
+          data={playlistData}
+          disabled={isPending}
+          onChangeCurrentPlaylistId={this.onChangeCurrentPlaylistId}
+          onChangeSelectedPlaylists={this.onChangeSelectedPlaylists}
+          run={run}
+          selectedPlaylists={selectedPlaylists}
+          tracksData={tracksData}
+        />
+        <PlaylistModal isOpen={!!currentPlaylistId} onClose={this.onClose} />
       </>
     );
   };

@@ -15,10 +15,15 @@ export default class PlaylistTitle extends React.PureComponent {
     const { data, disabled, currentPlaylistId } = this.props;
     const { id, name, owner } = data;
     const isSelected = currentPlaylistId === id;
-    const color = isSelected ? theme.blue : disabled ? "gray" : "black";
+    const color = isSelected ? theme.blue : "black";
 
     return (
-      <Box cursor="pointer" display="grid" onClick={this.onClick}>
+      <Box
+        cursor="pointer"
+        display="grid"
+        onClick={this.onClick}
+        opacity={disabled ? 0.5 : 1}
+      >
         <Box display="flex" gap="4px">
           <Text
             color={color}
