@@ -3,7 +3,6 @@ import { FaRegEye } from "react-icons/fa6";
 
 import Box from "../../components/Box";
 import Text from "../../components/Text";
-import { theme } from "../../constants/constants";
 
 export default class PlaylistTitle extends React.PureComponent {
   onClick = () => {
@@ -15,7 +14,7 @@ export default class PlaylistTitle extends React.PureComponent {
     const { data, disabled, currentPlaylistId } = this.props;
     const { id, name, owner } = data;
     const isSelected = currentPlaylistId === id;
-    const color = isSelected ? theme.blue : "black";
+    const color = isSelected ? "red" : "black";
 
     return (
       <Box

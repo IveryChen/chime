@@ -1,15 +1,20 @@
+import styled from "@emotion/styled";
 import React from "react";
 import Box from "../../components/Box";
+
+const StyledBox = styled(Box)`
+  backdrop-filter: blur(1px);
+`;
 
 export default class Modal extends React.PureComponent {
   render() {
     const { isOpen, onClose, children } = this.props;
+
     if (!isOpen) return null;
 
     return (
-      <Box
+      <StyledBox
         alignItems="center"
-        bg="rgba(0, 0, 0, 0.5)"
         bottom={0}
         display="flex"
         justifyContent="center"
@@ -23,14 +28,14 @@ export default class Modal extends React.PureComponent {
           bg="white"
           borderRadius="8px"
           maxHeight="80vh"
-          maxWidth={500}
+          maxWidth="90vw"
           onClick={(e) => e.stopPropagation()}
           overflow="auto"
           p="20px"
         >
           {children}
         </Box>
-      </Box>
+      </StyledBox>
     );
   }
 }
