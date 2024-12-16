@@ -20,9 +20,12 @@ export default class PlaylistView extends React.PureComponent {
     selectedPlaylists: [],
     status: null,
     submittedPlayers: new Set(),
+    tracksData: null,
   };
 
-  onClose = () => this.setState({ currentPlaylistId: null });
+  onChangeTracksData = (tracksData) => this.setState({ tracksData });
+
+  onClose = () => this.setState({ currentPlaylistId: null, tracksData: null });
 
   componentDidMount() {
     socketService.on(
@@ -126,7 +129,8 @@ export default class PlaylistView extends React.PureComponent {
 
   renderBody = ({ isPending, run }) => {
     const { playlists, players, playerId } = this.props;
-    const { submittedPlayers, status } = this.state;
+    const { currentPlaylistId, submittedPlayers, status, tracksData } =
+      this.state;
     const hasSubmitted = submittedPlayers.has(playerId);
 
     return (
@@ -147,7 +151,7 @@ export default class PlaylistView extends React.PureComponent {
         >
           {map(playlists, (playlistData, index) => {
             if (!playlistData) {
-              return;
+              return null;
             }
 
             return (
@@ -172,6 +176,12 @@ export default class PlaylistView extends React.PureComponent {
           label="DONE"
           onClick={run}
         />
+        <PlaylistModal
+          currentPlaylistId={currentPlaylistId}
+          data={tracksData}
+          isOpen={!!currentPlaylistId}
+          onClose={this.onClose}
+        />
       </>
     );
   };
@@ -179,20 +189,20 @@ export default class PlaylistView extends React.PureComponent {
   renderPlaylist = ({ isPending, data: tracksData, playlistData, run }) => {
     const { currentPlaylistId, selectedPlaylists } = this.state;
 
+    if (currentPlaylistId === playlistData.id && tracksData) {
+      this.onChangeTracksData(tracksData);
+    }
+
     return (
-      <>
-        <Playlist
-          currentPlaylistId={currentPlaylistId}
-          data={playlistData}
-          disabled={isPending}
-          onChangeCurrentPlaylistId={this.onChangeCurrentPlaylistId}
-          onChangeSelectedPlaylists={this.onChangeSelectedPlaylists}
-          run={run}
-          selectedPlaylists={selectedPlaylists}
-          tracksData={tracksData}
-        />
-        <PlaylistModal isOpen={!!currentPlaylistId} onClose={this.onClose} />
-      </>
+      <Playlist
+        currentPlaylistId={currentPlaylistId}
+        data={playlistData}
+        disabled={isPending}
+        onChangeCurrentPlaylistId={this.onChangeCurrentPlaylistId}
+        onChangeSelectedPlaylists={this.onChangeSelectedPlaylists}
+        run={run}
+        selectedPlaylists={selectedPlaylists}
+      />
     );
   };
 }
