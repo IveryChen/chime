@@ -30,7 +30,7 @@ export default class Modal extends React.PureComponent {
           bg={theme.lightgray}
           borderRadius="8px"
           borderStyle="solid"
-          maxHeight="90%"
+          maxHeight="80%"
           onClick={(e) => e.stopPropagation()}
           overflow="auto"
           p="16px"

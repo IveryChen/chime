@@ -1,4 +1,4 @@
-import { includes, map } from "lodash";
+import { find, includes, map } from "lodash";
 import React from "react";
 import { Async } from "react-async";
 
@@ -16,6 +16,7 @@ import socketService from "../../services/socket";
 
 export default class PlaylistView extends React.PureComponent {
   state = {
+    currentPlaylist: null,
     currentPlaylistId: null,
     selectedPlaylists: [],
     status: null,
@@ -75,7 +76,11 @@ export default class PlaylistView extends React.PureComponent {
   };
 
   onChangeCurrentPlaylistId = (currentPlaylistId) => {
-    this.setState({ currentPlaylistId });
+    const { playlists } = this.props;
+    const currentPlaylist = currentPlaylistId
+      ? find(playlists, (p) => p.id === currentPlaylistId)
+      : null;
+    this.setState({ currentPlaylistId, currentPlaylist });
   };
 
   submitPlaylists = async () => {
@@ -129,8 +134,13 @@ export default class PlaylistView extends React.PureComponent {
 
   renderBody = ({ isPending, run }) => {
     const { playlists, players, playerId } = this.props;
-    const { currentPlaylistId, submittedPlayers, status, tracksData } =
-      this.state;
+    const {
+      currentPlaylist,
+      currentPlaylistId,
+      submittedPlayers,
+      status,
+      tracksData,
+    } = this.state;
     const hasSubmitted = submittedPlayers.has(playerId);
 
     return (
@@ -181,6 +191,7 @@ export default class PlaylistView extends React.PureComponent {
           data={tracksData}
           isOpen={!!currentPlaylistId}
           onClose={this.onClose}
+          playlist={currentPlaylist}
         />
       </>
     );

@@ -9,7 +9,7 @@ import Text from "../Text";
 
 export default class PlaylistModal extends React.PureComponent {
   render() {
-    const { data, isOpen, onClose } = this.props;
+    const { data, isOpen, onClose, playlist } = this.props;
 
     if (!data) {
       return null;
@@ -19,7 +19,7 @@ export default class PlaylistModal extends React.PureComponent {
       <Modal isOpen={isOpen} onClose={onClose}>
         <Box display="grid" gap="16px">
           <Text fontSize={20} fontWeight="bold">
-            Playlist Tracks
+            {playlist.name}
           </Text>
           {map(data, ({ track }, index) => {
             const { album, artists, name } = track;
