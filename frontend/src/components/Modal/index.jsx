@@ -5,7 +5,7 @@ import Box from "../../components/Box";
 import { theme } from "../../constants/constants";
 
 const StyledBox = styled(Box)`
-  backdrop-filter: blur(1px);
+  backdrop-filter: blur(4px);
 `;
 
 export default class Modal extends React.PureComponent {
@@ -28,13 +28,13 @@ export default class Modal extends React.PureComponent {
       >
         <Box
           bg={theme.lightgray}
-          borderStyle="solid"
           borderRadius="8px"
+          borderStyle="solid"
           maxHeight="90%"
-          maxWidth="90%"
           onClick={(e) => e.stopPropagation()}
           overflow="auto"
           p="16px"
+          width="90%"
         >
           {children}
         </Box>
