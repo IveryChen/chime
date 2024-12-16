@@ -1,6 +1,8 @@
 import { map } from "lodash";
 import React from "react";
 
+import intersperse from "../../utils/intersperse";
+
 import Box from "../Box";
 import Modal from "../Modal";
 import Text from "../Text";
@@ -20,31 +22,48 @@ export default class PlaylistModal extends React.PureComponent {
             Playlist Tracks
           </Text>
           {map(data, ({ track }, index) => {
-            const { artists, name } = track;
+            const { album, artists, name } = track;
+            const dot = <Text fontSize={12}>•</Text>;
+            const artistsWithDots = intersperse(dot)(
+              map(artists, (artist) => (
+                <Text flexShrink={0} fontWeight="medium" fontSize={12}>
+                  {artist.name}
+                </Text>
+              ))
+            );
 
             return (
               <Box
+                alignItems="center"
+                display="grid"
+                gap="8px"
+                gridTemplateColumns="16px auto 1fr"
                 key={index}
-                borderBottom="1px solid"
-                borderColor="gray.200"
-                paddingBottom="12px"
               >
-                <Text fontSize={16} fontWeight="medium">
-                  {name}
+                <Text justifySelf="center">
+                  {index < 9 ? `0${index + 1}` : index + 1}
                 </Text>
-                <Box display="flex" gap="4px">
-                  {map(artists, (artist, artistIndex) => (
-                    <React.Fragment key={artist.id || artistIndex}>
-                      <Text color="gray.600" fontSize={14}>
-                        {artist.name}
-                      </Text>
-                      {artistIndex < artists.length - 1 && (
-                        <Text color="gray.600" fontSize={14}>
-                          •
-                        </Text>
-                      )}
-                    </React.Fragment>
-                  ))}
+                <Box
+                  alt={album.name}
+                  as="img"
+                  aspectRatio={1}
+                  borderStyle="solid"
+                  borderWidth={1}
+                  src={album.images[0].url}
+                  size={32}
+                />
+                <Box display="grid" overflow="hidden">
+                  <Text
+                    fontSize={12}
+                    fontWeight="bold"
+                    textTransform="uppercase"
+                    truncate
+                  >
+                    {name}
+                  </Text>
+                  <Box display="flex" gap="4px" overflow="auto">
+                    {artistsWithDots}
+                  </Box>
                 </Box>
               </Box>
             );
