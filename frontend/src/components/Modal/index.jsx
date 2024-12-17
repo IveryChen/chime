@@ -28,8 +28,9 @@ export default class Modal extends React.PureComponent {
       >
         <Box
           bg={theme.lightgray}
-          borderRadius="8px"
+          borderRadius="2px"
           borderStyle="solid"
+          borderWidth={1}
           maxHeight="80%"
           onClick={(e) => e.stopPropagation()}
           overflow="auto"
