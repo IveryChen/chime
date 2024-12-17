@@ -38,7 +38,7 @@ const StyledBox = styled(Box)`
   }
 `;
 
-const StyledButton = styled(Text)`
+const StyledButton = styled(Box)`
   justify-self: center;
 
   @media (min-width: 768px) {
@@ -110,7 +110,6 @@ class Home extends React.PureComponent {
           </StyledHeading>
           <StyledCassette as="img" src={cassette_temp} size="100%" />
           <StyledButton
-            alignSelf="start"
             bg={theme.blue}
             borderColor="black"
             borderRadius="20px"
@@ -118,14 +117,14 @@ class Home extends React.PureComponent {
             borderWidth={2}
             cursor="pointer"
             display="flex"
-            fontFamily="Bebas Neue"
-            fontSize="20px"
             gap="8px"
             onClick={this.onClick}
             p="8px"
             userSelect="none"
           >
-            I’M READY TO CUE IN
+            <Text fontFamily="Bebas Neue" fontSize="20px" pt="2px">
+              I’M READY TO CUE IN
+            </Text>
             <Box alignSelf="center" as={FaSpotify} size={24} />
           </StyledButton>
         </Box>
