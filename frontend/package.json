@@ -19,6 +19,7 @@
     "baobab": "^2.6.1",
     "baobab-react": "^4.0.2",
     "lodash": "^4.17.21",
+    "ramda": "^0.30.1",
     "react": "^18.2.0",
     "react-async": "^10.0.1",
     "react-dom": "^18.2.0",
