@@ -1,7 +1,6 @@
 import { map } from "lodash";
+import { intersperse } from "ramda";
 import React from "react";
-
-import intersperse from "../../utils/intersperse";
 
 import Box from "../Box";
 import Modal from "../Modal";
@@ -24,7 +23,8 @@ export default class PlaylistModal extends React.PureComponent {
           {map(data, ({ track }, index) => {
             const { album, artists, name } = track;
             const dot = <Text fontSize={12}>•</Text>;
-            const artistsWithDots = intersperse(dot)(
+            const artistsWithDots = intersperse(
+              dot,
               map(artists, (artist) => (
                 <Text flexShrink={0} fontWeight="medium" fontSize={12}>
                   {artist.name}
