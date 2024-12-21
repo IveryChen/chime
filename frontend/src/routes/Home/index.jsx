@@ -1,8 +1,17 @@
 import styled from "@emotion/styled";
 import React from "react";
 import { FaSpotify } from "react-icons/fa6";
+import {
+  BoxGeometry,
+  DirectionalLight,
+  Mesh,
+  MeshPhongMaterial,
+  PerspectiveCamera,
+  Scene,
+  WebGLRenderer,
+} from "three";
+import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 
-import cassette_temp from "../../assets/cassette_temp.png";
 import { theme } from "../../constants/constants";
 import Box from "../../components/Box";
 import Text from "../../components/Text";
@@ -82,6 +91,48 @@ const StyledTextChinese = styled(Text)`
 `;
 
 class Home extends React.PureComponent {
+  ref = React.createRef();
+
+  componentDidMount() {
+    const canvas = this.ref.current;
+    const { clientHeight, clientWidth } = canvas;
+
+    const renderer = new WebGLRenderer({ alpha: true, antialia: true, canvas });
+
+    renderer.setSize(clientWidth, clientHeight, false);
+
+    const camera = new PerspectiveCamera(
+      90,
+      clientWidth / clientHeight,
+      1 / 8,
+      1000
+    );
+
+    camera.position.z = 2;
+
+    const scene = new Scene();
+    const geometry = new BoxGeometry(1, 1, 1);
+    const material = new MeshPhongMaterial({ color: 0x7af0f2 });
+    const mesh = new Mesh(geometry, material);
+    const light = new DirectionalLight(0xffffff, 2);
+
+    light.position.set(-2, 2, 8);
+    scene.add(mesh);
+    scene.add(light);
+
+    const controls = new OrbitControls(camera, canvas);
+    controls.enablePan = false;
+    controls.enableDamping = true;
+
+    const render = () => {
+      controls.update();
+      renderer.render(scene, camera);
+      requestAnimationFrame(render);
+    };
+
+    render();
+  }
+
   onClick = () => this.props.navigate(`/spotify-auth`);
 
   render() {
@@ -108,7 +159,7 @@ class Home extends React.PureComponent {
           <StyledHeading fontWeight="bold" letterSpacing="-2px" lineHeight={1}>
             YOUR GO-TO SPOTIFY MUSIC GAME.
           </StyledHeading>
-          <StyledCassette as="img" src={cassette_temp} size="100%" />
+          <StyledCassette as="canvas" ref={this.ref} size="100%" />
           <StyledButton
             bg={theme.blue}
             borderColor="black"
