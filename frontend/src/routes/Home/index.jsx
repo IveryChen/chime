@@ -2,14 +2,14 @@ import styled from "@emotion/styled";
 import React from "react";
 import { FaSpotify } from "react-icons/fa6";
 import {
-  BoxGeometry,
+  Box3,
   DirectionalLight,
-  Mesh,
-  MeshPhongMaterial,
   PerspectiveCamera,
   Scene,
+  Vector3,
   WebGLRenderer,
 } from "three";
+import { FBXLoader } from "three/addons/loaders/FBXLoader.js";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 
 import { theme } from "../../constants/constants";
@@ -100,6 +100,7 @@ class Home extends React.PureComponent {
     const renderer = new WebGLRenderer({ alpha: true, antialia: true, canvas });
 
     renderer.setSize(clientWidth, clientHeight, false);
+    renderer.setClearColor(0x000000, 1);
 
     const camera = new PerspectiveCamera(
       90,
@@ -108,24 +109,36 @@ class Home extends React.PureComponent {
       1000
     );
 
-    camera.position.z = 2;
+    camera.position.y = -11.3;
+    camera.position.x = -0.12;
 
     const scene = new Scene();
-    const geometry = new BoxGeometry(1, 1, 1);
-    const material = new MeshPhongMaterial({ color: 0x7af0f2 });
-    const mesh = new Mesh(geometry, material);
-    const light = new DirectionalLight(0xffffff, 2);
-
+    const light = new DirectionalLight(0xffffff, 6);
     light.position.set(-2, 2, 8);
-    scene.add(mesh);
     scene.add(light);
 
-    const controls = new OrbitControls(camera, canvas);
-    controls.enablePan = false;
-    controls.enableDamping = true;
+    const loader = new FBXLoader();
+
+    loader.load(
+      "https://cassetteapp.s3.us-east-2.amazonaws.com/Vintage+Cassette/Cassette.fbx",
+      (object) => {
+        const box = new Box3().setFromObject(object);
+        const center = box.getCenter(new Vector3());
+        object.position.sub(center);
+
+        object.scale.setScalar(1);
+
+        scene.add(object);
+      },
+      (xhr) => {
+        // console.log((xhr.loaded / xhr.total) * 100 + "% loaded");
+      },
+      (error) => {
+        console.error("An error occurred loading the model:", error);
+      }
+    );
 
     const render = () => {
-      controls.update();
       renderer.render(scene, camera);
       requestAnimationFrame(render);
     };
@@ -159,7 +172,12 @@ class Home extends React.PureComponent {
           <StyledHeading fontWeight="bold" letterSpacing="-2px" lineHeight={1}>
             YOUR GO-TO SPOTIFY MUSIC GAME.
           </StyledHeading>
-          <StyledCassette as="canvas" ref={this.ref} size="100%" />
+          <StyledCassette
+            as="canvas"
+            height={320}
+            ref={this.ref}
+            width="100%"
+          />
           <StyledButton
             bg={theme.blue}
             borderColor="black"
