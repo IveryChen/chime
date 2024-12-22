@@ -97,10 +97,14 @@ class Home extends React.PureComponent {
     const canvas = this.ref.current;
     const { clientHeight, clientWidth } = canvas;
 
-    const renderer = new WebGLRenderer({ alpha: true, antialia: true, canvas });
+    const renderer = new WebGLRenderer({
+      alpha: true,
+      antialias: true,
+      canvas,
+    });
 
     renderer.setSize(clientWidth, clientHeight, false);
-    renderer.setClearColor(0x000000, 1);
+    // renderer.setClearColor(0x000000, 1);
 
     const camera = new PerspectiveCamera(
       90,
@@ -109,8 +113,8 @@ class Home extends React.PureComponent {
       1000
     );
 
-    camera.position.y = -11.3;
-    camera.position.x = -0.12;
+    camera.position.z = 2;
+    camera.position.y = 1;
 
     const scene = new Scene();
     const light = new DirectionalLight(0xffffff, 6);
@@ -120,13 +124,34 @@ class Home extends React.PureComponent {
     const loader = new FBXLoader();
 
     loader.load(
-      "https://cassetteapp.s3.us-east-2.amazonaws.com/Vintage+Cassette/Cassette.fbx",
+      "https://cassetteapp.s3.us-east-2.amazonaws.com/Vintage+Cassette/CassetteClean.fbx",
       (object) => {
         const box = new Box3().setFromObject(object);
+        const size = box.getSize(new Vector3());
         const center = box.getCenter(new Vector3());
         object.position.sub(center);
 
-        object.scale.setScalar(1);
+        object.traverse((child) => {
+          if (child.isMesh) {
+            console.log("Found MESH:", child.name);
+            console.log("Current material:", child.material);
+          }
+        });
+
+        // Calculate the ideal camera position
+        const maxDim = Math.max(size.x, size.y, size.z);
+        const fov = camera.fov * (Math.PI / 180);
+        const cameraZ = Math.abs(maxDim / Math.sin(fov / 2) / 2);
+
+        // Position camera to fit object
+        camera.position.z = cameraZ * 1.5; // Add 50% margin
+
+        // Calculate ideal scale to fit in view
+        const distance = camera.position.z - object.position.z;
+        const heightAtDistance = 2 * Math.tan(fov / 2) * distance;
+        const scale = heightAtDistance / maxDim;
+
+        object.scale.setScalar(scale * 1.0); // 100% of max size for margin
 
         scene.add(object);
       },
@@ -138,7 +163,12 @@ class Home extends React.PureComponent {
       }
     );
 
+    const controls = new OrbitControls(camera, canvas);
+    controls.enablePan = false;
+    controls.enableDamping = true;
+
     const render = () => {
+      controls.update();
       renderer.render(scene, camera);
       requestAnimationFrame(render);
     };
