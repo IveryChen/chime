@@ -2,6 +2,7 @@ import styled from "@emotion/styled";
 import React from "react";
 import { FaSpotify } from "react-icons/fa6";
 import {
+  AmbientLight,
   Box3,
   DirectionalLight,
   PerspectiveCamera,
@@ -16,6 +17,8 @@ import { theme } from "../../constants/constants";
 import Box from "../../components/Box";
 import Text from "../../components/Text";
 import { withRouter } from "../../utils/withRouter";
+
+import setUpMaterials from "./setUpMaterials";
 
 const StyledBar = styled(Box)`
   align-items: center;
@@ -104,7 +107,6 @@ class Home extends React.PureComponent {
     });
 
     renderer.setSize(clientWidth, clientHeight, false);
-    // renderer.setClearColor(0x000000, 1);
 
     const camera = new PerspectiveCamera(
       90,
@@ -117,9 +119,20 @@ class Home extends React.PureComponent {
     camera.position.y = 1;
 
     const scene = new Scene();
-    const light = new DirectionalLight(0xffffff, 6);
-    light.position.set(-2, 2, 8);
-    scene.add(light);
+    const mainLight = new DirectionalLight(0xffffff, 4);
+    mainLight.position.set(1, 1, 1);
+    mainLight.castShadow = true;
+
+    const fillLight = new DirectionalLight(0xffffff, 1);
+    fillLight.position.set(-1, 0.5, -1);
+
+    const ambientLight = new AmbientLight(0xffffff, 0.5);
+
+    scene.add(mainLight);
+    scene.add(fillLight);
+    scene.add(ambientLight);
+
+    const materials = setUpMaterials();
 
     const loader = new FBXLoader();
 
@@ -134,14 +147,21 @@ class Home extends React.PureComponent {
         object.traverse((child) => {
           if (child.isMesh) {
             console.log("Found MESH:", child.name);
-            console.log("Current material:", child.material);
+            const name = child.name.toLowerCase();
+
+            if (name.includes("metal")) {
+              child.material = materials.metalMaterial;
+              child.castShadow = true;
+              child.receiveShadow = true;
+              console.log("Applied metal material to:", child.name);
+            }
           }
         });
 
         // Calculate the ideal camera position
         const maxDim = Math.max(size.x, size.y, size.z);
         const fov = camera.fov * (Math.PI / 180);
-        const cameraZ = Math.abs(maxDim / Math.sin(fov / 2) / 2);
+        const cameraZ = Math.abs(maxDim / Math.tan(fov / 2) / 2);
 
         // Position camera to fit object
         camera.position.z = cameraZ * 1.5; // Add 50% margin
