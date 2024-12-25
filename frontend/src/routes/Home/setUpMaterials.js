@@ -30,5 +30,14 @@ export default function setUpMaterials() {
     attenuationDistance: 0.5,
   });
 
-  return { metalMaterial, glassMaterial };
+  const plasticMaterial = new MeshStandardMaterial({
+    color: new Color(0x202020),
+    metalness: 0.0,
+    roughness: 0.4,
+    envMapIntensity: 0.5,
+    clearcoat: 0.5,
+    clearcoatRoughness: 0.2,
+  });
+
+  return { glassMaterial, metalMaterial, plasticMaterial };
 }
