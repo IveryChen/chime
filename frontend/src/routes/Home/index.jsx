@@ -153,7 +153,10 @@ class Home extends React.PureComponent {
               child.material = materials.metalMaterial;
               child.castShadow = true;
               child.receiveShadow = true;
-              console.log("Applied metal material to:", child.name);
+            } else if (name.includes("glass")) {
+              child.material = materials.glassMaterial;
+              child.castShadow = false;
+              child.receiveShadow = true;
             }
           }
         });
