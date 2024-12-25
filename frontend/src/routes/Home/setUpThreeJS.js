@@ -1,6 +1,8 @@
 import {
+  ACESFilmicToneMapping,
   AmbientLight,
   Box3,
+  Clock,
   DirectionalLight,
   EquirectangularReflectionMapping,
   PerspectiveCamera,
@@ -16,6 +18,9 @@ import { HDRI, modelURL } from "./constants";
 import { optimizeGeometry } from "./geometryOptimization";
 import setUpMaterials from "./setUpMaterials";
 
+const levitationSpeed = 1.5;
+const rotationSpeed = 0.3;
+
 export const initThreeJS = (canvas) => {
   const { clientHeight, clientWidth } = canvas;
 
@@ -24,7 +29,14 @@ export const initThreeJS = (canvas) => {
     antialias: true,
     canvas,
   });
+
   renderer.setSize(clientWidth, clientHeight, false);
+  renderer.physicallyCorrectLights = true;
+  renderer.toneMapping = ACESFilmicToneMapping;
+  renderer.toneMappingExposure = 1.0;
+
+  const clock = new Clock();
+  let model = null;
 
   const camera = new PerspectiveCamera(
     90,
@@ -62,6 +74,7 @@ export const initThreeJS = (canvas) => {
   loader.load(
     modelURL,
     (object) => {
+      model = object;
       const box = new Box3().setFromObject(object);
       const size = box.getSize(new Vector3());
       const center = box.getCenter(new Vector3());
@@ -114,6 +127,13 @@ export const initThreeJS = (canvas) => {
   controls.enableDamping = true;
 
   const render = () => {
+    const time = clock.getElapsedTime();
+
+    if (model) {
+      model.position.y += Math.sin(time * levitationSpeed) * 0.001;
+      model.rotation.y = Math.sin(time * rotationSpeed) * 0.1;
+    }
+
     controls.update();
     renderer.render(scene, camera);
     requestAnimationFrame(render);
