@@ -13,6 +13,7 @@ import { FBXLoader } from "three/addons/loaders/FBXLoader.js";
 import { RGBELoader } from "three/examples/jsm/loaders/RGBELoader";
 
 import { HDRI, modelURL } from "./constants";
+import { optimizeGeometry } from "./geometryOptimization";
 import setUpMaterials from "./setUpMaterials";
 
 export const initThreeJS = (canvas) => {
@@ -70,6 +71,8 @@ export const initThreeJS = (canvas) => {
         if (child.isMesh) {
           console.log("Found MESH:", child.name);
           const name = child.name.toLowerCase();
+
+          child.geometry = optimizeGeometry(child.geometry);
 
           if (name.includes("metal")) {
             child.material = materials.metalMaterial;
