@@ -23,6 +23,7 @@ const rotationSpeed = 0.3;
 
 export const initThreeJS = (canvas) => {
   const { clientHeight, clientWidth } = canvas;
+  let animationFrameId;
 
   const renderer = new WebGLRenderer({
     alpha: true,
@@ -136,8 +137,24 @@ export const initThreeJS = (canvas) => {
 
     controls.update();
     renderer.render(scene, camera);
-    requestAnimationFrame(render);
+    animationFrameId = requestAnimationFrame(render);
   };
 
   render();
+
+  const cleanup = () => {
+    cancelAnimationFrame(animationFrameId);
+
+    scene.traverse((object) => {
+      if (object.isMesh && object.geometry) {
+        object.geometry.dispose();
+      }
+    });
+
+    renderer.dispose();
+    controls.dispose();
+    scene.clear();
+  };
+
+  return { cleanup };
 };

@@ -84,10 +84,17 @@ const StyledTextChinese = styled(Text)`
 
 class Home extends React.PureComponent {
   ref = React.createRef();
+  threeInstance = null;
 
   componentDidMount() {
     if (this.ref.current) {
-      initThreeJS(this.ref.current);
+      this.threeInstance = initThreeJS(this.ref.current);
+    }
+  }
+
+  componentWillUnmount() {
+    if (this.threeInstance?.cleanup) {
+      this.threeInstance.cleanup();
     }
   }
 
