@@ -157,6 +157,10 @@ class Home extends React.PureComponent {
               child.material = materials.glassMaterial;
               child.castShadow = false;
               child.receiveShadow = true;
+            } else if (name.includes("plastic")) {
+              child.material = materials.plasticMaterial;
+              child.castShadow = true;
+              child.receiveShadow = true;
             }
           }
         });
