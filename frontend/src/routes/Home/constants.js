@@ -3,3 +3,8 @@ export const HDRI =
 
 export const modelURL =
   "https://cassetteapp.s3.us-east-2.amazonaws.com/Vintage+Cassette/CassetteClean.fbx";
+
+export const arrow = "https://cassetteapp.s3.us-east-2.amazonaws.com/arrow.png";
+
+export const cursor =
+  "https://cassetteapp.s3.us-east-2.amazonaws.com/cursor.png";
