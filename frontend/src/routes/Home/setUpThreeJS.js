@@ -47,7 +47,7 @@ export const initThreeJS = (canvas) => {
     90,
     clientWidth / clientHeight,
     1 / 8,
-    1000
+    10000
   );
   camera.position.z = 2;
   camera.position.y = 1;
@@ -130,6 +130,7 @@ export const initThreeJS = (canvas) => {
 
   const controls = new OrbitControls(camera, canvas);
   controls.enablePan = false;
+  controls.enableZoom = false;
   controls.enableDamping = true;
 
   const render = () => {
