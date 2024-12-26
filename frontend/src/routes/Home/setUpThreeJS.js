@@ -31,7 +31,11 @@ export const initThreeJS = (canvas) => {
     canvas,
   });
 
-  renderer.setSize(clientWidth, clientHeight, false);
+  const width = clientWidth * window.devicePixelRatio;
+  const height = clientHeight * window.devicePixelRatio;
+
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  renderer.setSize(width, height, false);
   renderer.physicallyCorrectLights = true;
   renderer.toneMapping = ACESFilmicToneMapping;
   renderer.toneMappingExposure = 1.0;
