@@ -8,6 +8,7 @@ import Text from "../../components/Text";
 import { withRouter } from "../../utils/withRouter";
 
 import { initThreeJS } from "./setUpThreeJS";
+import { arrow, cursor } from "./constants";
 
 const StyledBar = styled(Box)`
   align-items: center;
@@ -59,6 +60,26 @@ const StyledButton = styled(Box)`
 
   @media (min-width: 768px) {
     justify-self: start;
+  }
+`;
+
+const StyledButtonGroup = styled(Box)`
+  align-items: start;
+  display: grid;
+  grid-template-rows: auto 1fr;
+  justify-content: center;
+
+  @media (min-width: 768px) {
+    justify-content: start;
+    grid-template-columns: auto 1fr;
+  }
+`;
+
+const StyledCursor = styled(Box)`
+  margin-left: 160px;
+
+  @media (min-width: 768px) {
+    margin-left: 0px;
   }
 `;
 
@@ -141,32 +162,43 @@ class Home extends React.PureComponent {
             fontWeight="bold"
             letterSpacing="-2px"
             lineHeight={1}
+            position="relative"
             width="100%"
           >
             YOUR&nbsp;
             <span>GO‑TO </span>SPOTIFY MUSIC GAME.
+            <Box
+              alt="Profile"
+              as="img"
+              position="absolute"
+              size={120}
+              src={arrow}
+            />
           </StyledHeading>
           <StyledSmallBox>
             <StyledCassette as="canvas" justifySelf="center" ref={this.ref} />
-            <StyledButton
-              bg={theme.blue}
-              borderColor="black"
-              borderRadius="20px"
-              borderStyle="solid"
-              borderWidth={2}
-              cursor="pointer"
-              display="flex"
-              gap="8px"
-              onClick={this.onClick}
-              px="12px"
-              py="6px"
-              userSelect="none"
-            >
-              <Text fontFamily="Bebas Neue" fontSize="20px" pt="2px">
-                I’M READY TO CUE IN
-              </Text>
-              <Box alignSelf="center" as={FaSpotify} size={24} />
-            </StyledButton>
+            <StyledButtonGroup>
+              <StyledButton
+                bg={theme.blue}
+                borderColor="black"
+                borderRadius="20px"
+                borderStyle="solid"
+                borderWidth={2}
+                cursor="pointer"
+                display="flex"
+                gap="8px"
+                onClick={this.onClick}
+                px="12px"
+                py="6px"
+                userSelect="none"
+              >
+                <Text fontFamily="Bebas Neue" fontSize="20px" pt="2px">
+                  I’M READY TO CUE IN
+                </Text>
+                <Box alignSelf="center" as={FaSpotify} size={24} />
+              </StyledButton>
+              <StyledCursor alt="Profile" as="img" size={120} src={cursor} />
+            </StyledButtonGroup>
           </StyledSmallBox>
         </Box>
       </StyledBox>
