@@ -39,6 +39,21 @@ const StyledBox = styled(Box)`
   }
 `;
 
+const StyledSmallBox = styled(Box)`
+  display: grid;
+  grid-template-rows: auto 1fr;
+
+  @media (min-width: 768px) {
+    > :first-child {
+      order: 2;
+    }
+
+    > :nth-child(2) {
+      order: 1;
+    }
+  }
+`;
+
 const StyledButton = styled(Box)`
   justify-self: center;
 
@@ -49,9 +64,11 @@ const StyledButton = styled(Box)`
 
 const StyledCassette = styled(Box)`
   height: 320px;
+  width: 100%;
 
   @media (min-width: 768px) {
     height: auto;
+    width: 90%;
   }
 `;
 
@@ -129,26 +146,28 @@ class Home extends React.PureComponent {
             YOUR&nbsp;
             <span>GO‑TO </span>SPOTIFY MUSIC GAME.
           </StyledHeading>
-          <StyledCassette as="canvas" ref={this.ref} width="100%" />
-          <StyledButton
-            bg={theme.blue}
-            borderColor="black"
-            borderRadius="20px"
-            borderStyle="solid"
-            borderWidth={2}
-            cursor="pointer"
-            display="flex"
-            gap="8px"
-            onClick={this.onClick}
-            px="8px"
-            py="4px"
-            userSelect="none"
-          >
-            <Text fontFamily="Bebas Neue" fontSize="20px" pt="2px">
-              I’M READY TO CUE IN
-            </Text>
-            <Box alignSelf="center" as={FaSpotify} size={24} />
-          </StyledButton>
+          <StyledSmallBox>
+            <StyledCassette as="canvas" justifySelf="center" ref={this.ref} />
+            <StyledButton
+              bg={theme.blue}
+              borderColor="black"
+              borderRadius="20px"
+              borderStyle="solid"
+              borderWidth={2}
+              cursor="pointer"
+              display="flex"
+              gap="8px"
+              onClick={this.onClick}
+              px="12px"
+              py="6px"
+              userSelect="none"
+            >
+              <Text fontFamily="Bebas Neue" fontSize="20px" pt="2px">
+                I’M READY TO CUE IN
+              </Text>
+              <Box alignSelf="center" as={FaSpotify} size={24} />
+            </StyledButton>
+          </StyledSmallBox>
         </Box>
       </StyledBox>
     );
