@@ -48,16 +48,15 @@ const StyledButton = styled(Box)`
 `;
 
 const StyledCassette = styled(Box)`
-  width: 100%;
+  height: 320px;
 
   @media (min-width: 768px) {
-    justify-content: center;
-    width: 50%;
+    height: auto;
   }
 `;
 
 const StyledHeading = styled(Text)`
-  font-size: 48px;
+  font-size: 64px;
   width: 80%;
 
   @media (min-width: 768px) {
@@ -106,7 +105,7 @@ class Home extends React.PureComponent {
         <StyledBar
           bg="#F7FFF9"
           borderColor="black"
-          borderRadius="16px"
+          borderRadius="12px"
           borderStyle="solid"
           borderWidth={2}
           display="flex"
@@ -121,15 +120,16 @@ class Home extends React.PureComponent {
           </StyledTextChinese>
         </StyledBar>
         <Box display="grid" gap="16px">
-          <StyledHeading fontWeight="bold" letterSpacing="-2px" lineHeight={1}>
-            YOUR GO-TO SPOTIFY MUSIC GAME.
-          </StyledHeading>
-          <StyledCassette
-            as="canvas"
-            height={320}
-            ref={this.ref}
+          <StyledHeading
+            fontWeight="bold"
+            letterSpacing="-2px"
+            lineHeight={1}
             width="100%"
-          />
+          >
+            YOUR&nbsp;
+            <span>GO‑TO </span>SPOTIFY MUSIC GAME.
+          </StyledHeading>
+          <StyledCassette as="canvas" ref={this.ref} width="100%" />
           <StyledButton
             bg={theme.blue}
             borderColor="black"
@@ -140,7 +140,8 @@ class Home extends React.PureComponent {
             display="flex"
             gap="8px"
             onClick={this.onClick}
-            p="8px"
+            px="8px"
+            py="4px"
             userSelect="none"
           >
             <Text fontFamily="Bebas Neue" fontSize="20px" pt="2px">
