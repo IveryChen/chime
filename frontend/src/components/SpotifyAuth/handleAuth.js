@@ -1,5 +1,6 @@
 import { apiClient } from "../../api/apiClient";
 import spotifyApi from "../../library/spotify";
+import detectSpotifyApp from "../../utils/detectSpotifyApp";
 import getPlatform from "../../utils/getPlatform";
 
 export default async function handleAuth() {
@@ -28,8 +29,8 @@ export default async function handleAuth() {
     }
 
     const platform = getPlatform();
-    console.log(platform);
 
+    // Handle Desktop platforms
     if (platform === "Desktop") {
       const width = 450;
       const height = 730;
@@ -62,7 +63,27 @@ export default async function handleAuth() {
           }, 100);
         });
       } else {
-        window.location.href = data.url;
+        // Handle mobile platforms
+        const hasSpotifyApp = await detectSpotifyApp();
+
+        if (hasSpotifyApp) {
+          // Convert web URL to app URL
+          const spotifyAuthUrl = data.url.replace(
+            "https://accounts.spotify.com",
+            "spotify://accounts.spotify.com"
+          );
+
+          // Try deep linking first
+          window.location.href = spotifyAuthUrl;
+
+          // Fallback to web auth after delay if app doesn't open
+          setTimeout(() => {
+            window.location.href = data.url;
+          }, 1500);
+        } else {
+          // Direct to web auth if no app
+          window.location.href = data.url;
+        }
       }
     }
 
