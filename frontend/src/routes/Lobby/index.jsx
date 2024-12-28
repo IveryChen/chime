@@ -44,13 +44,6 @@ class Lobby extends Component {
 
     state.select("games", "currentRoom").set({
       host: gameRoom.host,
-      gameState: {
-        currentPlayer: null,
-        currentRound: 1,
-        roundState: {},
-        scores: {},
-        timestamp: null,
-      },
       players: gameRoom.players,
       roomCode: gameRoom.roomCode,
       status: "waiting",
