@@ -92,10 +92,22 @@ def register_sio_events(sio):
         if all_selected:
             room.status = "playing"
             print(f"Room status after check: {room.status}")
-            # Emit that everyone has submitted and game can start
-            await sio.emit('all_playlists_submitted', {
-                'status': 'success'
-            }, room=room_code)
+
+            try:
+                # Select songs for the game when all playlists are submitted
+                selected_songs = await game_service.select_songs_for_game(room_code)
+                print(f"Selected {len(selected_songs)} songs for the game")
+
+                await sio.emit('all_playlists_submitted', {
+                    'status': 'success',
+                    'selectedSongs': selected_songs
+                }, room=room_code)
+            except ValueError as e:
+                print(f"Error selecting songs: {str(e)}")
+                await sio.emit('error', {
+                    'message': f"Error selecting songs: {str(e)}"
+                }, room=room_code)
+                return
 
         # Broadcast updated player status to all players in the room
         await sio.emit('players-update', {
