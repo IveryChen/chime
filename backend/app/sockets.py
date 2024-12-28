@@ -98,7 +98,10 @@ def register_sio_events(sio):
             }, room=room_code)
 
         # Broadcast updated player status to all players in the room
-        await sio.emit('players-update', {'players': [p.dict() for p in room.players]}, room=room_code)
+        await sio.emit('players-update', {
+            'players': [p.dict() for p in room.players],
+            'status': room.status
+        }, room=room_code)
 
     @sio.event
     async def initialize_game(sid, data):
