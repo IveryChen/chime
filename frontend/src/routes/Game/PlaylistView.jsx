@@ -59,8 +59,8 @@ export default class PlaylistView extends React.PureComponent {
     });
   };
 
-  handleAllPlaylistsSubmitted = ({ status }) => {
-    this.setState({ status }, () => {
+  handleAllPlaylistsSubmitted = ({ status, selectedSongs }) => {
+    this.setState({ status, selectedSongs }, () => {
       if (status === "success") {
         this.props.onChangeGameStage("game");
       }
