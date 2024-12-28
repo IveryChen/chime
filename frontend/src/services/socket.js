@@ -45,8 +45,9 @@ class SocketService {
       this.isConnected = false;
     });
 
-    this.socket.on("players-update", ({ players }) => {
+    this.socket.on("players-update", ({ players, status }) => {
       state.select("game", "players").set(players);
+      state.select("games", "currentRoom", "status").set(status);
     });
   }
 
