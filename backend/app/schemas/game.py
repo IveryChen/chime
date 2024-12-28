@@ -24,6 +24,7 @@ class GameRoom(BaseModel):
     players: List[Player]
     status: str = "waiting"  # waiting, playing, finished
     game_state: Optional[GameState] = None
+    selected_songs: Optional[List[Dict]] = None
 
 # perhaps this should be player_id
 class JoinRoomRequest(BaseModel):
