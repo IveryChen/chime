@@ -1,12 +1,14 @@
+import { branch } from "baobab-react/higher-order";
 import { map } from "lodash";
 import React from "react";
 
 import Box from "../../components/Box";
 import Text from "../../components/Text";
 
-export default class Players extends React.PureComponent {
+class Players extends React.PureComponent {
   render() {
-    const { data, submittedPlayers = new Set() } = this.props;
+    const { data, submittedPlayers = new Set(), gameStatus } = this.props;
+    const isPlaying = gameStatus === "playing";
 
     return (
       <Box
@@ -20,7 +22,7 @@ export default class Players extends React.PureComponent {
             display="flex"
             flexDirection="column"
             key={player.id}
-            opacity={submittedPlayers.has(player.id) ? 1 : 0.5}
+            opacity={isPlaying || submittedPlayers.has(player.id) ? 1 : 0.5}
             transition="opacity 0.2s"
           >
             {player.avatar && (
@@ -40,3 +42,8 @@ export default class Players extends React.PureComponent {
     );
   }
 }
+
+export default branch(
+  { gameStatus: ["games", "currentRoom", "status"] },
+  Players
+);
