@@ -12,7 +12,7 @@ async def login():
             client_id=settings.SPOTIFY_CLIENT_ID,
             client_secret=settings.SPOTIFY_CLIENT_SECRET,
             redirect_uri=settings.SPOTIFY_REDIRECT_URI,
-            scope="user-read-private user-read-email user-library-read playlist-read-private user-top-read"
+            scope="user-read-private user-read-email user-library-read playlist-read-private user-top-read streaming user-read-playback-state user-modify-playback-state"
         )
 
         auth_url = auth_manager.get_authorize_url()
