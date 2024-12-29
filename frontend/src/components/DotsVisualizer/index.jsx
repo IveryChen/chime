@@ -51,6 +51,7 @@ export default class DotsVisualizer extends React.PureComponent {
   };
 
   render() {
+    const { isPlaying } = this.props;
     const { scales } = this.state;
 
     return (
@@ -66,13 +67,14 @@ export default class DotsVisualizer extends React.PureComponent {
       >
         {map(scales, (scale, i) => (
           <Dot
-            key={i}
             bg={theme.blue}
             borderRadius="50%"
             height="8px"
+            key={i}
+            opacity={isPlaying ? 1 : 0}
+            scale={scale}
             transition="transform 0.2s ease"
             width="8px"
-            scale={scale}
           />
         ))}
       </Box>

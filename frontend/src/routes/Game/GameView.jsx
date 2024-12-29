@@ -142,15 +142,21 @@ export default class GameView extends React.PureComponent {
                 {gameState.currentPlayer.name}&apos;s Turn
               </Text>
             )}
-            {isPlaying && <DotsVisualizer isPlaying={isPlaying} />}
-            {showReplayButton && (
-              <ReplayButton
-                currentSongUri={currentSongUri}
-                deviceId={deviceId}
-                onChangeIsPlaying={this.onChangeIsPlaying}
-                spotifyPlayer={spotifyPlayer}
-              />
-            )}
+            <Box
+              display="grid"
+              gridTemplateRows="auto 1fr"
+              justifyContent="center"
+            >
+              <DotsVisualizer isPlaying={isPlaying} />
+              {showReplayButton && (
+                <ReplayButton
+                  currentSongUri={currentSongUri}
+                  deviceId={deviceId}
+                  onChangeIsPlaying={this.onChangeIsPlaying}
+                  spotifyPlayer={spotifyPlayer}
+                />
+              )}
+            </Box>
           </Box>
           <IconButton
             bg={theme.blue}
