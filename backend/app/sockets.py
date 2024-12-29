@@ -125,10 +125,13 @@ def register_sio_events(sio):
                 random.shuffle(room.players)
                 current_player = room.players[0]
 
+                first_song = random.choice(room.selected_songs) if room.selected_songs else None
+
                 room.game_state = GameState(
                     current_round=1,
                     scores={p.id: 0 for p in room.players},
                     current_player=current_player,
+                    current_song=first_song,
                     round_state={},
                     timestamp=datetime.now()
                 )
@@ -144,5 +147,59 @@ def register_sio_events(sio):
 
         except Exception as e:
             print(f"Error in initialize_game: {str(e)}")
-            import traceback
-            traceback.print_exc()
+
+    @sio.event
+    async def start_new_round(sid, data):
+        try:
+            room_code = data['roomCode']
+            room = game_service.get_room(room_code)
+
+            if not room.game_state:
+                raise ValueError("Game not initialized")
+
+            # Get next player
+            current_player_index = room.players.index(room.game_state.current_player)
+            next_player_index = (current_player_index + 1) % len(room.players)
+            next_player = room.players[next_player_index]
+
+            # Get a new random song that hasn't been used yet
+            used_song_ids = {
+                song['id'] for song in room.game_state.round_state.get('used_songs', [])
+            }
+            available_songs = [
+                song for song in room.selected_songs
+                if song['id'] not in used_song_ids
+            ]
+
+            if not available_songs:
+                # Game is over - no more songs
+                room.status = "finished"
+                await sio.emit('game_over', {
+                    'scores': room.game_state.scores
+                }, room=room_code)
+                return
+
+            next_song = random.choice(available_songs)
+
+            # Update game state
+            room.game_state.current_round += 1
+            room.game_state.current_player = next_player
+            room.game_state.current_song = next_song
+            room.game_state.timestamp = datetime.now()
+
+            # Track used songs
+            if 'used_songs' not in room.game_state.round_state:
+                room.game_state.round_state['used_songs'] = []
+            room.game_state.round_state['used_songs'].append(next_song)
+
+            game_state_dict = room.game_state.dict()
+            game_state_dict['timestamp'] = game_state_dict['timestamp'].isoformat()
+            camel_case_game_state = convert_to_camel_case(game_state_dict)
+
+            await sio.emit('game_state_update', {
+                'gameState': camel_case_game_state
+            }, room=room_code)
+
+        except Exception as e:
+            print(f"Error starting new round: {str(e)}")
+            await sio.emit('error', {'message': str(e)}, room=room_code)
