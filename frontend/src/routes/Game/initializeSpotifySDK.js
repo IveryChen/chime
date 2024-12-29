@@ -2,7 +2,7 @@ export default function initializeSpotifySDK(
   onChangeDeviceId,
   onChangeSpotifyPlayer
 ) {
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve) => {
     // First, set up the callback BEFORE loading the script
     window.onSpotifyWebPlaybackSDKReady = () => {
       const player = new window.Spotify.Player({
@@ -13,29 +13,28 @@ export default function initializeSpotifySDK(
         },
       });
 
-      // Error handling
-      player.addListener("initialization_error", ({ message }) => {
-        console.error("Failed to initialize:", message);
-        reject(new Error(message));
-      });
-
-      player.addListener("authentication_error", ({ message }) => {
-        console.error("Failed to authenticate:", message);
-        reject(new Error(message));
-      });
-
       player.addListener("ready", ({ device_id }) => {
         console.log("Spotify Player Ready with Device ID:", device_id);
         onChangeDeviceId(device_id);
         onChangeSpotifyPlayer(player);
         resolve({ player, deviceId: device_id });
-      });
 
-      player.connect().then((success) => {
-        if (success) {
-          console.log("Successfully connected to Spotify");
-        }
+        // Set as active device immediately
+        fetch("https://api.spotify.com/v1/me/player", {
+          method: "PUT",
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem(
+              "spotify_access_token"
+            )}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            device_ids: [device_id],
+            play: false,
+          }),
+        });
       });
+      player.connect();
     };
 
     // Then, load the script if it's not already loaded
@@ -43,12 +42,6 @@ export default function initializeSpotifySDK(
       const script = document.createElement("script");
       script.src = "https://sdk.scdn.co/spotify-player.js";
       script.async = true;
-
-      script.onerror = (error) => {
-        console.error("Failed to load Spotify SDK:", error);
-        reject(error);
-      };
-
       document.body.appendChild(script);
     }
   });
