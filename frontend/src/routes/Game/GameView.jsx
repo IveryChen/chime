@@ -3,6 +3,7 @@ import { LiaArrowRightSolid } from "react-icons/lia";
 
 import { theme } from "../../constants/constants";
 import Box from "../../components/Box";
+import DotsVisualizer from "../../components/DotsVisualizer";
 import Header from "../../components/Header";
 import IconButton from "../../components/IconButton";
 import Players from "../../components/Players";
@@ -13,11 +14,11 @@ import GameStatus from "./GameStatus";
 import ReplayButton from "./ReplayButton";
 import initializeSpotifySDK from "./initializeSpotifySDK";
 import playSnippet from "./playSnippet";
-
 export default class GameView extends React.PureComponent {
   state = {
     deviceId: null,
     gameState: null,
+    isPlaying: false,
     showPlayerName: false,
     showReplayButton: false,
     showRoundText: false,
@@ -27,6 +28,8 @@ export default class GameView extends React.PureComponent {
   onChangeDeviceId = (deviceId) => this.setState({ deviceId });
 
   onChangeSpotifyPlayer = (spotifyPlayer) => this.setState({ spotifyPlayer });
+
+  onChangeIsPlaying = (isPlaying) => this.setState({ isPlaying });
 
   componentDidMount() {
     const { roomCode } = this.props;
@@ -91,10 +94,11 @@ export default class GameView extends React.PureComponent {
       gameState?.currentSong?.uri || gameState?.currentSong?.preview_url;
 
     if (currentSongUri && deviceId && spotifyPlayer) {
+      this.setState({ isPlaying: true });
       playSnippet(deviceId, spotifyPlayer, currentSongUri);
 
       setTimeout(() => {
-        this.setState({ showReplayButton: true });
+        this.setState({ isPlaying: false, showReplayButton: true });
       }, 2000);
     }
   };
@@ -104,6 +108,7 @@ export default class GameView extends React.PureComponent {
     const {
       deviceId,
       gameState,
+      isPlaying,
       showPlayerName,
       showReplayButton,
       showRoundText,
@@ -135,10 +140,12 @@ export default class GameView extends React.PureComponent {
                 {gameState.currentPlayer.name}&apos;s Turn
               </Text>
             )}
+            {isPlaying && <DotsVisualizer isPlaying={isPlaying} />}
             {showReplayButton && (
               <ReplayButton
                 currentSongUri={currentSongUri}
                 deviceId={deviceId}
+                onChangeIsPlaying={this.onChangeIsPlaying}
                 spotifyPlayer={spotifyPlayer}
               />
             )}
