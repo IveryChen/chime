@@ -141,7 +141,7 @@ class Home extends React.PureComponent {
     return (
       <StyledBox display="grid" gap="16px">
         <StyledBar
-          bg="#F7FFF9"
+          bg={theme.lightgray}
           borderColor="black"
           borderRadius="12px"
           borderStyle="solid"

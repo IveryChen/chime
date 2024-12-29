@@ -37,13 +37,13 @@ export default class JoinForm extends React.PureComponent {
     return (
       <Box display="grid" gap="32px">
         <Input
-          background="#F7FFF9"
+          background={theme.lightgray}
           label="ENTER YOUR NAME"
           value={playerName}
           onChange={onChangePlayerName}
         />
         <Input
-          background="#F7FFF9"
+          background={theme.lightgray}
           label="ENTER ROOM CODE"
           value={roomCode}
           onChange={onChangeRoomCode}

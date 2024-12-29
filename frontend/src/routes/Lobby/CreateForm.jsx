@@ -31,7 +31,7 @@ export default class CreateForm extends React.PureComponent {
     return (
       <Box display="grid" gap="32px">
         <Input
-          background="#F7FFF9"
+          background={theme.lightgray}
           label="ENTER YOUR NAME"
           value={playerName}
           onChange={onChangePlayerName}
