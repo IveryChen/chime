@@ -57,24 +57,24 @@ export default class DotsVisualizer extends React.PureComponent {
     return (
       <Box
         display="grid"
+        gap="16px"
         gridTemplateColumns="repeat(4, 1fr)"
-        gap="8px"
+        height="100px"
         justifyContent="center"
         justifyItems="center"
-        width="fit-content"
         margin="0 auto"
+        opacity={isPlaying ? 1 : 0}
         padding="16px"
+        width="fit-content"
       >
         {map(scales, (scale, i) => (
           <Dot
             bg={theme.blue}
             borderRadius="50%"
-            height="8px"
             key={i}
-            opacity={isPlaying ? 1 : 0}
             scale={scale}
             transition="transform 0.2s ease"
-            width="8px"
+            size={32}
           />
         ))}
       </Box>

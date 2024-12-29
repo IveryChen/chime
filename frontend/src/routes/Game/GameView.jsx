@@ -129,7 +129,7 @@ export default class GameView extends React.PureComponent {
         <Header>
           <GameStatus gameState={gameState} roomCode={roomCode} />
         </Header>
-        <Box display="grid" gridTemplateRows="1fr 1fr auto">
+        <Box display="grid" gridTemplateRows="36% 1fr auto">
           <Players data={players} />
           <Box>
             {showRoundText && (
@@ -144,7 +144,7 @@ export default class GameView extends React.PureComponent {
             )}
             <Box
               display="grid"
-              gridTemplateRows="auto 1fr"
+              gridTemplateRows="100px 1fr"
               justifyContent="center"
             >
               <DotsVisualizer isPlaying={isPlaying} />
@@ -152,6 +152,7 @@ export default class GameView extends React.PureComponent {
                 <ReplayButton
                   currentSongUri={currentSongUri}
                   deviceId={deviceId}
+                  isPlaying={isPlaying}
                   onChangeIsPlaying={this.onChangeIsPlaying}
                   spotifyPlayer={spotifyPlayer}
                 />

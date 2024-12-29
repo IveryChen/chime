@@ -17,11 +17,17 @@ export default class ReplayButton extends React.PureComponent {
   };
 
   render() {
+    const { isPlaying } = this.props;
+
+    if (isPlaying) {
+      return null;
+    }
+
     return (
       <IconButton
         bg={theme.blue}
         Icon={MdReplay}
-        justifySelf="end"
+        justifySelf="center"
         label="Replay"
         onClick={this.onClick}
       />
