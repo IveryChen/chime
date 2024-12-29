@@ -9,21 +9,31 @@ import Players from "../../components/Players";
 import socketService from "../../services/socket";
 
 import GameStatus from "./GameStatus";
+import initializeSpotifySDK from "./initializeSpotifySDK";
+import playSnippet from "./playSnippet";
 
 export default class GameView extends React.PureComponent {
-  state = {
-    gameState: null,
-  };
+  state = { deviceId: null, gameState: null, spotifyPlayer: null };
+
+  onChangeDeviceId = (deviceId) => this.setState({ deviceId });
+
+  onChangeSpotifyPlayer = (spotifyPlayer) => this.setState({ spotifyPlayer });
 
   componentDidMount() {
     const { roomCode } = this.props;
 
     socketService.emit("initialize_game", { roomCode });
     socketService.on("game_state_update", this.handleGameStateUpdate);
+
+    initializeSpotifySDK(this.onChangeDeviceId, this.onChangeSpotifyPlayer);
   }
 
   componentWillUnmount() {
     socketService.off("game_state_update", this.handleGameStateUpdate);
+
+    if (this.state.spotifyPlayer) {
+      this.state.spotifyPlayer.disconnect();
+    }
   }
 
   handleGameStateUpdate = (data) => {
@@ -33,7 +43,7 @@ export default class GameView extends React.PureComponent {
 
   render() {
     const { players, roomCode } = this.props;
-    const { gameState } = this.state;
+    const { deviceId, gameState, spotifyPlayer } = this.state;
 
     return (
       <>
@@ -47,6 +57,7 @@ export default class GameView extends React.PureComponent {
             Icon={LiaArrowRightSolid}
             justifySelf="end"
             label="SPEAK TO GUESS"
+            onClick={() => playSnippet(deviceId, spotifyPlayer)}
           />
         </Box>
       </>
