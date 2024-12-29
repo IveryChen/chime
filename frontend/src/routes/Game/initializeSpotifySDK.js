@@ -5,7 +5,6 @@ export default function initializeSpotifySDK(
   return new Promise((resolve, reject) => {
     // First, set up the callback BEFORE loading the script
     window.onSpotifyWebPlaybackSDKReady = () => {
-      console.log("Spotify SDK ready");
       const player = new window.Spotify.Player({
         name: "Cassette Game",
         getOAuthToken: (cb) => {
@@ -27,8 +26,8 @@ export default function initializeSpotifySDK(
 
       player.addListener("ready", ({ device_id }) => {
         console.log("Spotify Player Ready with Device ID:", device_id);
-        onChangeDeviceId({ deviceId: device_id });
-        onChangeSpotifyPlayer({ spotifyPlayer: player });
+        onChangeDeviceId(device_id);
+        onChangeSpotifyPlayer(player);
         resolve({ player, deviceId: device_id });
       });
 
