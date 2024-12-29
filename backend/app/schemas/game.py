@@ -15,6 +15,7 @@ class GameState(BaseModel):
     current_round: int
     scores: Dict[str, int]  # player_id -> score
     current_player: Player
+    current_song: Optional[Dict] = None
     round_state: dict      # flexible dict for round-specific state
     timestamp: datetime
 
