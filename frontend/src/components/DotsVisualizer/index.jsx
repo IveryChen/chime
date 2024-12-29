@@ -1,14 +1,19 @@
 import React from "react";
+import { fill, map } from "lodash";
 
 import { theme } from "../../constants/constants";
 import Box from "../../components/Box";
 
 export default class DotsVisualizer extends React.PureComponent {
   state = {
-    scales: Array(16).fill(1),
+    scales: fill(Array(16), 1),
   };
 
   interval = null;
+
+  componentDidMount() {
+    this.startAnimation();
+  }
 
   componentDidUpdate(prevProps) {
     if (prevProps.isPlaying !== this.props.isPlaying) {
@@ -27,9 +32,7 @@ export default class DotsVisualizer extends React.PureComponent {
   startAnimation = () => {
     this.interval = setInterval(() => {
       this.setState({
-        scales: Array(16)
-          .fill()
-          .map(() => 0.5 + Math.random()),
+        scales: map(fill(Array(16)), () => 0.5 + Math.random()),
       });
     }, 100);
   };
@@ -38,7 +41,7 @@ export default class DotsVisualizer extends React.PureComponent {
     if (this.interval) {
       clearInterval(this.interval);
       this.interval = null;
-      this.setState({ scales: Array(16).fill(1) });
+      this.setState({ scales: fill(Array(16), 1) });
     }
   };
 
@@ -48,7 +51,7 @@ export default class DotsVisualizer extends React.PureComponent {
     return (
       <Box
         display="grid"
-        gridTemplateColumns="repeat(4, 1fr)" // 4x4 grid
+        gridTemplateColumns="repeat(4, 1fr)"
         gap="8px"
         justifyContent="center"
         justifyItems="center"
@@ -56,16 +59,16 @@ export default class DotsVisualizer extends React.PureComponent {
         margin="0 auto"
         padding="16px"
       >
-        {scales.map((scale, i) => (
+        {map(scales, (scale, i) => (
           <Box
             key={i}
             bg={theme.blue}
             borderRadius="50%"
             height="8px"
+            transition="transform 0.2s ease"
             width="8px"
             style={{
               transform: `scale(${scale})`,
-              transition: "transform 100ms ease",
             }}
           />
         ))}
