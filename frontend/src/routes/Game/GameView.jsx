@@ -9,8 +9,8 @@ import Players from "../../components/Players";
 import socketService from "../../services/socket";
 
 import GameStatus from "./GameStatus";
+import ReplayButton from "./ReplayButton";
 import initializeSpotifySDK from "./initializeSpotifySDK";
-import playSnippet from "./playSnippet";
 
 export default class GameView extends React.PureComponent {
   state = { deviceId: null, gameState: null, spotifyPlayer: null };
@@ -44,22 +44,26 @@ export default class GameView extends React.PureComponent {
   render() {
     const { players, roomCode } = this.props;
     const { deviceId, gameState, spotifyPlayer } = this.state;
-
-    const currentSongUri = gameState?.currentSong?.uri;
+    const currentSongUri =
+      gameState?.currentSong?.uri || gameState?.currentSong?.preview_url;
 
     return (
       <>
         <Header>
           <GameStatus gameState={gameState} roomCode={roomCode} />
         </Header>
-        <Box display="grid" gridTemplateRows="1fr auto">
+        <Box display="grid" gridTemplateRows="1fr auto auto">
           <Players data={players} />
+          <ReplayButton
+            currentSongUri={currentSongUri}
+            deviceId={deviceId}
+            spotifyPlayer={spotifyPlayer}
+          />
           <IconButton
             bg={theme.blue}
             Icon={LiaArrowRightSolid}
             justifySelf="end"
             label="SPEAK TO GUESS"
-            onClick={() => playSnippet(deviceId, spotifyPlayer, currentSongUri)}
           />
         </Box>
       </>
