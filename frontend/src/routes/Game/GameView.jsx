@@ -1,11 +1,12 @@
 import React from "react";
-import { LiaArrowRightSolid } from "react-icons/lia";
+import { LiaMicrophoneSolid } from "react-icons/lia";
 
 import { theme } from "../../constants/constants";
 import Box from "../../components/Box";
 import DotsVisualizer from "../../components/DotsVisualizer";
 import Header from "../../components/Header";
 import IconButton from "../../components/IconButton";
+import Input from "../../components/Input";
 import Players from "../../components/Players";
 import Text from "../../components/Text";
 import socketService from "../../services/socket";
@@ -159,12 +160,21 @@ export default class GameView extends React.PureComponent {
               )}
             </Box>
           </Box>
-          <IconButton
-            bg={theme.blue}
-            Icon={LiaArrowRightSolid}
-            justifySelf="end"
-            label="SPEAK TO GUESS"
-          />
+          <Box display="grid" gap="16px">
+            <Box display="grid" gap="8px">
+              <Input background={theme.lightgray} label="TITLE" />
+              <Input background={theme.lightgray} label="ARTIST" />
+            </Box>
+            <Box display="flex" justifyContent="space-between">
+              <IconButton
+                bg={theme.blue}
+                Icon={LiaMicrophoneSolid}
+                justifySelf="end"
+                label="SPEAK TO GUESS"
+              />
+              <IconButton bg={theme.blue} justifySelf="end" label="SUBMIT" />
+            </Box>
+          </Box>
         </Box>
       </>
     );
