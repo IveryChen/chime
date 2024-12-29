@@ -5,40 +5,41 @@ export default async function playSnippet(deviceId, spotifyPlayer, uri) {
   }
 
   try {
-    // Return a promise that resolves after both play and pause are complete
-    return new Promise(async (resolve) => {
-      // Start playing
-      await fetch(
-        `https://api.spotify.com/v1/me/player/play?device_id=${deviceId}`,
-        {
-          method: "PUT",
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem(
-              "spotify_access_token"
-            )}`,
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            uris: [uri],
-            position_ms: 30000, // Start 30 seconds in
-          }),
-        }
-      );
+    await fetch("https://api.spotify.com/v1/me/player", {
+      method: "PUT",
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("spotify_access_token")}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        device_ids: [deviceId],
+        play: false,
+      }),
+    });
 
-      // Stop after 2 second
+    // Start playing
+    await fetch(
+      `https://api.spotify.com/v1/me/player/play?device_id=${deviceId}`,
+      {
+        method: "PUT",
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem(
+            "spotify_access_token"
+          )}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          uris: [uri],
+          position_ms: 30000, // Start 30 seconds in
+        }),
+      }
+    );
+
+    // Return a promise that resolves after 2 seconds
+    return new Promise((resolve) => {
       setTimeout(async () => {
-        await fetch(
-          `https://api.spotify.com/v1/me/player/pause?device_id=${deviceId}`,
-          {
-            method: "PUT",
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem(
-                "spotify_access_token"
-              )}`,
-            },
-          }
-        );
-        resolve(); // Resolve after pause completes
+        await spotifyPlayer.pause();
+        resolve();
       }, 2000);
     });
   } catch (error) {
