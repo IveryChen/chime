@@ -90,18 +90,26 @@ def register_sio_events(sio):
         print(f"Room status before check: {room.status}")
 
         if all_selected:
-            room.status = "playing"
+            room.status = "loading_songs"
             print(f"Room status after check: {room.status}")
+
+            await sio.emit('players-update', {
+                'players': [p.dict() for p in room.players],
+                'status': room.status
+            }, room=room_code)
 
             try:
                 # Select songs for the game when all playlists are submitted
                 selected_songs = await game_service.select_songs_for_game(room_code)
                 print(f"Selected {len(selected_songs)} songs for the game")
 
+                room.status = "playing"
+
                 await sio.emit('all_playlists_submitted', {
                     'status': 'success',
                     'selectedSongs': selected_songs
                 }, room=room_code)
+
             except ValueError as e:
                 print(f"Error selecting songs: {str(e)}")
                 await sio.emit('error', {

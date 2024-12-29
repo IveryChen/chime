@@ -23,7 +23,7 @@ class GameRoom(BaseModel):
     room_code: str
     host: Player
     players: List[Player]
-    status: str = "waiting"  # waiting, playing, finished
+    status: str = "waiting"  # waiting, loading_songs, playing, finished
     game_state: Optional[GameState] = None
     selected_songs: Optional[List[Dict]] = None
 
