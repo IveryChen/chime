@@ -45,6 +45,8 @@ export default class GameView extends React.PureComponent {
     const { players, roomCode } = this.props;
     const { deviceId, gameState, spotifyPlayer } = this.state;
 
+    const currentSongUri = gameState?.currentSong?.uri;
+
     return (
       <>
         <Header>
@@ -57,7 +59,7 @@ export default class GameView extends React.PureComponent {
             Icon={LiaArrowRightSolid}
             justifySelf="end"
             label="SPEAK TO GUESS"
-            onClick={() => playSnippet(deviceId, spotifyPlayer)}
+            onClick={() => playSnippet(deviceId, spotifyPlayer, currentSongUri)}
           />
         </Box>
       </>
