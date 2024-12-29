@@ -130,7 +130,7 @@ export default class GameView extends React.PureComponent {
         <Header>
           <GameStatus gameState={gameState} roomCode={roomCode} />
         </Header>
-        <Box display="grid" gridTemplateRows="36% 1fr auto">
+        <Box display="grid" gridTemplateRows="32% 1fr auto">
           <Players data={players} />
           <Box>
             {showRoundText && (
