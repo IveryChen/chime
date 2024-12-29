@@ -1,4 +1,5 @@
 import React from "react";
+import { Async } from "react-async";
 import { LiaMicrophoneSolid } from "react-icons/lia";
 
 import { theme } from "../../constants/constants";
@@ -15,8 +16,11 @@ import GameStatus from "./GameStatus";
 import ReplayButton from "./ReplayButton";
 import initializeSpotifySDK from "./initializeSpotifySDK";
 import playSnippet from "./playSnippet";
+import submitGuess from "./submitGuess";
+
 export default class GameView extends React.PureComponent {
   state = {
+    artist: "",
     deviceId: null,
     gameState: null,
     isPlaying: false,
@@ -24,11 +28,16 @@ export default class GameView extends React.PureComponent {
     showReplayButton: false,
     showRoundText: false,
     spotifyPlayer: null,
+    title: "",
   };
+
+  onChangeArtist = (artist) => this.setState({ artist });
 
   onChangeDeviceId = (deviceId) => this.setState({ deviceId });
 
   onChangeSpotifyPlayer = (spotifyPlayer) => this.setState({ spotifyPlayer });
+
+  onChangeTitle = (title) => this.setState({ title });
 
   onChangeIsPlaying = (isPlaying) => this.setState({ isPlaying });
 
@@ -106,9 +115,21 @@ export default class GameView extends React.PureComponent {
     }
   };
 
+  handleSubmitGuess = async () => {
+    const { artist, title } = this.state;
+    const spotifyToken = localStorage.getItem("spotify_access_token");
+
+    if (!spotifyToken) {
+      throw new Error("Spotify authentication required");
+    }
+
+    return submitGuess(title, spotifyToken, artist);
+  };
+
   render() {
     const { players, roomCode } = this.props;
     const {
+      artist,
       deviceId,
       gameState,
       isPlaying,
@@ -116,6 +137,7 @@ export default class GameView extends React.PureComponent {
       showReplayButton,
       showRoundText,
       spotifyPlayer,
+      title,
     } = this.state;
 
     if (!gameState) {
@@ -162,8 +184,18 @@ export default class GameView extends React.PureComponent {
           </Box>
           <Box display="grid" gap="16px">
             <Box display="grid" gap="8px">
-              <Input background={theme.lightgray} label="TITLE" />
-              <Input background={theme.lightgray} label="ARTIST" />
+              <Input
+                background={theme.lightgray}
+                label="TITLE"
+                onChange={this.onChangeTitle}
+                value={title}
+              />
+              <Input
+                background={theme.lightgray}
+                label="ARTIST"
+                onChange={this.onChangeArtist}
+                value={artist}
+              />
             </Box>
             <Box display="flex" justifyContent="space-between">
               <IconButton
@@ -172,7 +204,17 @@ export default class GameView extends React.PureComponent {
                 justifySelf="end"
                 label="SPEAK TO GUESS"
               />
-              <IconButton bg={theme.blue} justifySelf="end" label="SUBMIT" />
+              <Async deferFn={this.handleSubmitGuess}>
+                {({ isPending, run }) => (
+                  <IconButton
+                    bg={theme.blue}
+                    disabled={isPending}
+                    label="SUBMIT"
+                    justifySelf="end"
+                    onClick={run}
+                  />
+                )}
+              </Async>
             </Box>
           </Box>
         </Box>
