@@ -88,7 +88,6 @@ export const initThreeJS = (canvas) => {
 
       object.traverse((child) => {
         if (child.isMesh) {
-          console.log("Found MESH:", child.name);
           const name = child.name.toLowerCase();
 
           child.geometry = optimizeGeometry(child.geometry);
