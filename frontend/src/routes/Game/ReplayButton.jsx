@@ -7,15 +7,13 @@ import IconButton from "../../components/IconButton";
 import playSnippet from "./playSnippet";
 
 export default class ReplayButton extends React.PureComponent {
-  onClick = () => {
+  onClick = async () => {
     const { deviceId, currentSongUri, onChangeIsPlaying, spotifyPlayer } =
       this.props;
 
     onChangeIsPlaying(true);
-    playSnippet(deviceId, spotifyPlayer, currentSongUri);
-    setTimeout(() => {
-      onChangeIsPlaying(false);
-    }, 2000);
+    await playSnippet(deviceId, spotifyPlayer, currentSongUri);
+    onChangeIsPlaying(false);
   };
 
   render() {

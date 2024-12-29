@@ -88,18 +88,20 @@ export default class GameView extends React.PureComponent {
     );
   };
 
-  playInitialSnippet = () => {
+  playInitialSnippet = async () => {
     const { deviceId, gameState, spotifyPlayer } = this.state;
     const currentSongUri =
       gameState?.currentSong?.uri || gameState?.currentSong?.preview_url;
 
     if (currentSongUri && deviceId && spotifyPlayer) {
       this.setState({ isPlaying: true });
-      playSnippet(deviceId, spotifyPlayer, currentSongUri);
 
-      setTimeout(() => {
-        this.setState({ isPlaying: false, showReplayButton: true });
-      }, 2000);
+      await playSnippet(deviceId, spotifyPlayer, currentSongUri);
+
+      this.setState({
+        isPlaying: false,
+        showReplayButton: true,
+      });
     }
   };
 
