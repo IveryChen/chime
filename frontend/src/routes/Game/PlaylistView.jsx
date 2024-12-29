@@ -34,6 +34,7 @@ export default class PlaylistView extends React.PureComponent {
       this.handleAllPlaylistsSubmitted
     );
     socketService.on("playlist_submitted", this.handlePlaylistSubmitted);
+    socketService.on("players-update", this.handlePlayersUpdate);
   }
 
   componentWillUnmount() {
@@ -42,6 +43,7 @@ export default class PlaylistView extends React.PureComponent {
       "all_playlists_submitted",
       this.handleAllPlaylistsSubmitted
     );
+    socketService.off("players-update", this.handlePlayersUpdate);
   }
 
   handlePlaylistSubmitted = ({ player_id, submitted }) => {
@@ -57,6 +59,12 @@ export default class PlaylistView extends React.PureComponent {
         status: "waiting",
       };
     });
+  };
+
+  handlePlayersUpdate = (data) => {
+    if (data.status) {
+      this.setState({ status: data.status });
+    }
   };
 
   handleAllPlaylistsSubmitted = ({ status, selectedSongs }) => {
@@ -150,6 +158,9 @@ export default class PlaylistView extends React.PureComponent {
             Waiting for other players... ({submittedPlayers.size} /{" "}
             {players.length} ready)
           </Text>
+        )}
+        {status === "loading_songs" && (
+          <Text bg={theme.yellow}>Randomly selecting songs...</Text>
         )}
         <Box
           display="grid"
