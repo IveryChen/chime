@@ -1,8 +1,13 @@
+import styled from "@emotion/styled";
 import React from "react";
 import { fill, map } from "lodash";
 
 import { theme } from "../../constants/constants";
 import Box from "../../components/Box";
+
+const Dot = styled(Box)`
+  transform: ${(props) => `scale(${props.scale})`};
+`;
 
 export default class DotsVisualizer extends React.PureComponent {
   state = {
@@ -60,16 +65,14 @@ export default class DotsVisualizer extends React.PureComponent {
         padding="16px"
       >
         {map(scales, (scale, i) => (
-          <Box
+          <Dot
             key={i}
             bg={theme.blue}
             borderRadius="50%"
             height="8px"
             transition="transform 0.2s ease"
             width="8px"
-            style={{
-              transform: `scale(${scale})`,
-            }}
+            scale={scale}
           />
         ))}
       </Box>
