@@ -35,6 +35,7 @@ export default async function handleAuth() {
     }
 
     const platform = getPlatform();
+    console.log("Detected platform:", platform);
 
     // Handle Desktop platforms
     if (platform === "Desktop") {
@@ -50,9 +51,14 @@ export default async function handleAuth() {
       );
 
       if (popup) {
+        console.log("Popup opened successfully");
         return new Promise((resolve) => {
+          console.log("Starting popup check interval");
+
           const checkPopup = setInterval(() => {
             const popupUrl = popup.location.href;
+            console.log("Current popup URL:", popupUrl);
+
             if (popupUrl.includes("access_token")) {
               const popupParams = new URLSearchParams(
                 popup.location.hash.substring(1)
@@ -92,6 +98,8 @@ export default async function handleAuth() {
         }
       }
     }
+
+    console.log("Falling through to redirect");
 
     return { redirectToLogin: true };
   } catch (error) {
