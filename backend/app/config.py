@@ -27,7 +27,6 @@ class Settings(BaseSettings):
             return [
                 self.FRONTEND_URL,
                 self.CORS_ORIGIN,
-                "https://chime-theta.vercel.app"
             ]
         return [
             "http://localhost:5173",

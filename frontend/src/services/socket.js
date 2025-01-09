@@ -17,7 +17,7 @@ class SocketService {
     console.log("Attempting to connect to:", SOCKET_URL);
 
     this.socket = io(SOCKET_URL, {
-      transports: ["websocket", "polling"],
+      transports: ["polling"],
       path: "/sockets",
       withCredentials: true,
       reconnection: true,
@@ -32,12 +32,18 @@ class SocketService {
     });
 
     this.socket.on("connect", () => {
-      console.error("Connection error details:", {
-        message: error.message,
-        description: error.description,
-        type: error.type,
-        context: this.socket.io.uri,
+      console.log(
+        "Connected with transport:",
+        this.socket.io.engine.transport.name
+      );
+
+      this.socket.io.engine.on("upgrade", () => {
+        console.log(
+          "Transport upgraded to:",
+          this.socket.io.engine.transport.name
+        );
       });
+
       console.log("Connected to socket server");
       this.isConnected = true;
 
@@ -49,6 +55,14 @@ class SocketService {
 
       this.eventHandlers.forEach((handler, event) => {
         this.socket.on(event, handler);
+      });
+    });
+
+    this.socket.on("connect_error", (error) => {
+      console.error("Connection error:", {
+        error: error.message,
+        type: error.type,
+        transport: this.socket?.io?.engine?.transport?.name,
       });
     });
 
