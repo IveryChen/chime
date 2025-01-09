@@ -35,7 +35,6 @@ export default async function handleAuth() {
     }
 
     const platform = getPlatform();
-    console.log("Detected platform:", platform);
 
     // Handle Desktop platforms
     if (platform === "Desktop") {
@@ -51,13 +50,9 @@ export default async function handleAuth() {
       );
 
       if (popup) {
-        console.log("Popup opened successfully");
         return new Promise((resolve) => {
-          console.log("Starting popup check interval");
-
           const checkPopup = setInterval(() => {
             const popupUrl = popup.location.href;
-            console.log("Current popup URL:", popupUrl);
 
             if (popupUrl.includes("access_token")) {
               const popupParams = new URLSearchParams(
@@ -76,15 +71,10 @@ export default async function handleAuth() {
         });
       }
     } else {
-      console.log("Starting mobile auth flow");
-
       // Handle mobile platforms
       const hasSpotifyApp = await detectSpotifyApp();
-      console.log("Spotify app detected:", hasSpotifyApp);
 
       if (hasSpotifyApp) {
-        console.log("Using Spotify app deep link");
-
         // Convert web URL to app URL
         const spotifyAuthUrl = data.url.replace(
           "https://accounts.spotify.com",
@@ -99,14 +89,10 @@ export default async function handleAuth() {
           window.location.href = data.url;
         }, 1500);
       } else {
-        console.log("Using web auth flow");
-
         // Direct to web auth if no app
         window.location.href = data.url;
       }
     }
-
-    console.log("Falling through to redirect");
 
     return { redirectToLogin: true };
   } catch (error) {

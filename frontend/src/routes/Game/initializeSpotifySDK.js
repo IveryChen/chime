@@ -14,7 +14,6 @@ export default function initializeSpotifySDK(
       });
 
       player.addListener("ready", ({ device_id }) => {
-        console.log("Spotify Player Ready with Device ID:", device_id);
         onChangeDeviceId(device_id);
         onChangeSpotifyPlayer(player);
         resolve({ player, deviceId: device_id });

@@ -3,15 +3,10 @@ import SpotifyWebApi from "spotify-web-api-js";
 const spotifyApi = new SpotifyWebApi();
 
 export const initializeSpotify = () => {
-  const initStart = performance.now();
-
   // First check localStorage
   const storedToken = localStorage.getItem("spotify_access_token");
   if (storedToken) {
     spotifyApi.setAccessToken(storedToken);
-    console.log(
-      `Spotify initialization took ${performance.now() - initStart}ms`
-    );
 
     return spotifyApi;
   }

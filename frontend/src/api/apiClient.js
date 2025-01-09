@@ -3,7 +3,6 @@ import API_URL from "../constants/apiUrl";
 export const apiClient = {
   async request(endpoint, options = {}) {
     const url = `${API_URL}${endpoint}`;
-    const startTime = performance.now();
 
     try {
       const response = await fetch(url, {
@@ -23,7 +22,6 @@ export const apiClient = {
       }
 
       const data = response.json();
-      console.log(`API call to ${url} took ${performance.now() - startTime}ms`);
 
       return data;
     } catch (error) {
