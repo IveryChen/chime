@@ -74,28 +74,35 @@ export default async function handleAuth() {
             }
           }, 100);
         });
-      } else {
-        // Handle mobile platforms
-        const hasSpotifyApp = await detectSpotifyApp();
+      }
+    } else {
+      console.log("Starting mobile auth flow");
 
-        if (hasSpotifyApp) {
-          // Convert web URL to app URL
-          const spotifyAuthUrl = data.url.replace(
-            "https://accounts.spotify.com",
-            "spotify://accounts.spotify.com"
-          );
+      // Handle mobile platforms
+      const hasSpotifyApp = await detectSpotifyApp();
+      console.log("Spotify app detected:", hasSpotifyApp);
 
-          // Try deep linking first
-          window.location.href = spotifyAuthUrl;
+      if (hasSpotifyApp) {
+        console.log("Using Spotify app deep link");
 
-          // Fallback to web auth after delay if app doesn't open
-          setTimeout(() => {
-            window.location.href = data.url;
-          }, 1500);
-        } else {
-          // Direct to web auth if no app
+        // Convert web URL to app URL
+        const spotifyAuthUrl = data.url.replace(
+          "https://accounts.spotify.com",
+          "spotify://accounts.spotify.com"
+        );
+
+        // Try deep linking first
+        window.location.href = spotifyAuthUrl;
+
+        // Fallback to web auth after delay if app doesn't open
+        setTimeout(() => {
           window.location.href = data.url;
-        }
+        }, 1500);
+      } else {
+        console.log("Using web auth flow");
+
+        // Direct to web auth if no app
+        window.location.href = data.url;
       }
     }
 
