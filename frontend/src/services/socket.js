@@ -25,6 +25,10 @@ class SocketService {
       autoConnect: true,
       reconnectionDelay: 1000,
       forceNew: true,
+      // Add timeout config
+      timeout: 20000,
+      // Enable debug logs
+      debug: true,
     });
 
     this.socket.on("connect", () => {
@@ -46,6 +50,10 @@ class SocketService {
       this.eventHandlers.forEach((handler, event) => {
         this.socket.on(event, handler);
       });
+    });
+
+    this.socket.io.on("error", (error) => {
+      console.error("Transport Error:", error);
     });
 
     this.socket.on("disconnect", (reason) => {
