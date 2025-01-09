@@ -4,13 +4,9 @@ import detectSpotifyApp from "../../utils/detectSpotifyApp";
 import getPlatform from "../../utils/getPlatform";
 
 export default async function handleAuth() {
-  console.time("auth-flow");
-
   const storedToken = localStorage.getItem("spotify_access_token");
 
   if (storedToken) {
-    console.timeEnd("auth-flow");
-
     spotifyApi.setAccessToken(storedToken);
     return { isAuthenticated: true };
   }

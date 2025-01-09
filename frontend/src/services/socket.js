@@ -2,7 +2,7 @@ import { io } from "socket.io-client";
 import state from "../state";
 
 const SOCKET_URL = import.meta.env.PROD
-  ? "wss://chime-6r3r.onrender.com"
+  ? "https://chime-6r3r.onrender.com"
   : "ws://localhost:8000";
 
 class SocketService {
