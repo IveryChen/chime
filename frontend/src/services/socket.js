@@ -14,6 +14,8 @@ class SocketService {
   }
 
   connect() {
+    console.log("Attempting to connect to:", SOCKET_URL);
+
     this.socket = io(SOCKET_URL, {
       transports: ["websocket", "polling"],
       path: "/sockets",
@@ -26,6 +28,12 @@ class SocketService {
     });
 
     this.socket.on("connect", () => {
+      console.error("Connection error details:", {
+        message: error.message,
+        description: error.description,
+        type: error.type,
+        context: this.socket.io.uri,
+      });
       console.log("Connected to socket server");
       this.isConnected = true;
 

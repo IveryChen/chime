@@ -7,7 +7,7 @@ from app.config import settings
 from app.sockets import register_sio_events
 
 app = FastAPI(
-    title="Chime Game API",
+    title="Cassette",
     docs_url="/docs",
     redoc_url="/redoc"
 )
