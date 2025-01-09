@@ -4,9 +4,13 @@ import detectSpotifyApp from "../../utils/detectSpotifyApp";
 import getPlatform from "../../utils/getPlatform";
 
 export default async function handleAuth() {
+  console.time("auth-flow");
+
   const storedToken = localStorage.getItem("spotify_access_token");
 
   if (storedToken) {
+    console.timeEnd("auth-flow");
+
     spotifyApi.setAccessToken(storedToken);
     return { isAuthenticated: true };
   }
@@ -22,7 +26,9 @@ export default async function handleAuth() {
   }
 
   try {
+    console.time("api-call");
     const data = await apiClient.get("/auth/login");
+    console.timeEnd("api-call");
 
     if (!data.url) {
       throw new Error("No login URL received");
