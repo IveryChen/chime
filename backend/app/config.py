@@ -26,7 +26,8 @@ class Settings(BaseSettings):
         if self.is_production:
             return [
                 self.FRONTEND_URL,
-                self.CORS_ORIGIN
+                self.CORS_ORIGIN,
+                "https://chime-theta.vercel.app"
             ]
         return [
             "http://localhost:5173",
