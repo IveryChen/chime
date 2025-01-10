@@ -1,13 +1,8 @@
 import React from "react";
-import { Async } from "react-async";
-import { LiaMicrophoneSolid } from "react-icons/lia";
 
-import { theme } from "../../constants/constants";
 import Box from "../../components/Box";
 import DotsVisualizer from "../../components/DotsVisualizer";
 import Header from "../../components/Header";
-import IconButton from "../../components/IconButton";
-import Input from "../../components/Input";
 import Players from "../../components/Players";
 import Text from "../../components/Text";
 import socketService from "../../services/socket";
@@ -16,10 +11,10 @@ import GameStatus from "./GameStatus";
 import ReplayButton from "./ReplayButton";
 import initializeSpotifySDK from "./initializeSpotifySDK";
 import playSnippet from "./playSnippet";
+import Guess from "./Guess";
 
 export default class GameView extends React.PureComponent {
   state = {
-    artist: "",
     deviceId: null,
     gameState: null,
     isPlaying: false,
@@ -28,16 +23,11 @@ export default class GameView extends React.PureComponent {
     showRoundText: false,
     spotifyPlayer: null,
     submitStatus: null,
-    title: "",
   };
-
-  onChangeArtist = (artist) => this.setState({ artist });
 
   onChangeDeviceId = (deviceId) => this.setState({ deviceId });
 
   onChangeSpotifyPlayer = (spotifyPlayer) => this.setState({ spotifyPlayer });
-
-  onChangeTitle = (title) => this.setState({ title });
 
   onChangeIsPlaying = (isPlaying) => this.setState({ isPlaying });
 
@@ -115,47 +105,9 @@ export default class GameView extends React.PureComponent {
     }
   };
 
-  handleSubmitGuess = async () => {
-    const { artist, gameState, title } = this.state;
-    const currentSong = gameState?.currentSong;
-    const playerId = gameState?.currentPlayer?.id;
-
-    const normalize = (str) => str.toLowerCase().trim();
-    const isArtistCorrect = currentSong.artists.some(
-      (artistName) => normalize(artistName) === normalize(artist)
-    );
-    const isTitleCorrect = normalize(currentSong.name) === normalize(title);
-
-    let score = 0;
-    if (isArtistCorrect) score += 1;
-    if (isTitleCorrect) score += 1;
-
-    socketService.emit("submit_score", {
-      roomCode: this.props.roomCode,
-      playerId,
-      score: score,
-      guess: {
-        artist,
-        title,
-        isArtistCorrect,
-        isTitleCorrect,
-      },
-    });
-
-    this.setState({
-      artist: "",
-      title: "",
-      submitStatus: {
-        artist: isArtistCorrect,
-        title: isTitleCorrect,
-      },
-    });
-  };
-
   render() {
     const { players, roomCode } = this.props;
     const {
-      artist,
       deviceId,
       gameState,
       isPlaying,
@@ -163,7 +115,6 @@ export default class GameView extends React.PureComponent {
       showReplayButton,
       showRoundText,
       spotifyPlayer,
-      title,
     } = this.state;
 
     if (!gameState) {
@@ -208,41 +159,7 @@ export default class GameView extends React.PureComponent {
               )}
             </Box>
           </Box>
-          <Box display="grid" gap="16px">
-            <Box display="grid" gap="8px">
-              <Input
-                background={theme.lightgray}
-                label="TITLE"
-                onChange={this.onChangeTitle}
-                value={title}
-              />
-              <Input
-                background={theme.lightgray}
-                label="ARTIST"
-                onChange={this.onChangeArtist}
-                value={artist}
-              />
-            </Box>
-            <Box display="flex" justifyContent="space-between">
-              <IconButton
-                bg={theme.blue}
-                Icon={LiaMicrophoneSolid}
-                justifySelf="end"
-                label="SPEAK TO GUESS"
-              />
-              <Async deferFn={this.handleSubmitGuess}>
-                {({ isPending, run }) => (
-                  <IconButton
-                    bg={theme.blue}
-                    disabled={isPending}
-                    label="SUBMIT"
-                    justifySelf="end"
-                    onClick={run}
-                  />
-                )}
-              </Async>
-            </Box>
-          </Box>
+          <Guess gameState={gameState} roomCode={roomCode} />
         </Box>
       </>
     );
