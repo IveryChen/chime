@@ -16,7 +16,6 @@ import GameStatus from "./GameStatus";
 import ReplayButton from "./ReplayButton";
 import initializeSpotifySDK from "./initializeSpotifySDK";
 import playSnippet from "./playSnippet";
-import submitGuess from "./submitGuess";
 
 export default class GameView extends React.PureComponent {
   state = {
@@ -28,6 +27,7 @@ export default class GameView extends React.PureComponent {
     showReplayButton: false,
     showRoundText: false,
     spotifyPlayer: null,
+    submitStatus: null,
     title: "",
   };
 
@@ -116,14 +116,40 @@ export default class GameView extends React.PureComponent {
   };
 
   handleSubmitGuess = async () => {
-    const { artist, title } = this.state;
-    const spotifyToken = localStorage.getItem("spotify_access_token");
+    const { artist, gameState, title } = this.state;
+    const currentSong = gameState?.currentSong;
+    const playerId = gameState?.currentPlayer?.id;
 
-    if (!spotifyToken) {
-      throw new Error("Spotify authentication required");
-    }
+    const normalize = (str) => str.toLowerCase().trim();
+    const isArtistCorrect = currentSong.artists.some(
+      (artistName) => normalize(artistName) === normalize(artist)
+    );
+    const isTitleCorrect = normalize(currentSong.name) === normalize(title);
 
-    return submitGuess(title, spotifyToken, artist);
+    let score = 0;
+    if (isArtistCorrect) score += 1;
+    if (isTitleCorrect) score += 1;
+
+    socketService.emit("submit_score", {
+      roomCode: this.props.roomCode,
+      playerId,
+      score: score,
+      guess: {
+        artist,
+        title,
+        isArtistCorrect,
+        isTitleCorrect,
+      },
+    });
+
+    this.setState({
+      artist: "",
+      title: "",
+      submitStatus: {
+        artist: isArtistCorrect,
+        title: isTitleCorrect,
+      },
+    });
   };
 
   render() {
