@@ -26,6 +26,19 @@ app.add_middleware(
 app.include_router(auth.router, prefix="/api/auth", tags=["auth"])
 app.include_router(game.router, prefix="/api/game", tags=["game"])
 
+sio = socketio.AsyncServer(
+    async_mode='asgi',
+    cors_allowed_origins=settings.allowed_origins,
+    logger=True,
+    transports=['websocket', 'polling']
+)
+
+register_sio_events(sio)
+
+socket_app = socketio.ASGIApp(socketio_server=sio)
+
+app.mount("/ws", socket_app) 
+
 # Debug endpoint
 @app.get("/debug/env")
 async def debug_environment():
@@ -38,20 +51,3 @@ async def debug_environment():
         "spotify_redirect_uri": settings.SPOTIFY_REDIRECT_URI,
         "allowed_origins": settings.allowed_origins
     }
-
-sio = socketio.AsyncServer(
-    async_mode='asgi',
-    cors_allowed_origins=settings.allowed_origins,
-    logger=True,
-    transports=['websocket', 'polling']
-)
-
-register_sio_events(sio)
-
-socket_app = socketio.ASGIApp(
-    socketio_server=sio,
-    other_asgi_app=app,
-    socketio_path='sockets.io'
-)
-
-# app = socket_app
