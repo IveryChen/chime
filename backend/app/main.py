@@ -43,6 +43,7 @@ sio = socketio.AsyncServer(
     async_mode='asgi',
     cors_allowed_origins=settings.allowed_origins,
     logger=True,
+    transports=['websocket', 'polling']
 )
 
 register_sio_events(sio)
@@ -50,7 +51,7 @@ register_sio_events(sio)
 socket_app = socketio.ASGIApp(
     socketio_server=sio,
     other_asgi_app=app,
-    socketio_path='sockets'
+    socketio_path='sockets.io'
 )
 
 # app = socket_app
