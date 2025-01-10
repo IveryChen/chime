@@ -12,6 +12,20 @@ app = FastAPI(
     redoc_url="/redoc"
 )
 
+# CORS middleware
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=settings.allowed_origins,
+    allow_credentials=True,
+    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allow_headers=["Content-Type", "Authorization", "Accept"],
+    expose_headers=["*"]
+)
+
+# Include routers
+app.include_router(auth.router, prefix="/api/auth", tags=["auth"])
+app.include_router(game.router, prefix="/api/game", tags=["game"])
+
 sio = socketio.AsyncServer(
     async_mode='asgi',
     cors_allowed_origins=settings.allowed_origins,
@@ -27,20 +41,6 @@ socket_app = socketio.ASGIApp(
 )
 
 app = socket_app
-
-# CORS middleware
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=settings.allowed_origins,
-    allow_credentials=True,
-    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allow_headers=["Content-Type", "Authorization", "Accept"],
-    expose_headers=["*"]
-)
-
-# Include routers
-app.include_router(auth.router, prefix="/api/auth", tags=["auth"])
-app.include_router(game.router, prefix="/api/game", tags=["game"])
 
 # Debug endpoint
 @app.get("/debug/env")
