@@ -24,10 +24,11 @@ class Settings(BaseSettings):
     @property
     def allowed_origins(self) -> list[str]:
         if self.is_production:
-            return [
-                self.FRONTEND_URL,
-                self.CORS_ORIGIN,
-            ]
+            origins = {
+            self.FRONTEND_URL,
+            self.CORS_ORIGIN
+            }
+            return list(origins)
         return [
             "http://localhost:5173",
             "http://127.0.0.1:5173",
