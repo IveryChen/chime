@@ -56,6 +56,31 @@ def register_sio_events(sio):
     sio.on('join-room', join_room_handler)
 
     @sio.event
+    async def submit_score(sid, data):
+        try:
+            room_code = data['roomCode']
+            player_id = data['playerId']
+            score = data['score']
+            guess = data['guess']
+
+            room = game_service.get_room(room_code)
+
+            # Update player's score
+            room.game_state.scores[player_id] += score
+
+            # Emit score update to all players
+            await sio.emit('score_update', {
+                'scores': room.game_state.scores,
+                'lastGuess': {
+                    'playerId': player_id,
+                    'guess': guess
+                }
+            }, room=room_code)
+
+        except Exception as e:
+            print(f"Error submitting score: {str(e)}")
+
+    @sio.event
     async def leave_room(sid, data):
         room_code = data['roomCode']
         if room_code in game_service.rooms:
