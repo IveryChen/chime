@@ -12,22 +12,6 @@ app = FastAPI(
     redoc_url="/redoc"
 )
 
-sio = socketio.AsyncServer(
-    async_mode='asgi',
-    cors_allowed_origins=settings.allowed_origins,
-    logger=True,
-)
-
-register_sio_events(sio)
-
-socket_app = socketio.ASGIApp(
-    socketio_server=sio,
-    other_asgi_app=app,
-    socketio_path='sockets'
-)
-
-app.mount('/', socket_app)
-
 # CORS middleware
 app.add_middleware(
     CORSMiddleware,
@@ -54,3 +38,19 @@ async def debug_environment():
         "spotify_redirect_uri": settings.SPOTIFY_REDIRECT_URI,
         "allowed_origins": settings.allowed_origins
     }
+
+sio = socketio.AsyncServer(
+    async_mode='asgi',
+    cors_allowed_origins=settings.allowed_origins,
+    logger=True,
+)
+
+register_sio_events(sio)
+
+socket_app = socketio.ASGIApp(
+    socketio_server=sio,
+    other_asgi_app=app,
+    socketio_path='sockets'
+)
+
+# app = socket_app
