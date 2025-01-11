@@ -1,17 +1,15 @@
 import React from "react";
 
 import Box from "../../components/Box";
-import DotsVisualizer from "../../components/DotsVisualizer";
 import Header from "../../components/Header";
 import Players from "../../components/Players";
-import Text from "../../components/Text";
 import socketService from "../../services/socket";
 
 import GameStatus from "./GameStatus";
-import ReplayButton from "./ReplayButton";
 import initializeSpotifySDK from "./initializeSpotifySDK";
 import playSnippet from "./playSnippet";
 import Guess from "./Guess";
+import Turn from "./Turn";
 
 export default class GameView extends React.PureComponent {
   state = {
@@ -131,34 +129,17 @@ export default class GameView extends React.PureComponent {
         </Header>
         <Box display="grid" gridTemplateRows="32% 1fr auto">
           <Players data={players} />
-          <Box>
-            {showRoundText && (
-              <Text fontSize="32px" fontWeight="bold" textAlign="center">
-                Round {gameState.currentRound}
-              </Text>
-            )}
-            {showPlayerName && (
-              <Text fontSize="24px" textAlign="center">
-                {gameState.currentPlayer.name}&apos;s Turn
-              </Text>
-            )}
-            <Box
-              display="grid"
-              gridTemplateRows="100px 1fr"
-              justifyContent="center"
-            >
-              <DotsVisualizer isPlaying={isPlaying} />
-              {showReplayButton && (
-                <ReplayButton
-                  currentSongUri={currentSongUri}
-                  deviceId={deviceId}
-                  isPlaying={isPlaying}
-                  onChangeIsPlaying={this.onChangeIsPlaying}
-                  spotifyPlayer={spotifyPlayer}
-                />
-              )}
-            </Box>
-          </Box>
+          <Turn
+            currentSongUri={currentSongUri}
+            deviceId={deviceId}
+            gameState={gameState}
+            isPlaying={isPlaying}
+            onChangeIsPlaying={this.onChangeIsPlaying}
+            showPlayerName={showPlayerName}
+            showReplayButton={showReplayButton}
+            showRoundText={showRoundText}
+            spotifyPlayer={spotifyPlayer}
+          />
           <Guess gameState={gameState} roomCode={roomCode} />
         </Box>
       </>

@@ -17,8 +17,8 @@ export default class Guess extends React.PureComponent {
   onChangeTitle = (title) => this.setState({ title });
 
   handleSubmitGuess = async () => {
-    const { artist, title } = this.state;
     const { gameState, roomCode } = this.props;
+    const { artist, title } = this.state;
     const currentSong = gameState?.currentSong;
     const playerId = gameState?.currentPlayer?.id;
 
