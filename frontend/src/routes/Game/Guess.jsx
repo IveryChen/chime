@@ -10,15 +10,16 @@ import Input from "../../components/Input";
 import socketService from "../../services/socket";
 
 export default class Guess extends React.PureComponent {
-  state = { artist: "", title: "" };
+  state = { artist: "", song: "" };
 
   onChangeArtist = (artist) => this.setState({ artist });
 
-  onChangeTitle = (title) => this.setState({ title });
+  onChangeSong = (song) => this.setState({ song });
 
   handleSubmitGuess = async () => {
-    const { gameState, roomCode } = this.props;
-    const { artist, title } = this.state;
+    const { gameState, onChangeAnswer, onChangeCurrentGuess, roomCode } =
+      this.props;
+    const { artist, song } = this.state;
     const currentSong = gameState?.currentSong;
     const playerId = gameState?.currentPlayer?.id;
 
@@ -26,37 +27,42 @@ export default class Guess extends React.PureComponent {
     const isArtistCorrect = currentSong.artists.some(
       (artistName) => normalize(artistName) === normalize(artist)
     );
-    const isTitleCorrect = normalize(currentSong.name) === normalize(title);
+    const isSongCorrect = normalize(currentSong.name) === normalize(song);
 
     let score = 0;
     if (isArtistCorrect) score += 1;
-    if (isTitleCorrect) score += 1;
+    if (isSongCorrect) score += 1;
+
+    const guess = {
+      artist,
+      song,
+      isArtistCorrect,
+      isSongCorrect,
+    };
 
     socketService.emit("submit_score", {
       roomCode,
       playerId,
       score: score,
-      guess: {
-        artist,
-        title,
-        isArtistCorrect,
-        isTitleCorrect,
-      },
+      guess,
     });
+
+    onChangeAnswer(true);
+    onChangeCurrentGuess(guess);
 
     this.setState({
       artist: "",
-      title: "",
+      song: "",
       submitStatus: {
         artist: isArtistCorrect,
-        title: isTitleCorrect,
+        song: isSongCorrect,
       },
     });
   };
 
   render() {
     const { gameState } = this.props;
-    const { artist, title } = this.state;
+    const { artist, song } = this.state;
 
     if (!gameState) {
       return null;
@@ -67,9 +73,9 @@ export default class Guess extends React.PureComponent {
         <Box display="grid" gap="8px">
           <Input
             background={theme.lightgray}
-            label="TITLE"
-            onChange={this.onChangeTitle}
-            value={title}
+            label="SONG"
+            onChange={this.onChangeSong}
+            value={song}
           />
           <Input
             background={theme.lightgray}

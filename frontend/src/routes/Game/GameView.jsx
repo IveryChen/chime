@@ -5,14 +5,17 @@ import Header from "../../components/Header";
 import Players from "../../components/Players";
 import socketService from "../../services/socket";
 
+import Answer from "./Answer";
+import Guess from "./Guess";
 import GameStatus from "./GameStatus";
+import Turn from "./Turn";
 import initializeSpotifySDK from "./initializeSpotifySDK";
 import playSnippet from "./playSnippet";
-import Guess from "./Guess";
-import Turn from "./Turn";
 
 export default class GameView extends React.PureComponent {
   state = {
+    answer: false,
+    currentGuess: null,
     deviceId: null,
     gameState: null,
     isPlaying: false,
@@ -22,6 +25,10 @@ export default class GameView extends React.PureComponent {
     spotifyPlayer: null,
     submitStatus: null,
   };
+
+  onChangeAnswer = (answer) => this.setState({ answer });
+
+  onChangeCurrentGuess = (currentGuess) => this.setState({ currentGuess });
 
   onChangeDeviceId = (deviceId) => this.setState({ deviceId });
 
@@ -106,6 +113,8 @@ export default class GameView extends React.PureComponent {
   render() {
     const { players, roomCode } = this.props;
     const {
+      answer,
+      currentGuess,
       deviceId,
       gameState,
       isPlaying,
@@ -129,18 +138,29 @@ export default class GameView extends React.PureComponent {
         </Header>
         <Box display="grid" gridTemplateRows="32% 1fr auto">
           <Players data={players} />
-          <Turn
-            currentSongUri={currentSongUri}
-            deviceId={deviceId}
-            gameState={gameState}
-            isPlaying={isPlaying}
-            onChangeIsPlaying={this.onChangeIsPlaying}
-            showPlayerName={showPlayerName}
-            showReplayButton={showReplayButton}
-            showRoundText={showRoundText}
-            spotifyPlayer={spotifyPlayer}
-          />
-          <Guess gameState={gameState} roomCode={roomCode} />
+          {answer ? (
+            <Answer currentGuess={currentGuess} gameState={gameState} />
+          ) : (
+            <>
+              <Turn
+                currentSongUri={currentSongUri}
+                deviceId={deviceId}
+                gameState={gameState}
+                isPlaying={isPlaying}
+                onChangeIsPlaying={this.onChangeIsPlaying}
+                showPlayerName={showPlayerName}
+                showReplayButton={showReplayButton}
+                showRoundText={showRoundText}
+                spotifyPlayer={spotifyPlayer}
+              />
+              <Guess
+                gameState={gameState}
+                onChangeAnswer={this.onChangeAnswer}
+                onChangeCurrentGuess={this.onChangeCurrentGuess}
+                roomCode={roomCode}
+              />
+            </>
+          )}
         </Box>
       </>
     );

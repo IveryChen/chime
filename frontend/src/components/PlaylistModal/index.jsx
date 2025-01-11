@@ -26,7 +26,12 @@ export default class PlaylistModal extends React.PureComponent {
             const artistsWithDots = intersperse(
               dot,
               map(artists, (artist) => (
-                <Text flexShrink={0} fontWeight="medium" fontSize={12}>
+                <Text
+                  flexShrink={0}
+                  fontWeight="medium"
+                  fontSize={12}
+                  key={artist.name}
+                >
                   {artist.name}
                 </Text>
               ))
