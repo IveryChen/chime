@@ -102,8 +102,9 @@ class GameService:
                             playback_info = {
                                 'id': track['id'],
                                 'name': track['name'],
-                                'artists': [artist['name'] for artist in track['artists']],
-                                'popularity': track.get('popularity', 0)
+                                'artists': track['artists'],
+                                'popularity': track.get('popularity', 0),
+                                'album_image': track['album']['images'][0]['url'] if track['album']['images'] else None  # Add this
                             }
 
                             # Try Spotify preview first
@@ -163,14 +164,31 @@ class GameService:
 
         selected_songs = random.sample(filtered_songs, num_songs_needed)
 
+        artist_ids = list(set(
+            song['track']['artists'][0]['id']
+            for song in selected_songs
+        ))
+
+        artist_images = {}
+        for i in range(0, len(artist_ids), 50):
+            batch_ids = artist_ids[i:i + 50]
+            artists_info = sp.artists(batch_ids)['artists']
+            for artist in artists_info:
+                artist_images[artist['id']] = (
+                    artist['images'][0]['url'] if artist['images'] else None
+                )
+
         formatted_songs = [{
             'id': song['track']['id'],
             'title': song['track']['name'],
-            'artists': song['track']['artists'],
+            'artists': [artist['name'] for artist in song['track']['artists']],
+            'artist_ids': [artist['id'] for artist in song['track']['artists']],
             'preview_type': song['track']['preview_type'],
             'preview_url': song['track'].get('preview_url'),
             'uri': song['track'].get('uri'),
-            'popularity': song['track']['popularity']
+            'popularity': song['track']['popularity'],
+            'album_image': song['track']['album_image'],
+            'artist_image': artist_images.get(song['track']['artists'][0]['id'])
         } for song in selected_songs]
 
         room.selected_songs = formatted_songs

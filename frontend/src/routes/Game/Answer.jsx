@@ -19,12 +19,12 @@ export default class Answer extends React.PureComponent {
         <Box display="grid" gap="8px" justifyItems="center">
           <Text fontSize="24px">ARTIST</Text>
           <Box
-            // alt={currentSong.artist}
+            alt={currentSong.artist}
             as="img"
             aspectRatio={1}
             borderStyle="solid"
             borderWidth={1}
-            // src={album.images[0].url}
+            src={currentSong.artistImage}
             size={180}
           />
           {map(currentSong.artists, (artist) => (
@@ -52,12 +52,12 @@ export default class Answer extends React.PureComponent {
         <Box display="grid" gap="8px" justifyItems="center">
           <Text fontSize="24px">TITLE</Text>
           <Box
-            // alt={currentSong.artist}
+            alt={currentSong.title}
             as="img"
             aspectRatio={1}
             borderStyle="solid"
             borderWidth={1}
-            // src={album.images[0].url}
+            src={currentSong.albumImage}
             size={180}
           />
           <Text
