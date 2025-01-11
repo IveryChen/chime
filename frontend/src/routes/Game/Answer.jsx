@@ -4,6 +4,8 @@ import React from "react";
 import Box from "../../components/Box";
 import Text from "../../components/Text";
 
+const underline = "_____________";
+
 export default class Answer extends React.PureComponent {
   render() {
     const { currentGuess, gameState } = this.props;
@@ -46,7 +48,7 @@ export default class Answer extends React.PureComponent {
             fontWeight="bold"
             textTransform="uppercase"
           >
-            {currentGuess.artist}
+            {currentGuess.artist || underline}
           </Text>
         </Box>
         <Box display="grid" gap="8px" justifyItems="center">
@@ -76,7 +78,7 @@ export default class Answer extends React.PureComponent {
             fontSize={24}
             textTransform="uppercase"
           >
-            {currentGuess.title}
+            {currentGuess.title || underline}
           </Text>
         </Box>
       </Box>
