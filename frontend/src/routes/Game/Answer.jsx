@@ -14,48 +14,69 @@ export default class Answer extends React.PureComponent {
 
     const currentSong = gameState.currentSong;
 
-    console.log("currentGuess", currentGuess);
-    console.log(gameState.currentSong);
-
-    // currentSong has no album images
     return (
-      <Box dislay="grid">
-        <Box display="grid">
-          <Text>ARTIST</Text>
-          {/* <Box
-            alt={currentSong.artist}
+      <Box alignContent="space-evenly" display="grid" justifyItems="center">
+        <Box display="grid" gap="8px" justifyItems="center">
+          <Text fontSize="24px">ARTIST</Text>
+          <Box
+            // alt={currentSong.artist}
             as="img"
             aspectRatio={1}
             borderStyle="solid"
             borderWidth={1}
-            src={album.images[0].url}
-            size={32}
-          /> */}
+            // src={album.images[0].url}
+            size={180}
+          />
           {map(currentSong.artists, (artist) => (
-            <Text flexShrink={0} fontWeight="medium" fontSize={12} key={artist}>
+            <Text
+              flexShrink={0}
+              fontWeight="bold"
+              fontSize={12}
+              key={artist}
+              textTransform="uppercase"
+            >
               {artist}
             </Text>
           ))}
-          <Text flexShrink={0} fontWeight="medium" fontSize={12}>
+          <Text
+            color={currentGuess.isArtistCorrect ? "green" : "red"}
+            flexShrink={0}
+            fontFamily="Bebas Neue"
+            fontSize={24}
+            fontWeight="bold"
+            textTransform="uppercase"
+          >
             {currentGuess.artist}
           </Text>
         </Box>
-        <Box display="grid">
-          <Text>SONG</Text>
-          {/* <Box
-            alt={currentSong.artist}
+        <Box display="grid" gap="8px" justifyItems="center">
+          <Text fontSize="24px">TITLE</Text>
+          <Box
+            // alt={currentSong.artist}
             as="img"
             aspectRatio={1}
             borderStyle="solid"
             borderWidth={1}
-            src={album.images[0].url}
-            size={32}
-          /> */}
-          <Text flexShrink={0} fontWeight="medium" fontSize={12}>
-            {currentSong.name}
+            // src={album.images[0].url}
+            size={180}
+          />
+          <Text
+            flexShrink={0}
+            fontWeight="bold"
+            fontSize={12}
+            textTransform="uppercase"
+          >
+            {currentSong.title}
           </Text>
-          <Text flexShrink={0} fontWeight="medium" fontSize={12}>
-            {currentGuess.song}
+          <Text
+            color={currentGuess.isTitleCorrect ? "green" : "red"}
+            flexShrink={0}
+            fontWeight="bold"
+            fontFamily="Bebas Neue"
+            fontSize={24}
+            textTransform="uppercase"
+          >
+            {currentGuess.title}
           </Text>
         </Box>
       </Box>

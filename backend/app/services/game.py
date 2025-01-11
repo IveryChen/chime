@@ -165,7 +165,7 @@ class GameService:
 
         formatted_songs = [{
             'id': song['track']['id'],
-            'name': song['track']['name'],
+            'title': song['track']['name'],
             'artists': song['track']['artists'],
             'preview_type': song['track']['preview_type'],
             'preview_url': song['track'].get('preview_url'),

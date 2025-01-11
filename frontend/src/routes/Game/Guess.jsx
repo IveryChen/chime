@@ -10,16 +10,16 @@ import Input from "../../components/Input";
 import socketService from "../../services/socket";
 
 export default class Guess extends React.PureComponent {
-  state = { artist: "", song: "" };
+  state = { artist: "", title: "" };
 
   onChangeArtist = (artist) => this.setState({ artist });
 
-  onChangeSong = (song) => this.setState({ song });
+  onChangeTitle = (title) => this.setState({ title });
 
   handleSubmitGuess = async () => {
     const { gameState, onChangeAnswer, onChangeCurrentGuess, roomCode } =
       this.props;
-    const { artist, song } = this.state;
+    const { artist, title } = this.state;
     const currentSong = gameState?.currentSong;
     const playerId = gameState?.currentPlayer?.id;
 
@@ -27,23 +27,23 @@ export default class Guess extends React.PureComponent {
     const isArtistCorrect = currentSong.artists.some(
       (artistName) => normalize(artistName) === normalize(artist)
     );
-    const isSongCorrect = normalize(currentSong.name) === normalize(song);
+    const isTitleCorrect = normalize(currentSong.title) === normalize(title);
 
     let score = 0;
     if (isArtistCorrect) score += 1;
-    if (isSongCorrect) score += 1;
+    if (isTitleCorrect) score += 1;
 
     const guess = {
       artist,
-      song,
+      title,
       isArtistCorrect,
-      isSongCorrect,
+      isTitleCorrect,
     };
 
     socketService.emit("submit_score", {
       roomCode,
       playerId,
-      score: score,
+      score,
       guess,
     });
 
@@ -52,17 +52,17 @@ export default class Guess extends React.PureComponent {
 
     this.setState({
       artist: "",
-      song: "",
+      title: "",
       submitStatus: {
         artist: isArtistCorrect,
-        song: isSongCorrect,
+        title: isTitleCorrect,
       },
     });
   };
 
   render() {
     const { gameState } = this.props;
-    const { artist, song } = this.state;
+    const { artist, title } = this.state;
 
     if (!gameState) {
       return null;
@@ -73,9 +73,9 @@ export default class Guess extends React.PureComponent {
         <Box display="grid" gap="8px">
           <Input
             background={theme.lightgray}
-            label="SONG"
-            onChange={this.onChangeSong}
-            value={song}
+            label="TITLE"
+            onChange={this.onChangeTitle}
+            value={title}
           />
           <Input
             background={theme.lightgray}
