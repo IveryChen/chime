@@ -1,4 +1,33 @@
-export default async function playSnippet(deviceId, spotifyPlayer, uri) {
+export default async function playSnippet(
+  deviceId,
+  spotifyPlayer,
+  uri,
+  previewType
+) {
+  if (previewType === "deezer" || previewType === "spotify_preview") {
+    return new Promise((resolve) => {
+      const audio = new Audio(uri);
+
+      // Start 30 seconds in if possible
+      audio.currentTime = 30;
+
+      audio
+        .play()
+        .then(() => {
+          // Stop after 2 seconds
+          setTimeout(() => {
+            audio.pause();
+            audio.currentTime = 0;
+            resolve();
+          }, 2000);
+        })
+        .catch((error) => {
+          console.error("Audio playback error:", error);
+          resolve();
+        });
+    });
+  }
+
   if (!spotifyPlayer || !deviceId) {
     console.error("Spotify player not ready");
     return;

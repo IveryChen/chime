@@ -13,6 +13,7 @@ export default class Turn extends React.PureComponent {
       gameState,
       isPlaying,
       onChangeIsPlaying,
+      previewType,
       showPlayerName,
       showReplayButton,
       showRoundText,
@@ -22,9 +23,6 @@ export default class Turn extends React.PureComponent {
     if (!gameState) {
       return null;
     }
-
-    const currentSongUri =
-      gameState.currentSong.uri || gameState.currentSong.preview_url;
 
     return (
       <Box>
@@ -46,10 +44,11 @@ export default class Turn extends React.PureComponent {
           <DotsVisualizer isPlaying={isPlaying} />
           {showReplayButton && (
             <ReplayButton
-              currentSongUri={currentSongUri}
               deviceId={deviceId}
+              currentSong={gameState.currentSong}
               isPlaying={isPlaying}
               onChangeIsPlaying={onChangeIsPlaying}
+              previewType={previewType}
               spotifyPlayer={spotifyPlayer}
             />
           )}

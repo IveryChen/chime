@@ -107,21 +107,22 @@ class GameService:
                                 'album_image': track['album']['images'][0]['url'] if track['album']['images'] else None  # Add this
                             }
 
-                            # Try Spotify preview first
-                            if track.get('preview_url'):
-                                playback_info['preview_type'] = 'spotify_preview'
-                                playback_info['preview_url'] = track['preview_url']
-                                all_tracks.append({'track': playback_info})
-                                continue
+                            # # Try Spotify preview first
+                            # if track.get('preview_url'):
+                            #     playback_info['preview_type'] = 'spotify_preview'
+                            #     playback_info['preview_url'] = track['preview_url']
+                            #     all_tracks.append({'track': playback_info})
+                            #     continue
 
-                            # If Premium, add track for SDK playback
-                            if is_premium:
-                                playback_info['preview_type'] = 'spotify_sdk'
-                                playback_info['uri'] = track['uri']
-                                all_tracks.append({'track': playback_info})
-                                continue
+                            # # If Premium, add track for SDK playback
+                            # if is_premium:
+                            #     playback_info['preview_type'] = 'spotify_sdk'
+                            #     playback_info['uri'] = track['uri']
+                            #     all_tracks.append({'track': playback_info})
+                            #     continue
 
                             # Try Deezer as last resort
+                            # TODO: Deezer should be faster and no longer the last resort
                             try:
                                 deezer_preview = await self.get_deezer_preview(
                                     track['name'],
@@ -194,7 +195,7 @@ class GameService:
         room.selected_songs = formatted_songs
         return formatted_songs
 
-    def get_deezer_preview(self, title: str, artist: str) -> Optional[str]:
+    async def get_deezer_preview(self, title: str, artist: str) -> Optional[str]:
         """
         Search for a track on Deezer and return its preview URL.
         """

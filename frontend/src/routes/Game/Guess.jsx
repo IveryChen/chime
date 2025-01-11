@@ -69,7 +69,15 @@ export default class Guess extends React.PureComponent {
     }
 
     return (
-      <Box display="grid" gap="16px">
+      <Box
+        bg="white"
+        borderRadius="24px"
+        borderStyle="solid"
+        borderWidth={1}
+        display="grid"
+        gap="16px"
+        p="16px"
+      >
         <Box display="grid" gap="8px">
           <Input
             background={theme.lightgray}

@@ -8,11 +8,18 @@ import playSnippet from "./playSnippet";
 
 export default class ReplayButton extends React.PureComponent {
   onClick = async () => {
-    const { deviceId, currentSongUri, onChangeIsPlaying, spotifyPlayer } =
+    const { deviceId, currentSong, onChangeIsPlaying, spotifyPlayer } =
       this.props;
 
+    const currentSongUri = currentSong.uri || currentSong.previewUrl;
+
     onChangeIsPlaying(true);
-    await playSnippet(deviceId, spotifyPlayer, currentSongUri);
+    await playSnippet(
+      deviceId,
+      spotifyPlayer,
+      currentSongUri,
+      currentSong.previewType
+    );
     onChangeIsPlaying(false);
   };
 

@@ -41,12 +41,14 @@ export default class GameView extends React.PureComponent {
 
     socketService.emit("initialize_game", { roomCode });
     socketService.on("game_state_update", this.handleGameStateUpdate);
+    socketService.on("score_update", this.handleScoreUpdate);
 
     initializeSpotifySDK(this.onChangeDeviceId, this.onChangeSpotifyPlayer);
   }
 
   componentWillUnmount() {
     socketService.off("game_state_update", this.handleGameStateUpdate);
+    socketService.off("score_update", this.handleScoreUpdate);
 
     if (this.state.spotifyPlayer) {
       this.state.spotifyPlayer.disconnect();
@@ -58,6 +60,16 @@ export default class GameView extends React.PureComponent {
     this.setState({ gameState }, () => {
       this.startRoundSequence();
     });
+  };
+
+  handleScoreUpdate = (data) => {
+    const { scores, lastGuess } = data;
+    this.setState((prevState) => ({
+      gameState: {
+        ...prevState.gameState,
+        scores: scores,
+      },
+    }));
   };
 
   startRoundSequence = () => {
@@ -95,13 +107,18 @@ export default class GameView extends React.PureComponent {
 
   playInitialSnippet = async () => {
     const { deviceId, gameState, spotifyPlayer } = this.state;
-    const currentSongUri =
-      gameState?.currentSong?.uri || gameState?.currentSong?.preview_url;
+    const currentSong = gameState?.currentSong;
+    const currentSongUri = currentSong?.uri || currentSong?.previewUrl;
 
     if (currentSongUri && deviceId && spotifyPlayer) {
       this.setState({ isPlaying: true });
 
-      await playSnippet(deviceId, spotifyPlayer, currentSongUri);
+      await playSnippet(
+        deviceId,
+        spotifyPlayer,
+        currentSongUri,
+        currentSong.previewType
+      );
 
       this.setState({
         isPlaying: false,
@@ -128,9 +145,6 @@ export default class GameView extends React.PureComponent {
       return null;
     }
 
-    const currentSongUri =
-      gameState.currentSong.uri || gameState.currentSong.preview_url;
-
     return (
       <>
         <Header>
@@ -146,7 +160,6 @@ export default class GameView extends React.PureComponent {
           ) : (
             <>
               <Turn
-                currentSongUri={currentSongUri}
                 deviceId={deviceId}
                 gameState={gameState}
                 isPlaying={isPlaying}
