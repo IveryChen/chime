@@ -155,7 +155,7 @@ export default class GameView extends React.PureComponent {
           display="grid"
           gridTemplateRows={answer ? "auto 1fr" : "32% 1fr auto"}
         >
-          <Players data={players} />
+          <Players data={players} gameState={gameState} />
           {answer ? (
             <Answer gameState={gameState} />
           ) : (
