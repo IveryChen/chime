@@ -190,6 +190,21 @@ def register_sio_events(sio):
             if not room.game_state:
                 raise ValueError("Game not initialized")
 
+            total_rounds = 5 * len(room.players)  # Or get from room.settings in the future
+            if room.game_state.current_round >= total_rounds:
+                room.status = "finished"
+
+                final_ranking = calculate_final_ranking(
+                    room.game_state.scores,
+                    room.players
+                )
+
+                await sio.emit('game_over', {
+                    'scores': room.game_state.scores,
+                    'finalRanking': final_ranking
+                }, room=room_code)
+                return
+
             # Get next player
             current_player_index = room.players.index(room.game_state.current_player)
             next_player_index = (current_player_index + 1) % len(room.players)
@@ -236,3 +251,23 @@ def register_sio_events(sio):
         except Exception as e:
             print(f"Error starting new round: {str(e)}")
             await sio.emit('error', {'message': str(e)}, room=room_code)
+
+    def calculate_final_ranking(scores: dict, players: list) -> list:
+        # Create player lookup dictionary
+        player_lookup = {player.id: player for player in players}
+        
+        # Create ranking with full player info
+        ranking = [
+            {
+                'id': player_id,
+                'name': player_lookup[player_id].name,
+                'score': score,
+                'avatar': player_lookup[player_id].avatar_url if hasattr(player_lookup[player_id], 'avatar_url') else None
+            }
+            for player_id, score in scores.items()
+        ]
+        
+        # Sort by score in descending order
+        ranking.sort(key=lambda x: x['score'], reverse=True)
+        
+        return ranking

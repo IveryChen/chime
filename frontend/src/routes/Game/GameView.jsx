@@ -4,6 +4,7 @@ import Box from "../../components/Box";
 import Header from "../../components/Header";
 import IconButton from "../../components/IconButton";
 import Players from "../../components/Players";
+import Text from "../../components/Text";
 import { theme } from "../../constants/constants";
 import socketService from "../../services/socket";
 
@@ -18,7 +19,10 @@ export default class GameView extends React.PureComponent {
   state = {
     answer: false,
     deviceId: null,
+    finalScores: null,
+    finalRanking: null,
     gameState: null,
+    isGameOver: false,
     isPlaying: false,
     showPlayerName: false,
     showReplayButton: false,
@@ -41,6 +45,7 @@ export default class GameView extends React.PureComponent {
     socketService.emit("initialize_game", { roomCode });
     socketService.on("game_state_update", this.handleGameStateUpdate);
     socketService.on("score_update", this.handleScoreUpdate);
+    socketService.on("game_over", this.handleGameOver); // Add this
 
     initializeSpotifySDK(this.onChangeDeviceId, this.onChangeSpotifyPlayer);
   }
@@ -48,6 +53,7 @@ export default class GameView extends React.PureComponent {
   componentWillUnmount() {
     socketService.off("game_state_update", this.handleGameStateUpdate);
     socketService.off("score_update", this.handleScoreUpdate);
+    socketService.off("game_over", this.handleGameOver); // Add this
 
     if (this.state.spotifyPlayer) {
       this.state.spotifyPlayer.disconnect();
@@ -58,6 +64,15 @@ export default class GameView extends React.PureComponent {
     const { gameState } = data;
     this.setState({ gameState }, () => {
       this.startRoundSequence();
+    });
+  };
+
+  handleGameOver = (data) => {
+    const { scores, finalRanking } = data;
+    this.setState({
+      isGameOver: true,
+      finalScores: scores,
+      finalRanking: finalRanking,
     });
   };
 
@@ -139,7 +154,10 @@ export default class GameView extends React.PureComponent {
     const {
       answer,
       deviceId,
+      finalRanking,
+      finalScores,
       gameState,
+      isGameOver,
       isPlaying,
       showPlayerName,
       showReplayButton,
@@ -149,6 +167,36 @@ export default class GameView extends React.PureComponent {
 
     if (!gameState) {
       return null;
+    }
+
+    if (isGameOver) {
+      return (
+        <>
+          <Header>
+            <GameStatus gameState={gameState} roomCode={roomCode} />
+          </Header>
+          <Box display="grid" gap="24px">
+            <Text variant="h1">Game Over!</Text>
+            <Box display="grid" gap="16px">
+              <Text variant="h2">Final Ranking:</Text>
+              {finalRanking.map((player, index) => (
+                <Box
+                  key={player.id}
+                  display="flex"
+                  justifyContent="space-between"
+                  alignItems="center"
+                >
+                  <Text>
+                    {index + 1}. {player.name}
+                  </Text>
+                  <Text>{player.score} points</Text>
+                </Box>
+              ))}
+            </Box>
+            {/* Add any "Play Again" or "Back to Lobby" buttons here */}
+          </Box>
+        </>
+      );
     }
 
     return (
