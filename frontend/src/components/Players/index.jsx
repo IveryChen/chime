@@ -2,7 +2,8 @@ import { branch } from "baobab-react/higher-order";
 import { map } from "lodash";
 import React from "react";
 
-import Box from "../../components/Box";
+import Box from "../Box";
+import Text from "../Text";
 
 import Player from "./Player";
 
@@ -16,8 +17,11 @@ class Players extends React.PureComponent {
     } = this.props;
     const isPlaying = gameStatus === "playing";
 
-    // TODO: show scores
-    // const playerScore = gameState.scores[player.id]
+    if (!gameState) {
+      return null;
+    }
+
+    const { currentPlayer, scores } = gameState;
 
     return (
       <Box
@@ -25,13 +29,21 @@ class Players extends React.PureComponent {
         gap="16px"
         gridTemplateColumns="repeat(auto-fill, minmax(1fr))"
       >
-        {map(data, (player) => (
-          <Player
-            isTurn={player.id === gameState.currentPlayer.id}
-            opacity={isPlaying || submittedPlayers.has(player.id)}
-            player={player}
-          />
-        ))}
+        {map(data, (player) => {
+          const { id } = player;
+          const score = scores[id];
+
+          return (
+            <Box display="grid" justifyItems="center">
+              <Player
+                isTurn={id === currentPlayer.id}
+                opacity={isPlaying || submittedPlayers.has(id)}
+                player={player}
+              />
+              {score > 0 && <Text> +{score}</Text>}
+            </Box>
+          );
+        })}
       </Box>
     );
   }
