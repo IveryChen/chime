@@ -34,7 +34,7 @@ class Players extends React.PureComponent {
           const score = scores[id];
 
           return (
-            <Box display="grid" justifyItems="center">
+            <Box display="grid" justifyItems="center" key={id}>
               <Player
                 isTurn={id === currentPlayer.id}
                 opacity={isPlaying || submittedPlayers.has(id)}

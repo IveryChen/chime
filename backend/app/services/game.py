@@ -5,6 +5,8 @@ from app.schemas.game import GameRoom, Player
 import uuid
 import spotipy
 import requests
+import aiohttp
+import asyncio
 
 class GameService:
     def __init__(self):
@@ -60,7 +62,6 @@ class GameService:
     async def select_songs_for_game(self, room_code: str, num_rounds: int = 5) -> List[Dict]:
         room = self.get_room(room_code)
         num_songs_needed = len(room.players) * num_rounds
-
         all_tracks = []
 
         for player in room.players:
@@ -98,6 +99,7 @@ class GameService:
                         batch_ids = track_ids[i:i + 50]
                         full_tracks = sp.tracks(batch_ids)['tracks']
 
+                        tracks_info = []
                         for track in full_tracks:
                             playback_info = {
                                 'id': track['id'],
@@ -106,34 +108,20 @@ class GameService:
                                 'popularity': track.get('popularity', 0),
                                 'album_image': track['album']['images'][0]['url'] if track['album']['images'] else None  # Add this
                             }
+                            tracks_info.append(playback_info)
 
-                            # # Try Spotify preview first
-                            # if track.get('preview_url'):
-                            #     playback_info['preview_type'] = 'spotify_preview'
-                            #     playback_info['preview_url'] = track['preview_url']
-                            #     all_tracks.append({'track': playback_info})
-                            #     continue
+                        preview_urls = await self.get_deezer_previews_batch(tracks_info)
 
-                            # # If Premium, add track for SDK playback
-                            # if is_premium:
-                            #     playback_info['preview_type'] = 'spotify_sdk'
-                            #     playback_info['uri'] = track['uri']
-                            #     all_tracks.append({'track': playback_info})
-                            #     continue
-
-                            # Try Deezer as last resort
-                            # TODO: Deezer should be faster and no longer the last resort
-                            try:
-                                deezer_preview = await self.get_deezer_preview(
-                                    track['name'],
-                                    track['artists'][0]['name']
-                                )
-                                if deezer_preview:
-                                    playback_info['preview_type'] = 'deezer'
-                                    playback_info['preview_url'] = deezer_preview
-                                    all_tracks.append({'track': playback_info})
-                            except Exception as e:
-                                print(f"Deezer lookup failed for {track['name']}: {str(e)}")
+                        for track_info, preview_url in zip(tracks_info, preview_urls):
+                            if preview_url:
+                                track_info['preview_type'] = 'deezer'
+                                track_info['preview_url'] = preview_url
+                                all_tracks.append({'track': track_info})
+                            elif is_premium:
+                                # Fallback to Spotify SDK for premium users
+                                track_info['preview_type'] = 'spotify_sdk'
+                                track_info['uri'] = track['uri']
+                                all_tracks.append({'track': track_info})
 
                 except Exception as e:
                     print(f"Error fetching playlist {playlist_id}: {str(e)}")
@@ -195,19 +183,25 @@ class GameService:
         room.selected_songs = formatted_songs
         return formatted_songs
 
-    async def get_deezer_preview(self, title: str, artist: str) -> Optional[str]:
-        """
-        Search for a track on Deezer and return its preview URL.
-        """
-        try:
-            search_query = f"{title} {artist}".replace(' ', '+')
-            response = requests.get(f"https://api.deezer.com/search?q={search_query}")
-            if response.status_code == 200:
-                data = response.json()
-                if data.get('data') and len(data['data']) > 0:
-                    return data['data'][0].get('preview')
-        except Exception as e:
-            print(f"Deezer API error: {str(e)}")
-        return None
+    async def get_deezer_previews_batch(self, tracks: List[Dict]) -> List[Optional[str]]:
+        """Fetch multiple Deezer previews concurrently"""
+        async def fetch_single_preview(title: str, artist: str) -> Optional[str]:
+            try:
+                search_query = f"{title} {artist}".replace(' ', '+')
+                async with aiohttp.ClientSession() as session:
+                    async with session.get(f"https://api.deezer.com/search?q={search_query}") as response:
+                        if response.status == 200:
+                            data = await response.json()
+                            if data.get('data') and len(data['data']) > 0:
+                                return data['data'][0].get('preview')
+            except Exception as e:
+                print(f"Deezer API error for {title} - {artist}: {str(e)}")
+            return None
+
+        tasks = [
+            fetch_single_preview(track['name'], track['artists'][0]['name'])
+            for track in tracks
+        ]
+        return await asyncio.gather(*tasks)
 
 game_service = GameService()
