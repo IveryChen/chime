@@ -8,6 +8,7 @@ export default new Baobab({
       gameState: {
         currentPlayer: null,
         currentRound: null,
+        lastGuess: {},
         roundState: {},
         scores: {},
         timestamp: null,

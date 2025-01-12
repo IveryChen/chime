@@ -67,8 +67,10 @@ export default class GameView extends React.PureComponent {
     this.setState((prevState) => ({
       gameState: {
         ...prevState.gameState,
-        scores: scores,
+        lastGuess,
+        scores,
       },
+      answer: true,
     }));
   };
 
@@ -131,7 +133,6 @@ export default class GameView extends React.PureComponent {
     const { players, roomCode } = this.props;
     const {
       answer,
-      currentGuess,
       deviceId,
       gameState,
       isPlaying,
@@ -156,7 +157,7 @@ export default class GameView extends React.PureComponent {
         >
           <Players data={players} />
           {answer ? (
-            <Answer currentGuess={currentGuess} gameState={gameState} />
+            <Answer gameState={gameState} />
           ) : (
             <>
               <Turn

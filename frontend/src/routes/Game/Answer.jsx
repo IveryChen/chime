@@ -8,28 +8,41 @@ const underline = "_____________";
 
 export default class Answer extends React.PureComponent {
   render() {
-    const { currentGuess, gameState } = this.props;
+    const { gameState } = this.props;
 
     if (!gameState) {
       return null;
     }
 
-    const currentSong = gameState.currentSong;
+    const { currentSong, lastGuess } = gameState;
+
+    if (!lastGuess) {
+      return <Text>loading guesses...</Text>;
+    }
+
+    const { guess } = lastGuess;
+    const { albumImage, artists, artistImage, title } = currentSong;
+    const {
+      artist: guessArtist,
+      isArtistCorrect,
+      isTitleCorrect,
+      title: guessTitle,
+    } = guess;
 
     return (
       <Box alignContent="space-evenly" display="grid" justifyItems="center">
         <Box display="grid" gap="8px" justifyItems="center">
           <Text fontSize="24px">ARTIST</Text>
           <Box
-            alt={currentSong.artist}
+            alt={artists[0]}
             as="img"
             aspectRatio={1}
             borderStyle="solid"
             borderWidth={1}
-            src={currentSong.artistImage}
+            src={artistImage}
             size={180}
           />
-          {map(currentSong.artists, (artist) => (
+          {map(artists, (artist) => (
             <Text
               flexShrink={0}
               fontWeight="bold"
@@ -41,25 +54,25 @@ export default class Answer extends React.PureComponent {
             </Text>
           ))}
           <Text
-            color={currentGuess.isArtistCorrect ? "green" : "red"}
+            color={isArtistCorrect ? "green" : "red"}
             flexShrink={0}
             fontFamily="Bebas Neue"
             fontSize={24}
             fontWeight="bold"
             textTransform="uppercase"
           >
-            {currentGuess.artist || underline}
+            {guessArtist || underline}
           </Text>
         </Box>
         <Box display="grid" gap="8px" justifyItems="center">
           <Text fontSize="24px">TITLE</Text>
           <Box
-            alt={currentSong.title}
+            alt={title}
             as="img"
             aspectRatio={1}
             borderStyle="solid"
             borderWidth={1}
-            src={currentSong.albumImage}
+            src={albumImage}
             size={180}
           />
           <Text
@@ -68,17 +81,17 @@ export default class Answer extends React.PureComponent {
             fontSize={12}
             textTransform="uppercase"
           >
-            {currentSong.title}
+            {title}
           </Text>
           <Text
-            color={currentGuess.isTitleCorrect ? "green" : "red"}
+            color={isTitleCorrect ? "green" : "red"}
             flexShrink={0}
             fontWeight="bold"
             fontFamily="Bebas Neue"
             fontSize={24}
             textTransform="uppercase"
           >
-            {currentGuess.title || underline}
+            {guessTitle || underline}
           </Text>
         </Box>
       </Box>
