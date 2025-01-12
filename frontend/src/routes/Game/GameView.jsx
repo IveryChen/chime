@@ -14,12 +14,12 @@ import GameStatus from "./GameStatus";
 import Turn from "./Turn";
 import initializeSpotifySDK from "./initializeSpotifySDK";
 import playSnippet from "./playSnippet";
+import Scoreboard from "./Scoreboard";
 
 export default class GameView extends React.PureComponent {
   state = {
     answer: false,
     deviceId: null,
-    finalScores: null,
     finalRanking: null,
     gameState: null,
     isGameOver: false,
@@ -67,6 +67,7 @@ export default class GameView extends React.PureComponent {
     });
   };
 
+  // TODO: not using finalScores
   handleGameOver = (data) => {
     const { scores, finalRanking } = data;
     this.setState({
@@ -155,7 +156,6 @@ export default class GameView extends React.PureComponent {
       answer,
       deviceId,
       finalRanking,
-      finalScores,
       gameState,
       isGameOver,
       isPlaying,
@@ -171,31 +171,11 @@ export default class GameView extends React.PureComponent {
 
     if (isGameOver) {
       return (
-        <>
-          <Header>
-            <GameStatus gameState={gameState} roomCode={roomCode} />
-          </Header>
-          <Box display="grid" gap="24px">
-            <Text variant="h1">Game Over!</Text>
-            <Box display="grid" gap="16px">
-              <Text variant="h2">Final Ranking:</Text>
-              {finalRanking.map((player, index) => (
-                <Box
-                  key={player.id}
-                  display="flex"
-                  justifyContent="space-between"
-                  alignItems="center"
-                >
-                  <Text>
-                    {index + 1}. {player.name}
-                  </Text>
-                  <Text>{player.score} points</Text>
-                </Box>
-              ))}
-            </Box>
-            {/* Add any "Play Again" or "Back to Lobby" buttons here */}
-          </Box>
-        </>
+        <Scoreboard
+          finalRanking={finalRanking}
+          gameState={gameState}
+          roomCode={roomCode}
+        />
       );
     }
 
