@@ -2,7 +2,9 @@ import React from "react";
 
 import Box from "../../components/Box";
 import Header from "../../components/Header";
+import IconButton from "../../components/IconButton";
 import Players from "../../components/Players";
+import { theme } from "../../constants/constants";
 import socketService from "../../services/socket";
 
 import Answer from "./Answer";
@@ -15,7 +17,6 @@ import playSnippet from "./playSnippet";
 export default class GameView extends React.PureComponent {
   state = {
     answer: false,
-    currentGuess: null,
     deviceId: null,
     gameState: null,
     isPlaying: false,
@@ -27,8 +28,6 @@ export default class GameView extends React.PureComponent {
   };
 
   onChangeAnswer = (answer) => this.setState({ answer });
-
-  onChangeCurrentGuess = (currentGuess) => this.setState({ currentGuess });
 
   onChangeDeviceId = (deviceId) => this.setState({ deviceId });
 
@@ -60,6 +59,12 @@ export default class GameView extends React.PureComponent {
     this.setState({ gameState }, () => {
       this.startRoundSequence();
     });
+  };
+
+  handleNextRound = () => {
+    const { roomCode } = this.props;
+    socketService.emit("start_new_round", { roomCode });
+    this.setState({ answer: false });
   };
 
   handleScoreUpdate = (data) => {
@@ -157,7 +162,15 @@ export default class GameView extends React.PureComponent {
         >
           <Players data={players} gameState={gameState} />
           {answer ? (
-            <Answer gameState={gameState} />
+            <>
+              <Answer gameState={gameState} />
+              <IconButton
+                bg={theme.blue}
+                justifySelf="end"
+                label="NEXT"
+                onClick={this.handleNextRound}
+              />
+            </>
           ) : (
             <>
               <Turn
@@ -173,7 +186,6 @@ export default class GameView extends React.PureComponent {
               <Guess
                 gameState={gameState}
                 onChangeAnswer={this.onChangeAnswer}
-                onChangeCurrentGuess={this.onChangeCurrentGuess}
                 roomCode={roomCode}
               />
             </>
