@@ -15,6 +15,10 @@ export default async function handleJoinGame(playerName, roomCode) {
 
     const data = await response.json();
 
+    if (!response.ok) {
+      throw new Error(data.detail || "Failed to join game");
+    }
+
     return {
       roomCode: data.room_code,
       host: data.host,

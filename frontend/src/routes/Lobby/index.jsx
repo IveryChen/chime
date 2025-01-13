@@ -52,9 +52,21 @@ class Lobby extends Component {
   onGameError = (error) => this.setState({ error: error.message });
 
   onGameSuccess = (gameRoom, isHost = false) => {
+    if (!gameRoom || !gameRoom.players) {
+      console.error("Invalid game room data:", gameRoom);
+      return;
+    }
+
     const playerData = isHost
       ? gameRoom.host
-      : gameRoom.players[gameRoom.players.length - 1];
+      : gameRoom.players.length > 0
+      ? gameRoom.players[gameRoom.players.length - 1]
+      : null;
+
+    if (!playerData) {
+      console.error("No player data found");
+      return;
+    }
 
     const currentPlayerData = {
       name: playerData.name,
