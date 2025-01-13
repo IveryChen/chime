@@ -31,7 +31,7 @@ class GameRoom(BaseModel):
 class JoinRoomRequest(BaseModel):
     room_code: str
     player_name: str
-    spotify_token: str
+    spotify_token: Optional[str] = None
 
 class PlaylistSelectionRequest(BaseModel):
     player_id: str
