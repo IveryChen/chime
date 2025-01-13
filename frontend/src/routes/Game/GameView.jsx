@@ -76,6 +76,15 @@ class GameView extends React.PureComponent {
     });
   };
 
+  handleLeaveGame = () => {
+    const { roomCode } = this.props;
+
+    localStorage.removeItem("gameRoom");
+    socketService.leaveRoom(roomCode);
+    socketService.disconnect();
+    window.location.href = "/lobby";
+  };
+
   handleNextRound = () => {
     const { roomCode } = this.props;
     socketService.emit("start_new_round", { roomCode });
@@ -171,6 +180,7 @@ class GameView extends React.PureComponent {
         <Scoreboard
           finalRanking={finalRanking}
           gameState={gameState}
+          onLeaveGame={this.handleLeaveGame}
           roomCode={roomCode}
         />
       );

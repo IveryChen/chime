@@ -14,31 +14,72 @@ import LobbyView from "./LobbyView";
 import PlaylistView from "./PlaylistView";
 
 class Game extends React.PureComponent {
-  state = { gameStage: "lobby" };
+  state = { gameStage: "lobby", isReconnecting: true };
 
   componentDidMount() {
     const { roomCode } = this.props.params;
-    const { currentRoom } = this.props;
+    const savedGame = localStorage.getItem("gameRoom");
 
-    socketService.connect();
+    if (savedGame) {
+      const gameData = JSON.parse(savedGame);
+      const spotifyToken = localStorage.getItem("spotify_access_token");
 
-    const spotifyToken = localStorage.getItem("spotify_access_token");
+      socketService.connect();
 
-    socketService.joinRoom(roomCode, {
-      id: currentRoom.host.id,
-      name: currentRoom.host.name,
-      avatar: currentRoom.host.avatar,
-      spotify_token: spotifyToken || null,
-      is_host: currentRoom.host.is_host,
-    });
+      // Use saved data to reconnect
+      socketService.joinRoom(roomCode, {
+        id: gameData.playerId,
+        name: gameData.playerName,
+        avatar: gameData.avatar,
+        spotify_token: spotifyToken || null,
+        is_host: gameData.isHost,
+      });
 
-    socketService.on("players-update", this.handlePlayersUpdate);
+      // Restore baobab state if needed
+      if (!this.props.user?.player) {
+        state.select("user", "player").set({
+          id: gameData.playerId,
+          name: gameData.playerName,
+          avatar: gameData.avatar,
+          spotify_token: spotifyToken,
+          is_host: gameData.isHost,
+        });
+      }
+
+      this.setState({ isReconnecting: false });
+    } else {
+      const { currentRoom, user } = this.props;
+
+      if (!currentRoom || !user?.player) {
+        // Optionally redirect to home or show loading
+        window.location.href = "/";
+        return;
+      }
+
+      socketService.connect();
+
+      const spotifyToken = localStorage.getItem("spotify_access_token");
+
+      socketService.joinRoom(roomCode, {
+        id: currentRoom.host.id,
+        name: currentRoom.host.name,
+        avatar: currentRoom.host.avatar,
+        spotify_token: spotifyToken || null,
+        is_host: currentRoom.host.is_host,
+      });
+
+      socketService.on("players-update", this.handlePlayersUpdate);
+    }
   }
 
   componentWillUnmount() {
     const { roomCode } = this.props.params;
-    socketService.leaveRoom(roomCode);
-    socketService.disconnect();
+    const isRefreshing = localStorage.getItem("gameRoom") !== null;
+
+    if (!isRefreshing) {
+      socketService.leaveRoom(roomCode);
+      socketService.disconnect();
+    }
 
     socketService.off("players-update", this.handlePlayersUpdate);
   }
@@ -53,14 +94,29 @@ class Game extends React.PureComponent {
   render() {
     const { roomCode } = this.props.params;
     const { currentRoom, user } = this.props;
-    const { gameStage } = this.state;
+    const { gameStage, isReconnecting } = this.state;
+
+    if (isReconnecting) {
+      return (
+        <Box
+          display="flex"
+          alignItems="center"
+          justifyContent="center"
+          height="100vh"
+        >
+          <Text>Reconnecting to game...</Text>
+        </Box>
+      );
+    }
 
     if (!currentRoom) {
       return null;
     }
 
     const { player } = user;
-    const hasSpotifyToken = Boolean(player.spotify_token);
+    const hasSpotifyToken = Boolean(
+      localStorage.getItem("spotify_access_token")
+    );
 
     return (
       <Box display="grid" gridTemplateRows="auto 1fr" height="100%">
@@ -122,8 +178,8 @@ class Game extends React.PureComponent {
 export default withRouter(
   branch(
     {
-      gameState: ["games", "gameState"],
       currentRoom: ["games", "currentRoom"],
+      gameState: ["games", "gameState"],
       user: ["user"],
     },
     Game

@@ -12,10 +12,8 @@ import { withRouter } from "../../utils/withRouter";
 import GameStatus from "./GameStatus";
 
 class Scoreboard extends React.PureComponent {
-  onClick = () => this.props.navigate("/lobby");
-
   render() {
-    const { finalRanking, gameState, roomCode } = this.props;
+    const { finalRanking, gameState, onLeaveGame, roomCode } = this.props;
 
     if (!gameState) {
       return null;
@@ -97,7 +95,7 @@ class Scoreboard extends React.PureComponent {
             bg={theme.blue}
             Icon={MdReplay}
             label="PLAY AGAIN"
-            onClick={this.onClick}
+            onClick={onLeaveGame}
           />
         </Box>
       </>
