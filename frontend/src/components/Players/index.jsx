@@ -9,19 +9,14 @@ import Player from "./Player";
 
 class Players extends React.PureComponent {
   render() {
-    const {
-      data,
-      gameState,
-      gameStatus,
-      submittedPlayers = new Set(),
-    } = this.props;
+    const { gameState, gameStatus, submittedPlayers = new Set() } = this.props;
     const isPlaying = gameStatus === "playing";
 
     if (!gameState) {
       return null;
     }
 
-    const { currentPlayer, scores } = gameState;
+    const { currentPlayer, players, scores } = gameState;
 
     return (
       <Box
@@ -29,7 +24,7 @@ class Players extends React.PureComponent {
         gap="16px"
         gridTemplateColumns="repeat(auto-fill, minmax(1fr))"
       >
-        {map(data, (player) => {
+        {map(players, (player) => {
           const { id } = player;
           const score = scores[id];
 

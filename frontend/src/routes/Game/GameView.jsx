@@ -164,7 +164,7 @@ export default class GameView extends React.PureComponent {
   };
 
   render() {
-    const { players, roomCode } = this.props;
+    const { roomCode } = this.props;
     const {
       answer,
       deviceId,
@@ -201,7 +201,7 @@ export default class GameView extends React.PureComponent {
           display="grid"
           gridTemplateRows={answer ? "auto 1fr" : "32% 1fr auto"}
         >
-          <Players data={players} gameState={gameState} />
+          <Players gameState={gameState} />
           {answer ? (
             <>
               <Answer gameState={gameState} />
