@@ -1,10 +1,6 @@
 import API_URL from "../../constants/apiUrl";
 
-export default async function handleJoinGame(
-  playerName,
-  roomCode,
-  spotifyToken
-) {
+export default async function handleJoinGame(playerName, roomCode) {
   try {
     const response = await fetch(`${API_URL}/game/join-room`, {
       method: "POST",
@@ -14,7 +10,6 @@ export default async function handleJoinGame(
       body: JSON.stringify({
         roomCode: roomCode,
         playerName: playerName,
-        spotifyToken: spotifyToken,
       }),
     });
 

@@ -18,7 +18,7 @@ class GameService:
     def generate_color(self) -> str:
             return f"#{random.randint(0, 0xFFFFFF):06x}"
 
-    def create_player(self, name: str, spotify_token: str, is_host: bool = False) -> Player:
+    def create_player(self, name: str, spotify_token: str = None, is_host: bool = False) -> Player:
         return Player(
             name=name,
             spotify_token=spotify_token,
@@ -38,7 +38,7 @@ class GameService:
         self.rooms[room_code] = room
         return room
 
-    def join_room(self, room_code: str, player_name: str, spotify_token: str) -> GameRoom:
+    def join_room(self, room_code: str, player_name: str) -> GameRoom:
         if room_code not in self.rooms:
             raise ValueError("Room not found")
 
@@ -50,7 +50,7 @@ class GameService:
             if existing_player.name == player_name:
                 return room
 
-        new_player = self.create_player(name=player_name, spotify_token=spotify_token)
+        new_player = self.create_player(name=player_name)
         room.players.append(new_player)
         return room
 

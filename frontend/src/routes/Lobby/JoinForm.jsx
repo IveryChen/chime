@@ -25,13 +25,7 @@ export default class JoinForm extends React.PureComponent {
         throw new Error("Please enter your name");
       }
 
-      const spotifyToken = localStorage.getItem("spotify_access_token");
-
-      if (!spotifyToken) {
-        throw new Error("Spotify authentication required");
-      }
-
-      return handleJoinGame(playerName, roomCode, spotifyToken);
+      return handleJoinGame(playerName, roomCode);
     };
 
     return (

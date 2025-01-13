@@ -22,7 +22,6 @@ async def join_room(request: JoinRoomRequest) -> GameRoom:
         room = game_service.join_room(
             room_code=request.room_code,
             player_name=request.player_name,
-            spotify_token=request.spotify_token
         )
         return room
     except ValueError as e:

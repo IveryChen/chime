@@ -4,7 +4,7 @@ from datetime import datetime
 
 class Player(BaseModel):
     name: str
-    spotify_token: str
+    spotify_token: Optional[str] = None
     is_host: bool = False
     socket_id: Optional[str] = None
     id: Optional[str] = None
