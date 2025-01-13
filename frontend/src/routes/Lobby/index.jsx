@@ -83,19 +83,6 @@ class Lobby extends Component {
       status: "waiting",
     });
 
-    localStorage.setItem(
-      "gameRoom",
-      JSON.stringify({
-        roomCode: gameRoom.roomCode,
-        host: gameRoom.host,
-        players: gameRoom.players,
-        playerId: playerData.id,
-        playerName: playerData.name,
-        isHost: isHost,
-        avatar: playerData.avatar,
-      })
-    );
-
     state.select("games", "currentRoom").set({
       host: gameRoom.host,
       players: gameRoom.players,
