@@ -44,7 +44,8 @@ export default class GameView extends React.PureComponent {
     socketService.emit("initialize_game", { roomCode });
     socketService.on("game_state_update", this.handleGameStateUpdate);
     socketService.on("score_update", this.handleScoreUpdate);
-    socketService.on("game_over", this.handleGameOver); // Add this
+    socketService.on("game_over", this.handleGameOver);
+    socketService.on("players-update", this.handlePlayersUpdate);
 
     initializeSpotifySDK(this.onChangeDeviceId, this.onChangeSpotifyPlayer);
   }
@@ -52,12 +53,24 @@ export default class GameView extends React.PureComponent {
   componentWillUnmount() {
     socketService.off("game_state_update", this.handleGameStateUpdate);
     socketService.off("score_update", this.handleScoreUpdate);
-    socketService.off("game_over", this.handleGameOver); // Add this
+    socketService.off("game_over", this.handleGameOver);
+    socketService.off("players-update", this.handlePlayersUpdate);
 
     if (this.state.spotifyPlayer) {
       this.state.spotifyPlayer.disconnect();
     }
   }
+
+  handlePlayersUpdate = (data) => {
+    const { players } = data;
+    console.log("players", players);
+    this.setState((prevState) => ({
+      gameState: {
+        ...prevState.gameState,
+        players,
+      },
+    }));
+  };
 
   handleGameStateUpdate = (data) => {
     const { gameState } = data;
