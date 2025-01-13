@@ -8,8 +8,8 @@ export default async function handleJoinGame(playerName, roomCode) {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        roomCode: roomCode,
-        playerName: playerName,
+        room_code: roomCode,
+        player_name: playerName,
         spotify_token: null,
       }),
     });
