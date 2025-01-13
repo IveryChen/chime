@@ -14,7 +14,7 @@ import LobbyView from "./LobbyView";
 import PlaylistView from "./PlaylistView";
 
 class Game extends React.PureComponent {
-  state = { gameStage: "lobby", isReconnecting: true };
+  state = { gameStage: "lobby" };
 
   componentDidMount() {
     const { roomCode } = this.props.params;
@@ -63,20 +63,7 @@ class Game extends React.PureComponent {
   render() {
     const { roomCode } = this.props.params;
     const { currentRoom, user } = this.props;
-    const { gameStage, isReconnecting } = this.state;
-
-    if (isReconnecting) {
-      return (
-        <Box
-          display="flex"
-          alignItems="center"
-          justifyContent="center"
-          height="100vh"
-        >
-          <Text>Reconnecting to game...</Text>
-        </Box>
-      );
-    }
+    const { gameStage } = this.state;
 
     if (!currentRoom) {
       return null;
