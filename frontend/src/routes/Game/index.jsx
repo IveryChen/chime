@@ -4,6 +4,7 @@ import { Async } from "react-async";
 
 import fetchPlaylists from "../../api/fetchPlaylists";
 import Box from "../../components/Box";
+import Text from "../../components/Text";
 import socketService from "../../services/socket";
 import { withRouter } from "../../utils/withRouter";
 
@@ -39,7 +40,7 @@ class Game extends React.PureComponent {
 
   render() {
     const { roomCode } = this.props.params;
-    const { currentRoom } = this.props;
+    const { currentRoom, user } = this.props;
     const { gameStage } = this.state;
 
     if (!currentRoom) {
@@ -47,6 +48,8 @@ class Game extends React.PureComponent {
     }
 
     const { players } = currentRoom;
+    const { player } = user;
+    const hasSpotifyToken = Boolean(player.spotify_token);
 
     return (
       <Box display="grid" gridTemplateRows="auto 1fr" height="100%">
@@ -57,14 +60,26 @@ class Game extends React.PureComponent {
             roomCode={roomCode}
           />
         )}
-        {gameStage === "playlist" && (
-          <Async
-            promiseFn={fetchPlaylists}
-            spotifyToken={localStorage.getItem("spotify_access_token")}
-          >
-            {this.renderPlaylist}
-          </Async>
-        )}
+        {gameStage === "playlist" &&
+          (hasSpotifyToken ? (
+            <Async
+              promiseFn={fetchPlaylists}
+              spotifyToken={player.spotify_token}
+            >
+              {this.renderPlaylist}
+            </Async>
+          ) : (
+            <Box
+              alignItems="center"
+              display="flex"
+              height="100%"
+              justifyContent="center"
+            >
+              <Text fontSize="24px" textAlign="center">
+                Waiting for host to select songs...
+              </Text>
+            </Box>
+          ))}
         {gameStage === "game" && (
           <GameView
             onChangeGameStage={this.onChangeGameStage}
