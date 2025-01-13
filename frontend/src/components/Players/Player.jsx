@@ -27,7 +27,9 @@ export default class Player extends React.PureComponent {
             size={isTurn ? 56 : 36}
           />
         )}
-        <Text fontSize="12px">{name}</Text>
+        <Text fontSize="12px" fontStyle="italic" letterSpacing="-2px">
+          {name}
+        </Text>
       </Box>
     );
   }

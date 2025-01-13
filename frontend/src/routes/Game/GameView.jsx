@@ -4,7 +4,6 @@ import Box from "../../components/Box";
 import Header from "../../components/Header";
 import IconButton from "../../components/IconButton";
 import Players from "../../components/Players";
-import Text from "../../components/Text";
 import { theme } from "../../constants/constants";
 import socketService from "../../services/socket";
 

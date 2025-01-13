@@ -1,12 +1,19 @@
+import { map } from "lodash";
 import React from "react";
+import { MdReplay } from "react-icons/md";
 
 import Box from "../../components/Box";
 import Header from "../../components/Header";
+import IconButton from "../../components/IconButton";
 import Text from "../../components/Text";
+import { theme } from "../../constants/constants";
+import { withRouter } from "../../utils/withRouter";
 
 import GameStatus from "./GameStatus";
 
-export default class Scoreboard extends React.PureComponent {
+class Scoreboard extends React.PureComponent {
+  onClick = () => this.props.navigate("/lobby");
+
   render() {
     const { finalRanking, gameState, roomCode } = this.props;
 
@@ -14,32 +21,93 @@ export default class Scoreboard extends React.PureComponent {
       return null;
     }
 
+    const winner = finalRanking[0];
     return (
       <>
         <Header>
           <GameStatus gameState={gameState} roomCode={roomCode} />
         </Header>
-        <Box display="grid" gap="24px">
-          <Text variant="h1">Game Over!</Text>
-          <Box display="grid" gap="16px">
-            <Text variant="h2">Final Ranking:</Text>
-            {finalRanking.map((player, index) => (
+        <Box
+          display="grid"
+          gridTemplateRows="auto 1fr auto"
+          gap="32px"
+          justifyItems="center"
+        >
+          <Text
+            fontSize={32}
+            letterSpacing="-2px"
+            lineHeight={1}
+            textAlign="center"
+          >
+            SCOREBOARD
+          </Text>
+          <Box display="grid" gap="32px">
+            <Box
+              alignItems="center"
+              display="flex"
+              flexDirection="column"
+              key={winner.id}
+            >
               <Box
-                key={player.id}
-                display="flex"
-                justifyContent="space-between"
-                alignItems="center"
-              >
-                <Text>
-                  {index + 1}. {player.name}
-                </Text>
-                <Text>{player.score} points</Text>
-              </Box>
-            ))}
+                alt={winner.name}
+                bg={winner.avatar}
+                borderRadius="50%"
+                borderStyle="solid"
+                borderWidth={1}
+                size={100}
+              />
+              <Text fontSize="36px" fontStyle="italic" letterSpacing="-2px">
+                {winner.name}
+              </Text>
+              <Text fontSize="24px" fontStyle="italic">
+                +{winner.score}
+              </Text>
+            </Box>
+            <Box display="flex" flexWrap="wrap" gap="16px">
+              {map(finalRanking, (player, index) => {
+                if (index > 0) {
+                  return (
+                    <Box
+                      alignItems="center"
+                      display="flex"
+                      flexDirection="column"
+                      key={player.id}
+                      transition="opacity 0.2s"
+                    >
+                      <Box
+                        alt={player.name}
+                        bg={player.avatar}
+                        borderRadius="50%"
+                        borderStyle="solid"
+                        borderWidth={1}
+                        size={42}
+                      />
+                      <Text
+                        fontSize="12px"
+                        fontStyle="italic"
+                        letterSpacing="-2px"
+                      >
+                        {player.name}
+                      </Text>
+                      <Text fontStyle="italic" letterSpacing="-2px">
+                        +{player.score}
+                      </Text>
+                    </Box>
+                  );
+                }
+              })}
+            </Box>
           </Box>
-          {/* Add any "Play Again" or "Back to Lobby" buttons here */}
+          <IconButton
+            bg={theme.blue}
+            Icon={MdReplay}
+            label="PLAY AGAIN"
+            onClick={this.onClick}
+          />
         </Box>
       </>
     );
   }
 }
+
+export default withRouter(Scoreboard);
