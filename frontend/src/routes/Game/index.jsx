@@ -18,58 +18,27 @@ class Game extends React.PureComponent {
 
   componentDidMount() {
     const { roomCode } = this.props.params;
-    const savedGame = localStorage.getItem("gameRoom");
+    const { currentRoom, user } = this.props;
 
-    if (savedGame) {
-      const gameData = JSON.parse(savedGame);
-      const spotifyToken = localStorage.getItem("spotify_access_token");
-
-      socketService.connect();
-
-      // Use saved data to reconnect
-      socketService.joinRoom(roomCode, {
-        id: gameData.playerId,
-        name: gameData.playerName,
-        avatar: gameData.avatar,
-        spotify_token: spotifyToken || null,
-        is_host: gameData.isHost,
-      });
-
-      // Restore baobab state if needed
-      if (!this.props.user?.player) {
-        state.select("user", "player").set({
-          id: gameData.playerId,
-          name: gameData.playerName,
-          avatar: gameData.avatar,
-          spotify_token: spotifyToken,
-          is_host: gameData.isHost,
-        });
-      }
-
-      this.setState({ isReconnecting: false });
-    } else {
-      const { currentRoom, user } = this.props;
-
-      if (!currentRoom || !user?.player) {
-        // Optionally redirect to home or show loading
-        window.location.href = "/";
-        return;
-      }
-
-      socketService.connect();
-
-      const spotifyToken = localStorage.getItem("spotify_access_token");
-
-      socketService.joinRoom(roomCode, {
-        id: currentRoom.host.id,
-        name: currentRoom.host.name,
-        avatar: currentRoom.host.avatar,
-        spotify_token: spotifyToken || null,
-        is_host: currentRoom.host.is_host,
-      });
-
-      socketService.on("players-update", this.handlePlayersUpdate);
+    if (!currentRoom || !user?.player) {
+      // Optionally redirect to home or show loading
+      window.location.href = "/";
+      return;
     }
+
+    socketService.connect();
+
+    const spotifyToken = localStorage.getItem("spotify_access_token");
+
+    socketService.joinRoom(roomCode, {
+      id: currentRoom.host.id,
+      name: currentRoom.host.name,
+      avatar: currentRoom.host.avatar,
+      spotify_token: spotifyToken || null,
+      is_host: currentRoom.host.is_host,
+    });
+
+    socketService.on("players-update", this.handlePlayersUpdate);
   }
 
   componentWillUnmount() {
