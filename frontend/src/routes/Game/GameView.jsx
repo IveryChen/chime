@@ -70,6 +70,7 @@ export default class GameView extends React.PureComponent {
         players,
       },
     }));
+    console.log("new players", this.state.gameState);
   };
 
   handleGameStateUpdate = (data) => {
