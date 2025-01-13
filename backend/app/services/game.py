@@ -38,7 +38,7 @@ class GameService:
         self.rooms[room_code] = room
         return room
 
-    def join_room(self, room_code: str, player_name: str) -> GameRoom:
+    def join_room(self, room_code: str, player_name: str, spotify_token=None) -> GameRoom:
         if room_code not in self.rooms:
             raise ValueError("Room not found")
 
@@ -50,7 +50,7 @@ class GameService:
             if existing_player.name == player_name:
                 return room
 
-        new_player = self.create_player(name=player_name)
+        new_player = self.create_player(name=player_name, spotify_token=spotify_token)
         room.players.append(new_player)
         return room
 

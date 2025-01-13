@@ -10,6 +10,7 @@ export default async function handleJoinGame(playerName, roomCode) {
       body: JSON.stringify({
         roomCode: roomCode,
         playerName: playerName,
+        spotify_token: null,
       }),
     });
 

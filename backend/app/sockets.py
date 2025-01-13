@@ -35,7 +35,7 @@ def register_sio_events(sio):
             room_code = data['roomCode']
             player = data['player']
 
-            room = game_service.join_room(room_code, player['name'])
+            room = game_service.join_room(room_code, player['name'], player['spotify_token'])
             print("Room joined successfully")
 
             for p in room.players:

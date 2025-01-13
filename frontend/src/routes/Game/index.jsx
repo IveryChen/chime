@@ -21,11 +21,13 @@ class Game extends React.PureComponent {
 
     socketService.connect();
 
+    const spotifyToken = localStorage.getItem("spotify_access_token");
+
     socketService.joinRoom(roomCode, {
       id: currentRoom.host.id,
       name: currentRoom.host.name,
       avatar: currentRoom.host.avatar,
-      spotify_token: localStorage.getItem("spotify_access_token"),
+      spotify_token: spotifyToken || null,
       is_host: currentRoom.host.is_host,
     });
   }
