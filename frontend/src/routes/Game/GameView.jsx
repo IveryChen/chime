@@ -1,3 +1,4 @@
+import { branch } from "baobab-react/higher-order";
 import React from "react";
 
 import Box from "../../components/Box";
@@ -6,6 +7,7 @@ import IconButton from "../../components/IconButton";
 import Players from "../../components/Players";
 import { theme } from "../../constants/constants";
 import socketService from "../../services/socket";
+import state from "../../state";
 
 import Answer from "./Answer";
 import Guess from "./Guess";
@@ -15,19 +17,17 @@ import initializeSpotifySDK from "./initializeSpotifySDK";
 import playSnippet from "./playSnippet";
 import Scoreboard from "./Scoreboard";
 
-export default class GameView extends React.PureComponent {
+class GameView extends React.PureComponent {
   state = {
     answer: false,
     deviceId: null,
     finalRanking: null,
-    gameState: null,
     isGameOver: false,
     isPlaying: false,
     showPlayerName: false,
     showReplayButton: false,
     showRoundText: false,
     spotifyPlayer: null,
-    submitStatus: null,
   };
 
   onChangeAnswer = (answer) => this.setState({ answer });
@@ -45,7 +45,6 @@ export default class GameView extends React.PureComponent {
     socketService.on("game_state_update", this.handleGameStateUpdate);
     socketService.on("score_update", this.handleScoreUpdate);
     socketService.on("game_over", this.handleGameOver);
-    socketService.on("players-update", this.handlePlayersUpdate);
 
     initializeSpotifySDK(this.onChangeDeviceId, this.onChangeSpotifyPlayer);
   }
@@ -54,30 +53,17 @@ export default class GameView extends React.PureComponent {
     socketService.off("game_state_update", this.handleGameStateUpdate);
     socketService.off("score_update", this.handleScoreUpdate);
     socketService.off("game_over", this.handleGameOver);
-    socketService.off("players-update", this.handlePlayersUpdate);
 
     if (this.state.spotifyPlayer) {
       this.state.spotifyPlayer.disconnect();
     }
   }
 
-  handlePlayersUpdate = (data) => {
-    const { players } = data;
-    console.log("players", players);
-    this.setState((prevState) => ({
-      gameState: {
-        ...prevState.gameState,
-        players,
-      },
-    }));
-    console.log("new players", this.state.gameState);
-  };
-
   handleGameStateUpdate = (data) => {
     const { gameState } = data;
-    this.setState({ gameState }, () => {
-      this.startRoundSequence();
-    });
+
+    state.select("games", "gameState").set(gameState);
+    this.startRoundSequence();
   };
 
   // TODO: not using finalScores
@@ -98,14 +84,12 @@ export default class GameView extends React.PureComponent {
 
   handleScoreUpdate = (data) => {
     const { scores, lastGuess } = data;
-    this.setState((prevState) => ({
-      gameState: {
-        ...prevState.gameState,
-        lastGuess,
-        scores,
-      },
-      answer: true,
-    }));
+
+    state.select("games", "gameState").merge({
+      lastGuess,
+      scores,
+    });
+    this.setState({ answer: true });
   };
 
   startRoundSequence = () => {
@@ -142,7 +126,8 @@ export default class GameView extends React.PureComponent {
   };
 
   playInitialSnippet = async () => {
-    const { deviceId, gameState, spotifyPlayer } = this.state;
+    const { deviceId, spotifyPlayer } = this.state;
+    const { gameState } = this.props;
     const currentSong = gameState?.currentSong;
     const currentSongUri = currentSong?.uri || currentSong?.previewUrl;
 
@@ -164,12 +149,11 @@ export default class GameView extends React.PureComponent {
   };
 
   render() {
-    const { roomCode } = this.props;
+    const { gameState, roomCode } = this.props;
     const {
       answer,
       deviceId,
       finalRanking,
-      gameState,
       isGameOver,
       isPlaying,
       showPlayerName,
@@ -201,7 +185,7 @@ export default class GameView extends React.PureComponent {
           display="grid"
           gridTemplateRows={answer ? "auto 1fr" : "32% 1fr auto"}
         >
-          <Players gameState={gameState} />
+          <Players />
           {answer ? (
             <>
               <Answer gameState={gameState} />
@@ -236,3 +220,5 @@ export default class GameView extends React.PureComponent {
     );
   }
 }
+
+export default branch({ gameState: ["games", "gameState"] }, GameView);

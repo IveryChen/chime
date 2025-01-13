@@ -1,3 +1,4 @@
+import { branch } from "baobab-react/higher-order";
 import { map } from "lodash";
 import React from "react";
 import { LiaArrowRightSolid } from "react-icons/lia";
@@ -9,11 +10,12 @@ import IconButton from "../../components/IconButton";
 import Logo from "../../components/Logo";
 import Text from "../../components/Text";
 
-export default class LobbyView extends React.PureComponent {
+class LobbyView extends React.PureComponent {
   onClick = () => this.props.onChangeGameStage("playlist");
 
   render() {
-    const { players, roomCode } = this.props;
+    const { currentRoom, roomCode } = this.props;
+    const { players } = currentRoom;
 
     return (
       <>
@@ -64,3 +66,10 @@ export default class LobbyView extends React.PureComponent {
     );
   }
 }
+
+export default branch(
+  {
+    currentRoom: ["games", "currentRoom"],
+  },
+  LobbyView
+);

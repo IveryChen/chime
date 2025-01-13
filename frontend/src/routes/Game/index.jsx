@@ -6,6 +6,7 @@ import fetchPlaylists from "../../api/fetchPlaylists";
 import Box from "../../components/Box";
 import Text from "../../components/Text";
 import socketService from "../../services/socket";
+import state from "../../state";
 import { withRouter } from "../../utils/withRouter";
 
 import GameView from "./GameView";
@@ -30,13 +31,22 @@ class Game extends React.PureComponent {
       spotify_token: spotifyToken || null,
       is_host: currentRoom.host.is_host,
     });
+
+    socketService.on("players-update", this.handlePlayersUpdate);
   }
 
   componentWillUnmount() {
     const { roomCode } = this.props.params;
     socketService.leaveRoom(roomCode);
     socketService.disconnect();
+
+    socketService.off("players-update", this.handlePlayersUpdate);
   }
+
+  handlePlayersUpdate = (data) => {
+    const { players } = data;
+    state.select("games", "currentRoom", "players").set(players);
+  };
 
   onChangeGameStage = (gameStage) => this.setState({ gameStage });
 
@@ -49,7 +59,6 @@ class Game extends React.PureComponent {
       return null;
     }
 
-    const { players } = currentRoom;
     const { player } = user;
     const hasSpotifyToken = Boolean(player.spotify_token);
 
@@ -58,7 +67,6 @@ class Game extends React.PureComponent {
         {gameStage === "lobby" && (
           <LobbyView
             onChangeGameStage={this.onChangeGameStage}
-            players={players}
             roomCode={roomCode}
           />
         )}
@@ -85,7 +93,6 @@ class Game extends React.PureComponent {
         {gameStage === "game" && (
           <GameView
             onChangeGameStage={this.onChangeGameStage}
-            players={players}
             roomCode={roomCode}
           />
         )}
@@ -115,6 +122,7 @@ class Game extends React.PureComponent {
 export default withRouter(
   branch(
     {
+      gameState: ["games", "gameState"],
       currentRoom: ["games", "currentRoom"],
       user: ["user"],
     },

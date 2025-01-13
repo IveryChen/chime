@@ -5,17 +5,17 @@ export default new Baobab({
   games: {
     currentRoom: {
       host: null,
-      gameState: {
-        currentPlayer: null,
-        currentRound: null,
-        lastGuess: {},
-        roundState: {},
-        scores: {},
-        timestamp: null,
-      },
       players: null,
       roomCode: null,
       status: null,
+    },
+    gameState: {
+      currentPlayer: null,
+      currentRound: null,
+      lastGuess: {},
+      roundState: {},
+      scores: {},
+      timestamp: null,
     },
   },
 });

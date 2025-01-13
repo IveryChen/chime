@@ -9,14 +9,16 @@ import Player from "./Player";
 
 class Players extends React.PureComponent {
   render() {
-    const { gameState, gameStatus, submittedPlayers = new Set() } = this.props;
+    const { currentRoom, gameState, submittedPlayers = new Set() } = this.props;
+    const { status: gameStatus } = currentRoom;
     const isPlaying = gameStatus === "playing";
 
-    if (!gameState) {
+    if (!gameState || !currentRoom?.players) {
       return null;
     }
 
-    const { currentPlayer, players, scores } = gameState;
+    const { currentPlayer, scores = {} } = gameState;
+    const { players } = currentRoom;
 
     return (
       <Box
@@ -26,7 +28,7 @@ class Players extends React.PureComponent {
       >
         {map(players, (player) => {
           const { id } = player;
-          const score = scores[id];
+          const score = scores[id] || 0;
 
           return (
             <Box
@@ -36,7 +38,7 @@ class Players extends React.PureComponent {
               key={id}
             >
               <Player
-                isTurn={id === currentPlayer.id}
+                isTurn={currentPlayer && id === currentPlayer.id}
                 opacity={isPlaying || submittedPlayers.has(id)}
                 player={player}
               />
@@ -50,6 +52,6 @@ class Players extends React.PureComponent {
 }
 
 export default branch(
-  { gameStatus: ["games", "currentRoom", "status"] },
+  { currentRoom: ["games", "currentRoom"], gameState: ["games", "gameState"] },
   Players
 );
