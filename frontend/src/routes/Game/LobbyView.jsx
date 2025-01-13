@@ -14,7 +14,7 @@ class LobbyView extends React.PureComponent {
   onClick = () => this.props.onChangeGameStage("playlist");
 
   render() {
-    const { currentRoom, roomCode } = this.props;
+    const { currentRoom, roomCode, user } = this.props;
     const { players } = currentRoom;
 
     return (
@@ -54,13 +54,15 @@ class LobbyView extends React.PureComponent {
               </Box>
             ))}
           </Box>
-          <IconButton
-            bg={theme.blue}
-            Icon={LiaArrowRightSolid}
-            justifySelf="end"
-            label="START"
-            onClick={this.onClick}
-          />
+          {user.player.is_host && (
+            <IconButton
+              bg={theme.blue}
+              Icon={LiaArrowRightSolid}
+              justifySelf="end"
+              label="START"
+              onClick={this.onClick}
+            />
+          )}
         </Box>
       </>
     );
@@ -70,6 +72,7 @@ class LobbyView extends React.PureComponent {
 export default branch(
   {
     currentRoom: ["games", "currentRoom"],
+    user: ["user"],
   },
   LobbyView
 );
