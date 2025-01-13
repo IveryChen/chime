@@ -25,6 +25,7 @@ class Players extends React.PureComponent {
         display="flex"
         gap="8px"
         gridTemplateColumns="repeat(auto-fill, minmax(1fr))"
+        justifyContent="center"
       >
         {map(players, (player) => {
           const { id } = player;
