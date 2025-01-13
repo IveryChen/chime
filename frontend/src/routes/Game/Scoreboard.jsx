@@ -22,6 +22,7 @@ class Scoreboard extends React.PureComponent {
     }
 
     const winner = finalRanking[0];
+
     return (
       <>
         <Header>
@@ -82,16 +83,10 @@ class Scoreboard extends React.PureComponent {
                         borderWidth={1}
                         size={42}
                       />
-                      <Text
-                        fontSize="12px"
-                        fontStyle="italic"
-                        letterSpacing="-2px"
-                      >
+                      <Text fontSize="12px" fontStyle="italic">
                         {player.name}
                       </Text>
-                      <Text fontStyle="italic" letterSpacing="-2px">
-                        +{player.score}
-                      </Text>
+                      <Text fontStyle="italic">+{player.score}</Text>
                     </Box>
                   );
                 }

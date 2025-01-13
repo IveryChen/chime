@@ -45,11 +45,7 @@ class Players extends React.PureComponent {
                 opacity={isPlaying || submittedPlayers.has(id)}
                 player={player}
               />
-              {score > 0 && (
-                <Text fontStyle="italic" letterSpacing="-2px">
-                  +{score}
-                </Text>
-              )}
+              {score > 0 && <Text fontStyle="italic">+{score}</Text>}
             </Box>
           );
         })}

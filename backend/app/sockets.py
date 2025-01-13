@@ -262,7 +262,7 @@ def register_sio_events(sio):
                 'id': player_id,
                 'name': player_lookup[player_id].name,
                 'score': score,
-                'avatar': player_lookup[player_id].avatar_url if hasattr(player_lookup[player_id], 'avatar_url') else None
+                'avatar': player_lookup[player_id].avatar if hasattr(player_lookup[player_id], 'avatar') else None
             }
             for player_id, score in scores.items()
         ]
