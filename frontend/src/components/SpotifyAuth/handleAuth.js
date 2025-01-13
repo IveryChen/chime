@@ -22,9 +22,7 @@ export default async function handleAuth() {
   }
 
   try {
-    console.time("api-call");
     const data = await apiClient.get("/auth/login");
-    console.timeEnd("api-call");
 
     if (!data.url) {
       throw new Error("No login URL received");
@@ -33,7 +31,12 @@ export default async function handleAuth() {
     const platform = getPlatform();
 
     // Handle Desktop platforms
-    if (platform === "Desktop") {
+    if (platform.type === "Desktop") {
+      if (platform.isSafari) {
+        window.location.href = data.url;
+        return { redirectToLogin: true };
+      }
+
       const width = 450;
       const height = 730;
       const left = window.screen.width / 2 - width / 2;
@@ -68,6 +71,12 @@ export default async function handleAuth() {
       }
     } else {
       // Handle mobile platforms
+
+      if (platform.isIOS && platform.isSafari) {
+        window.location.href = data.url;
+        return { redirectToLogin: true };
+      }
+
       const hasSpotifyApp = await detectSpotifyApp();
 
       if (hasSpotifyApp) {
@@ -83,7 +92,7 @@ export default async function handleAuth() {
         // Fallback to web auth after delay if app doesn't open
         setTimeout(() => {
           window.location.href = data.url;
-        }, 1500);
+        }, 3000);
       } else {
         // Direct to web auth if no app
         window.location.href = data.url;
