@@ -8,10 +8,13 @@ class Header extends Component {
   render() {
     const { children, user } = this.props;
 
+    const hasProfileImage =
+      user && user.images && user.images[0] && user.images[0].url;
+
     return (
       <Box display="grid" gridTemplateColumns="1fr auto">
         {children}
-        {user && (
+        {hasProfileImage && (
           <Box
             alt="Profile"
             as="img"

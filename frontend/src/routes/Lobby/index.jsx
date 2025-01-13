@@ -1,7 +1,6 @@
 import { Root, Content } from "@radix-ui/react-tabs";
 import { branch } from "baobab-react/higher-order";
 import { Component } from "react";
-import { Async } from "react-async";
 
 import Box from "../../components/Box";
 import Header from "../../components/Header";
@@ -17,10 +16,33 @@ import loadUserProfile from "./loadUserProfile";
 
 class Lobby extends Component {
   state = {
+    error: null,
+    isLoadingProfile: false,
+    playerName: "",
     roomCode: "",
     tab: "join",
-    playerName: "",
-    error: null,
+  };
+
+  componentDidMount() {
+    const hasSpotifyToken = Boolean(
+      localStorage.getItem("spotify_access_token")
+    );
+    if (hasSpotifyToken) {
+      this.loadUserProfile();
+    }
+  }
+
+  loadUserProfile = async () => {
+    this.setState({ isLoadingProfile: true });
+    try {
+      await loadUserProfile();
+      // Switch to create tab after successful auth
+      this.setState({ tab: "create" });
+    } catch (error) {
+      this.setState({ error: error.message });
+    } finally {
+      this.setState({ isLoadingProfile: false });
+    }
   };
 
   onChangeRoomCode = (roomCode) => this.setState({ roomCode });
@@ -55,17 +77,9 @@ class Lobby extends Component {
   };
 
   render() {
-    return <Async promiseFn={loadUserProfile}>{this.renderBody}</Async>;
-  }
+    const { isLoadingProfile, playerName, roomCode, tab } = this.state;
 
-  renderBody = ({ error, isPending }) => {
-    if (isPending) return <Box>Loading...</Box>;
-    if (error) return <Box>Error: {error.message}</Box>;
-
-    const { user } = this.props;
-    const { playerName, roomCode, tab } = this.state;
-
-    if (!user) return <Box>No user data found</Box>;
+    if (isLoadingProfile) return <Box>Loading profile...</Box>;
 
     return (
       <>
@@ -85,6 +99,7 @@ class Lobby extends Component {
           <Root
             defaultValue="join"
             onValueChange={(tab) => this.setState({ tab })}
+            value={tab}
           >
             <Box display="grid" gap="24px">
               <Tabs tab={tab} />
@@ -119,7 +134,7 @@ class Lobby extends Component {
         </Box>
       </>
     );
-  };
+  }
 }
 
 export default withRouter(branch({ user: ["user"] }, Lobby));

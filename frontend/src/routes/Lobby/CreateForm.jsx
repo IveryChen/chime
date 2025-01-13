@@ -1,32 +1,48 @@
 import React from "react";
 import { Async } from "react-async";
+import { FaSpotify } from "react-icons/fa6";
 
 import { theme } from "../../constants/constants";
 import Box from "../../components/Box";
 import IconButton from "../../components/IconButton";
 import Input from "../../components/Input";
+import { withRouter } from "../../utils/withRouter";
 
 import handleCreateGame from "./handleCreateGame";
 
-export default class CreateForm extends React.PureComponent {
+class CreateForm extends React.PureComponent {
+  onClick = () => this.props.navigate("/spotify-auth");
+
+  handleCreateGameClick = async () => {
+    const { playerName } = this.props;
+    if (!playerName.trim()) {
+      throw new Error("Please enter your name");
+    }
+
+    const spotifyToken = localStorage.getItem("spotify_access_token");
+
+    return handleCreateGame(playerName, spotifyToken);
+  };
+
   render() {
     const { onChangePlayerName, onGameError, onGameSuccess, playerName } =
       this.props;
+    const hasSpotifyToken = Boolean(
+      localStorage.getItem("spotify_access_token")
+    );
 
-    const handleCreateGameClick = async () => {
-      const { playerName } = this.props;
-      if (!playerName.trim()) {
-        throw new Error("Please enter your name");
-      }
-
-      const spotifyToken = localStorage.getItem("spotify_access_token");
-
-      if (!spotifyToken) {
-        throw new Error("Spotify authentication required");
-      }
-
-      return handleCreateGame(playerName, spotifyToken);
-    };
+    if (!hasSpotifyToken) {
+      return (
+        <Box display="grid" justifyItems="center">
+          <IconButton
+            bg={theme.blue}
+            Icon={FaSpotify}
+            label="SIGN IN TO SPOTIFY"
+            onClick={this.onClick}
+          />
+        </Box>
+      );
+    }
 
     return (
       <Box display="grid" gap="32px">
@@ -37,7 +53,7 @@ export default class CreateForm extends React.PureComponent {
           onChange={onChangePlayerName}
         />
         <Async
-          deferFn={handleCreateGameClick}
+          deferFn={this.handleCreateGameClick}
           onResolve={(gameRoom) => onGameSuccess(gameRoom, true)}
           onReject={onGameError}
         >
@@ -55,3 +71,5 @@ export default class CreateForm extends React.PureComponent {
     );
   }
 }
+
+export default withRouter(CreateForm);

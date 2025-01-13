@@ -1,6 +1,5 @@
 import styled from "@emotion/styled";
 import React from "react";
-import { FaSpotify } from "react-icons/fa6";
 
 import { theme } from "../../constants/constants";
 import Box from "../../components/Box";
@@ -135,7 +134,7 @@ class Home extends React.PureComponent {
     }
   }
 
-  onClick = () => this.props.navigate(`/spotify-auth`);
+  onClick = () => this.props.navigate("/lobby");
 
   render() {
     return (
@@ -186,7 +185,6 @@ class Home extends React.PureComponent {
                 borderWidth={2}
                 cursor="pointer"
                 display="flex"
-                gap="8px"
                 onClick={this.onClick}
                 px="12px"
                 py="6px"
@@ -195,7 +193,6 @@ class Home extends React.PureComponent {
                 <Text fontFamily="Bebas Neue" fontSize="20px" pt="2px">
                   I’M READY TO CUE IN
                 </Text>
-                <Box alignSelf="center" as={FaSpotify} size={24} />
               </StyledButton>
               <StyledCursor alt="Profile" as="img" size={120} src={cursor} />
             </StyledButtonGroup>
