@@ -22,8 +22,8 @@ class Players extends React.PureComponent {
 
     return (
       <Box
-        display="grid"
-        gap="16px"
+        display="flex"
+        gap="8px"
         gridTemplateColumns="repeat(auto-fill, minmax(1fr))"
       >
         {map(players, (player) => {
