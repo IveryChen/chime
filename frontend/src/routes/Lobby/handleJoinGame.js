@@ -16,7 +16,17 @@ export default async function handleJoinGame(playerName, roomCode) {
     const data = await response.json();
 
     if (!response.ok) {
+      console.log("Server response:", data); // Debug log
+      if (Array.isArray(data)) {
+        // If it's validation errors array
+        throw new Error(data.map((err) => err.msg).join(", "));
+      }
       throw new Error(data.detail || "Failed to join game");
+    }
+
+    if (!data.room_code || !data.players) {
+      console.log("Unexpected response format:", data); // Debug log
+      throw new Error("Invalid response format from server");
     }
 
     return {
