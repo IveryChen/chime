@@ -223,11 +223,13 @@ class GameView extends React.PureComponent {
                 showRoundText={showRoundText}
                 spotifyPlayer={spotifyPlayer}
               />
-              <Guess
-                gameState={gameState}
-                onChangeAnswer={this.onChangeAnswer}
-                roomCode={roomCode}
-              />
+              {isCurrentPlayersTurn && (
+                <Guess
+                  gameState={gameState}
+                  onChangeAnswer={this.onChangeAnswer}
+                  roomCode={roomCode}
+                />
+              )}
             </>
           )}
         </Box>
