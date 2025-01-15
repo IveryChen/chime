@@ -212,25 +212,25 @@ class GameView extends React.PureComponent {
               )}
             </>
           ) : (
-            <>
-              <Turn
-                deviceId={deviceId}
-                gameState={gameState}
-                isPlaying={isPlaying}
-                onChangeIsPlaying={this.onChangeIsPlaying}
-                showPlayerName={showPlayerName}
-                showReplayButton={showReplayButton}
-                showRoundText={showRoundText}
-                spotifyPlayer={spotifyPlayer}
-              />
-              {isCurrentPlayersTurn && (
+            isCurrentPlayersTurn && (
+              <>
+                <Turn
+                  deviceId={deviceId}
+                  gameState={gameState}
+                  isPlaying={isPlaying}
+                  onChangeIsPlaying={this.onChangeIsPlaying}
+                  showPlayerName={showPlayerName}
+                  showReplayButton={showReplayButton}
+                  showRoundText={showRoundText}
+                  spotifyPlayer={spotifyPlayer}
+                />
                 <Guess
                   gameState={gameState}
                   onChangeAnswer={this.onChangeAnswer}
                   roomCode={roomCode}
                 />
-              )}
-            </>
+              </>
+            )
           )}
         </Box>
       </>
