@@ -33,15 +33,15 @@ class Players extends React.PureComponent {
 
           return (
             <Box
-              alignContent="start"
+              alignContent="center"
               display="grid"
               justifyItems="center"
               key={id}
             >
               <Player
-                isTurn={currentPlayer && id === currentPlayer.id}
                 opacity={isPlaying || submittedPlayers.has(id)}
                 player={player}
+                size={currentPlayer && id === currentPlayer.id ? 56 : 36}
               />
               {score > 0 && <Text fontStyle="italic">+{score}</Text>}
             </Box>

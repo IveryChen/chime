@@ -5,7 +5,7 @@ import Text from "../../components/Text";
 
 export default class Player extends React.PureComponent {
   render() {
-    const { isTurn, opacity, player } = this.props;
+    const { size, opacity, player } = this.props;
     const { avatar, id, name } = player;
 
     return (
@@ -24,7 +24,7 @@ export default class Player extends React.PureComponent {
             borderRadius="50%"
             borderStyle="solid"
             borderWidth={1}
-            size={isTurn ? 56 : 36}
+            size={size}
           />
         )}
         <Text fontSize="12px" fontStyle="italic">
