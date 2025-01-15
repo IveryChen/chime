@@ -22,6 +22,7 @@ class Players extends React.PureComponent {
 
     return (
       <Box
+        alignSelf="start"
         display="flex"
         gap="8px"
         gridTemplateColumns="repeat(auto-fill, minmax(1fr))"

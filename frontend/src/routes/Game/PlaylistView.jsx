@@ -141,7 +141,7 @@ export default class PlaylistView extends React.PureComponent {
   }
 
   renderBody = ({ isPending, run }) => {
-    const { playlists, players, playerId } = this.props;
+    const { playlists, playerId } = this.props;
     const {
       currentPlaylist,
       currentPlaylistId,
@@ -154,10 +154,7 @@ export default class PlaylistView extends React.PureComponent {
     return (
       <>
         {status === "waiting" && (
-          <Text bg={theme.yellow}>
-            Waiting for other players... ({submittedPlayers.size} /{" "}
-            {players.length} ready)
-          </Text>
+          <Text bg={theme.yellow}>Submitting selection...</Text>
         )}
         {status === "loading_songs" && (
           <Text bg={theme.yellow}>Randomly selecting songs...</Text>
