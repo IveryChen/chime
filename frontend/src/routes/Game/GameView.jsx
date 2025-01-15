@@ -94,11 +94,15 @@ class GameView extends React.PureComponent {
   handleScoreUpdate = (data) => {
     const { scores, lastGuess } = data;
 
-    state.select("games", "gameState").merge({
-      lastGuess,
-      scores,
-    });
-    this.setState({ answer: true });
+    state
+      .select("games", "gameState")
+      .merge({
+        lastGuess,
+        scores,
+      })
+      .then(() => {
+        this.setState({ answer: true });
+      });
   };
 
   startRoundSequence = () => {
