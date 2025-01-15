@@ -14,14 +14,11 @@ import LobbyView from "./LobbyView";
 import PlaylistView from "./PlaylistView";
 
 class Game extends React.PureComponent {
-  state = { gameStage: "lobby" };
-
   componentDidMount() {
     const { roomCode } = this.props.params;
     const { currentRoom, user } = this.props;
 
     if (!currentRoom || !user?.player) {
-      // Optionally redirect to home or show loading
       window.location.href = "/";
       return;
     }
@@ -39,6 +36,7 @@ class Game extends React.PureComponent {
     });
 
     socketService.on("players-update", this.handlePlayersUpdate);
+    socketService.on("room-status-update", this.handleRoomStatusUpdate);
   }
 
   componentWillUnmount() {
@@ -51,6 +49,7 @@ class Game extends React.PureComponent {
     }
 
     socketService.off("players-update", this.handlePlayersUpdate);
+    socketService.off("room-status-update", this.handleRoomStatusUpdate);
   }
 
   handlePlayersUpdate = (data) => {
@@ -58,31 +57,41 @@ class Game extends React.PureComponent {
     state.select("games", "currentRoom", "players").set(players);
   };
 
-  onChangeGameStage = (gameStage) => this.setState({ gameStage });
+  handleRoomStatusUpdate = (data) => {
+    const { status } = data;
+    state.select("games", "currentRoom", "status").set(status);
+  };
+
+  updateGameStage = (newStatus) => {
+    const { roomCode } = this.props.params;
+    socketService.updateRoomStatus(roomCode, newStatus);
+  };
 
   render() {
     const { roomCode } = this.props.params;
     const { currentRoom, user } = this.props;
-    const { gameStage } = this.state;
 
     if (!currentRoom) {
       return null;
     }
 
+    const { status } = currentRoom;
     const { player } = user;
     const hasSpotifyToken = Boolean(
       localStorage.getItem("spotify_access_token")
     );
 
+    console.log("status", status);
+
     return (
       <Box display="grid" gridTemplateRows="auto 1fr" height="100%">
-        {gameStage === "lobby" && (
+        {status === "waiting" && (
           <LobbyView
-            onChangeGameStage={this.onChangeGameStage}
+            onUpdateGameStage={this.updateGameStage}
             roomCode={roomCode}
           />
         )}
-        {gameStage === "playlist" &&
+        {status === "selecting_playlist" &&
           (hasSpotifyToken ? (
             <Async
               promiseFn={fetchPlaylists}
@@ -102,9 +111,9 @@ class Game extends React.PureComponent {
               </Text>
             </Box>
           ))}
-        {gameStage === "game" && (
+        {status === "playing" && (
           <GameView
-            onChangeGameStage={this.onChangeGameStage}
+            onUpdateGameStage={this.updateGameStage}
             roomCode={roomCode}
           />
         )}
@@ -121,7 +130,7 @@ class Game extends React.PureComponent {
     return (
       <PlaylistView
         isPending={isPending}
-        onChangeGameStage={this.onChangeGameStage}
+        onUpdateGameStage={this.updateGameStage}
         players={players}
         playlists={playlists}
         playerId={player.id}
@@ -132,12 +141,5 @@ class Game extends React.PureComponent {
 }
 
 export default withRouter(
-  branch(
-    {
-      currentRoom: ["games", "currentRoom"],
-      gameState: ["games", "gameState"],
-      user: ["user"],
-    },
-    Game
-  )
+  branch({ currentRoom: ["games", "currentRoom"], user: ["user"] }, Game)
 );

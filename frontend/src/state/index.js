@@ -12,6 +12,7 @@ export default new Baobab({
     gameState: {
       currentPlayer: null,
       currentRound: null,
+      // currentSong: null, TODO: what happened to currentSong
       lastGuess: {},
       roundState: {},
       scores: {},

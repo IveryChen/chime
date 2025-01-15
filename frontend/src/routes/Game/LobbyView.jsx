@@ -11,7 +11,7 @@ import Logo from "../../components/Logo";
 import Text from "../../components/Text";
 
 class LobbyView extends React.PureComponent {
-  onClick = () => this.props.onChangeGameStage("playlist");
+  onClick = () => this.props.onUpdateGameStage("selecting_playlist");
 
   render() {
     const { currentRoom, roomCode, user } = this.props;

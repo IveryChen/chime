@@ -56,7 +56,13 @@ class SocketService {
     });
 
     this.socket.on("players-update", ({ players, status }) => {
-      state.select("game", "players").set(players);
+      state.select("games", "currentRoom", "players").set(players);
+      if (status) {
+        state.select("games", "currentRoom", "status").set(status);
+      }
+    });
+
+    this.socket.on("room-status-update", ({ status }) => {
       state.select("games", "currentRoom", "status").set(status);
     });
   }
@@ -89,6 +95,11 @@ class SocketService {
     }
 
     this.socket.emit("join-room", { roomCode, player });
+  }
+
+  updateRoomStatus(roomCode, status) {
+    if (!this.socket) return;
+    this.socket.emit("update_room_status", { roomCode, status });
   }
 
   leaveRoom(roomCode) {

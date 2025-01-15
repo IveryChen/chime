@@ -81,6 +81,36 @@ def register_sio_events(sio):
             print(f"Error submitting score: {str(e)}")
 
     @sio.event
+    async def update_room_status(sid, data):
+        try:
+            room_code = data['roomCode']
+            status = data['status']
+
+            room = game_service.get_room(room_code)
+            if room:
+                room.status = status
+                print(f"Updated room {room_code} status to: {status}")
+
+                # Broadcast the status update to all players in the room
+                await sio.emit('room-status-update', {
+                    'status': status
+                }, room=room_code)
+
+                # Also include status in players-update for backwards compatibility
+                await sio.emit('players-update', {
+                    'players': [p.dict() for p in room.players],
+                    'status': status
+                }, room=room_code)
+
+        except Exception as e:
+            print(f"Error updating room status: {str(e)}")
+            await sio.emit('error', {
+                'message': f"Error updating room status: {str(e)}"
+            }, room=sid)
+
+    sio.on('update_room_status', update_room_status)
+
+    @sio.event
     async def leave_room(sid, data):
         room_code = data['roomCode']
         if room_code in game_service.rooms:
@@ -166,6 +196,7 @@ def register_sio_events(sio):
                     current_player=current_player,
                     current_song=first_song,
                     round_state={},
+                    gameStage='lobby',
                     timestamp=datetime.now()
                 )
 
