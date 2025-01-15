@@ -16,7 +16,8 @@ class GameState(BaseModel):
     scores: Dict[str, int]  # player_id -> score
     current_player: Player
     current_song: Optional[Dict] = None
-    round_state: dict      # flexible dict for round-specific state
+    round_state: dict
+    show_answer: bool = False
     timestamp: datetime
 
 class GameRoom(BaseModel):

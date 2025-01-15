@@ -19,7 +19,6 @@ import Scoreboard from "./Scoreboard";
 
 class GameView extends React.PureComponent {
   state = {
-    answer: false,
     deviceId: null,
     finalRanking: null,
     isGameOver: false,
@@ -29,8 +28,6 @@ class GameView extends React.PureComponent {
     showRoundText: false,
     spotifyPlayer: null,
   };
-
-  onChangeAnswer = (answer) => this.setState({ answer });
 
   onChangeDeviceId = (deviceId) => this.setState({ deviceId });
 
@@ -88,21 +85,16 @@ class GameView extends React.PureComponent {
   handleNextRound = () => {
     const { roomCode } = this.props;
     socketService.emit("start_new_round", { roomCode });
-    this.setState({ answer: false });
   };
 
   handleScoreUpdate = (data) => {
     const { scores, lastGuess } = data;
 
-    state
-      .select("games", "gameState")
-      .merge({
-        lastGuess,
-        scores,
-      })
-      .then(() => {
-        this.setState({ answer: true });
-      });
+    state.select("games", "gameState").merge({
+      lastGuess,
+      scores,
+      showAnswer: true,
+    });
   };
 
   startRoundSequence = () => {
@@ -164,7 +156,6 @@ class GameView extends React.PureComponent {
   render() {
     const { gameState, roomCode, user } = this.props;
     const {
-      answer,
       deviceId,
       finalRanking,
       isGameOver,
@@ -200,10 +191,10 @@ class GameView extends React.PureComponent {
         </Header>
         <Box
           display="grid"
-          gridTemplateRows={answer ? "auto 1fr" : "32% 1fr auto"}
+          gridTemplateRows={gameState.showAnswer ? "auto 1fr" : "32% 1fr auto"}
         >
           <Players />
-          {answer ? (
+          {gameState.showAnswer ? (
             <>
               <Answer gameState={gameState} />
               {isCurrentPlayersTurn && (

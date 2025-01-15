@@ -67,6 +67,7 @@ def register_sio_events(sio):
 
             # Update player's score
             room.game_state.scores[player_id] += score
+            room.game_state.show_answer = True
 
             # Emit score update to all players
             await sio.emit('score_update', {
@@ -74,7 +75,8 @@ def register_sio_events(sio):
                 'lastGuess': {
                     'playerId': player_id,
                     'guess': guess
-                }
+                },
+                'showAnswer': True
             }, room=room_code)
 
         except Exception as e:
@@ -211,6 +213,7 @@ def register_sio_events(sio):
                     current_player=first_player,
                     current_song=first_song,
                     round_state={},
+                    show_answer=False,
                     timestamp=datetime.now()
                 )
 
@@ -284,6 +287,8 @@ def register_sio_events(sio):
             if 'used_songs' not in room.game_state.round_state:
                 room.game_state.round_state['used_songs'] = []
             room.game_state.round_state['used_songs'].append(next_song)
+
+            room.game_state.show_answer = False
 
             game_state_dict = room.game_state.dict()
             game_state_dict['timestamp'] = game_state_dict['timestamp'].isoformat()

@@ -12,10 +12,11 @@ export default new Baobab({
     gameState: {
       currentPlayer: null,
       currentRound: null,
-      // currentSong: null, TODO: what happened to currentSong
+      currentSong: null,
       lastGuess: {},
       roundState: {},
       scores: {},
+      showAnswer: false,
       timestamp: null,
     },
   },
