@@ -5,7 +5,7 @@ import Text from "../../components/Text";
 
 export default class Player extends React.PureComponent {
   render() {
-    const { size, opacity, player } = this.props;
+    const { opacity, player, size } = this.props;
     const { avatar, id, name } = player;
 
     return (
