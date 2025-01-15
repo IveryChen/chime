@@ -4,7 +4,6 @@ import { Async } from "react-async";
 
 import fetchPlaylists from "../../api/fetchPlaylists";
 import Box from "../../components/Box";
-import Text from "../../components/Text";
 import socketService from "../../services/socket";
 import state from "../../state";
 import { withRouter } from "../../utils/withRouter";
@@ -12,6 +11,7 @@ import { withRouter } from "../../utils/withRouter";
 import GameView from "./GameView";
 import LobbyView from "./LobbyView";
 import PlaylistView from "./PlaylistView";
+import WaitingView from "./WaitingView";
 
 class Game extends React.PureComponent {
   componentDidMount() {
@@ -81,8 +81,6 @@ class Game extends React.PureComponent {
       localStorage.getItem("spotify_access_token")
     );
 
-    console.log("status", status);
-
     return (
       <Box display="grid" gridTemplateRows="auto 1fr" height="100%">
         {status === "waiting" && (
@@ -100,16 +98,7 @@ class Game extends React.PureComponent {
               {this.renderPlaylist}
             </Async>
           ) : (
-            <Box
-              alignItems="center"
-              display="flex"
-              height="100%"
-              justifyContent="center"
-            >
-              <Text fontSize="24px" textAlign="center">
-                Waiting for host to select songs...
-              </Text>
-            </Box>
+            <WaitingView roomCode={roomCode} />
           ))}
         {status === "playing" && (
           <GameView
