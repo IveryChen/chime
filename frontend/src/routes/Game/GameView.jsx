@@ -158,7 +158,7 @@ class GameView extends React.PureComponent {
   };
 
   render() {
-    const { gameState, roomCode } = this.props;
+    const { gameState, roomCode, user } = this.props;
     const {
       answer,
       deviceId,
@@ -186,6 +186,9 @@ class GameView extends React.PureComponent {
       );
     }
 
+    const isCurrentPlayersTurn =
+      user.player?.id === gameState.currentPlayer?.id;
+
     return (
       <>
         <Header>
@@ -199,12 +202,14 @@ class GameView extends React.PureComponent {
           {answer ? (
             <>
               <Answer gameState={gameState} />
-              <IconButton
-                bg={theme.blue}
-                justifySelf="end"
-                label="NEXT"
-                onClick={this.handleNextRound}
-              />
+              {isCurrentPlayersTurn && (
+                <IconButton
+                  bg={theme.blue}
+                  justifySelf="end"
+                  label="NEXT"
+                  onClick={this.handleNextRound}
+                />
+              )}
             </>
           ) : (
             <>
@@ -231,4 +236,7 @@ class GameView extends React.PureComponent {
   }
 }
 
-export default branch({ gameState: ["games", "gameState"] }, GameView);
+export default branch(
+  { gameState: ["games", "gameState"], user: ["user"] },
+  GameView
+);
