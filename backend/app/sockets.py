@@ -123,60 +123,67 @@ def register_sio_events(sio):
 
     @sio.event
     async def select_playlists(sid, data):
-        room_code = data['roomCode']
-        player_id = data['playerId']
-        playlist_ids = data['playlistIds']
+        try:
+            room_code = data['roomCode']
+            player_id = data['playerId']
+            playlist_ids = data['playlistIds']
 
-        room = game_service.get_room(room_code)
+            room = game_service.get_room(room_code)
 
-        for player in room.players:
-            print(f"Player {player.id}: selected_playlists = {player.selected_playlists}")
+            # Find the host player
+            host_player = next((player for player in room.players if player.is_host), None)
 
-            if player.id == player_id:
-                player.selected_playlists = playlist_ids
+            # Only process if the request is from the host
+            if host_player and player_id == host_player.id:
+                host_player.selected_playlists = playlist_ids
 
+                # Update room status to loading
+                room.status = "loading_songs"
+                print(f"Room status updated to: {room.status}")
+
+                # Notify all players that playlists were submitted
                 await sio.emit('playlist_submitted', {
                     'player_id': player_id,
                     'submitted': True
                 }, room=room_code)
-                break
 
-        all_selected = all(player.selected_playlists for player in room.players)
-        print(f"Room status before check: {room.status}")
+                # Update all players about the status change
+                await sio.emit('players-update', {
+                    'players': [p.dict() for p in room.players],
+                    'status': room.status
+                }, room=room_code)
 
-        if all_selected:
-            room.status = "loading_songs"
-            print(f"Room status after check: {room.status}")
+                try:
+                    # Select songs for the game
+                    selected_songs = await game_service.select_songs_for_game(room_code)
+                    print(f"Selected {len(selected_songs)} songs for the game")
 
-            await sio.emit('players-update', {
-                'players': [p.dict() for p in room.players],
-                'status': room.status
+                    room.status = "playing"
+
+                    # Notify all players that songs are selected and game can begin
+                    await sio.emit('all_playlists_submitted', {
+                        'status': 'success',
+                        'selectedSongs': selected_songs
+                    }, room=room_code)
+
+                    # Final status update
+                    await sio.emit('players-update', {
+                        'players': [p.dict() for p in room.players],
+                        'status': room.status
+                    }, room=room_code)
+
+                except ValueError as e:
+                    print(f"Error selecting songs: {str(e)}")
+                    await sio.emit('error', {
+                        'message': f"Error selecting songs: {str(e)}"
+                    }, room=room_code)
+                    return
+
+        except Exception as e:
+            print(f"Error in select_playlists: {str(e)}")
+            await sio.emit('error', {
+                'message': f"Error processing playlist selection: {str(e)}"
             }, room=room_code)
-
-            try:
-                # Select songs for the game when all playlists are submitted
-                selected_songs = await game_service.select_songs_for_game(room_code)
-                print(f"Selected {len(selected_songs)} songs for the game")
-
-                room.status = "playing"
-
-                await sio.emit('all_playlists_submitted', {
-                    'status': 'success',
-                    'selectedSongs': selected_songs
-                }, room=room_code)
-
-            except ValueError as e:
-                print(f"Error selecting songs: {str(e)}")
-                await sio.emit('error', {
-                    'message': f"Error selecting songs: {str(e)}"
-                }, room=room_code)
-                return
-
-        # Broadcast updated player status to all players in the room
-        await sio.emit('players-update', {
-            'players': [p.dict() for p in room.players],
-            'status': room.status
-        }, room=room_code)
 
     @sio.event
     async def initialize_game(sid, data):
