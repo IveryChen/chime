@@ -192,18 +192,25 @@ def register_sio_events(sio):
             room = game_service.get_room(room_code)
 
             if not room.game_state:
-                random.shuffle(room.players)
-                current_player = room.players[0]
+                current_player = next((p for p in room.players if p.socket_id == sid), None)
 
+                if current_player:
+                    other_players = [p for p in room.players if p.id != current_player.id]
+                    random.shuffle(other_players)  # Shuffle others for random turn order
+                    sorted_players = [current_player] + other_players
+                    room.players = sorted_players  # Store sorted order
+                else:
+                    random.shuffle(room.players)
+
+                first_player = room.players[0]
                 first_song = random.choice(room.selected_songs) if room.selected_songs else None
 
                 room.game_state = GameState(
                     current_round=1,
                     scores={p.id: 0 for p in room.players},
-                    current_player=current_player,
+                    current_player=first_player,
                     current_song=first_song,
                     round_state={},
-                    gameStage='lobby',
                     timestamp=datetime.now()
                 )
 
