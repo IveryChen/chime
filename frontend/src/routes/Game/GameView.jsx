@@ -21,7 +21,6 @@ class GameView extends React.PureComponent {
   state = {
     deviceId: null,
     finalRanking: null,
-    isGameOver: false,
     isPlaying: false,
     showPlayerName: false,
     showReplayButton: false,
@@ -65,9 +64,9 @@ class GameView extends React.PureComponent {
 
   // TODO: not using finalScores
   handleGameOver = (data) => {
-    const { scores, finalRanking } = data;
+    const { gameState, scores, finalRanking } = data;
+    state.select("games", "gameState").set(gameState);
     this.setState({
-      isGameOver: true,
       finalScores: scores,
       finalRanking: finalRanking,
     });
@@ -158,7 +157,6 @@ class GameView extends React.PureComponent {
     const {
       deviceId,
       finalRanking,
-      isGameOver,
       isPlaying,
       showPlayerName,
       showReplayButton,
@@ -170,7 +168,7 @@ class GameView extends React.PureComponent {
       return null;
     }
 
-    if (isGameOver) {
+    if (gameState.isGameOver) {
       return (
         <Scoreboard
           finalRanking={finalRanking}

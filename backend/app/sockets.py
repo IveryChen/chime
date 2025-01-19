@@ -241,15 +241,21 @@ def register_sio_events(sio):
             total_rounds = 5 * len(room.players)  # Or get from room.settings in the future
             if room.game_state.current_round >= total_rounds:
                 room.status = "finished"
+                room.game_state.is_game_over = True
 
                 final_ranking = calculate_final_ranking(
                     room.game_state.scores,
                     room.players
                 )
 
+                game_state_dict = room.game_state.dict()
+                game_state_dict['timestamp'] = game_state_dict['timestamp'].isoformat()
+                camel_case_game_state = convert_to_camel_case(game_state_dict)
+
                 await sio.emit('game_over', {
                     'scores': room.game_state.scores,
-                    'finalRanking': final_ranking
+                    'finalRanking': final_ranking,
+                    'gameState': camel_case_game_state
                 }, room=room_code)
                 return
 
@@ -270,8 +276,21 @@ def register_sio_events(sio):
             if not available_songs:
                 # Game is over - no more songs
                 room.status = "finished"
+                room.game_state.is_game_over = True
+
+                final_ranking = calculate_final_ranking(
+                room.game_state.scores,
+                room.players
+                )
+
+                game_state_dict = room.game_state.dict()
+                game_state_dict['timestamp'] = game_state_dict['timestamp'].isoformat()
+                camel_case_game_state = convert_to_camel_case(game_state_dict)
+
                 await sio.emit('game_over', {
-                    'scores': room.game_state.scores
+                    'scores': room.game_state.scores,
+                    'finalRanking': final_ranking,
+                    'gameState': camel_case_game_state
                 }, room=room_code)
                 return
 

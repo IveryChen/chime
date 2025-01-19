@@ -13,6 +13,7 @@ export default new Baobab({
       currentPlayer: null,
       currentRound: null,
       currentSong: null,
+      isGameOver: false,
       lastGuess: {},
       roundState: {},
       scores: {},

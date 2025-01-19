@@ -18,6 +18,7 @@ class GameState(BaseModel):
     current_song: Optional[Dict] = None
     round_state: dict
     show_answer: bool = False
+    is_game_over: bool = False
     timestamp: datetime
 
 class GameRoom(BaseModel):
