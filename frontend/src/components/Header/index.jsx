@@ -12,7 +12,7 @@ class Header extends Component {
       user && user.images && user.images[0] && user.images[0].url;
 
     return (
-      <Box display="grid" gridTemplateColumns="1fr auto">
+      <Box display="grid" gridTemplateColumns="1fr auto" height={42}>
         {children}
         {hasProfileImage && (
           <Box
