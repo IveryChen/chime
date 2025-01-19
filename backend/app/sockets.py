@@ -239,6 +239,16 @@ def register_sio_events(sio):
                 raise ValueError("Game not initialized")
 
             total_rounds = 5 * len(room.players)  # Or get from room.settings in the future
+            print(f"[DEBUG] Room {room_code}:")
+            print(f"  - Current round: {room.game_state.current_round}")
+            print(f"  - Total rounds: {total_rounds}")
+            print(f"  - Number of players: {len(room.players)}")
+            print(f"  - Players: {[p.name for p in room.players]}")
+            print(f"  - Current player: {room.game_state.current_player.name}")
+
+            if room.game_state.current_round >= total_rounds:
+                print(f"  - Game should end! Current round {room.game_state.current_round} >= Total rounds {total_rounds}")
+
             if room.game_state.current_round >= total_rounds:
                 room.status = "finished"
                 room.game_state.is_game_over = True
