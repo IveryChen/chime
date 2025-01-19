@@ -1,3 +1,4 @@
+import { branch } from "baobab-react/higher-order";
 import React from "react";
 
 import Box from "../../components/Box";
@@ -6,9 +7,10 @@ import Text from "../../components/Text";
 
 import ReplayButton from "./ReplayButton";
 
-export default class Turn extends React.PureComponent {
+class Turn extends React.PureComponent {
   render() {
     const {
+      currentRoom,
       deviceId,
       gameState,
       isCurrentPlayersTurn,
@@ -25,11 +27,14 @@ export default class Turn extends React.PureComponent {
       return null;
     }
 
+    const players = currentRoom.players;
+    const displayRound = Math.ceil(gameState.currentRound / players.length);
+
     return (
       <Box>
         {showRoundText && (
           <Text fontSize="32px" fontWeight="bold" textAlign="center">
-            Round {gameState.currentRound}
+            Round {displayRound}
           </Text>
         )}
         {showPlayerName && (
@@ -60,3 +65,5 @@ export default class Turn extends React.PureComponent {
     );
   }
 }
+
+export default branch({ currentRoom: ["games", "currentRoom"] }, Turn);
