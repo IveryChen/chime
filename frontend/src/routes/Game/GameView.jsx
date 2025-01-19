@@ -211,6 +211,7 @@ class GameView extends React.PureComponent {
               <Turn
                 deviceId={deviceId}
                 gameState={gameState}
+                isCurrentPlayersTurn={isCurrentPlayersTurn}
                 isPlaying={isPlaying}
                 onChangeIsPlaying={this.onChangeIsPlaying}
                 showPlayerName={showPlayerName}

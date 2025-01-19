@@ -11,6 +11,7 @@ export default class Turn extends React.PureComponent {
     const {
       deviceId,
       gameState,
+      isCurrentPlayersTurn,
       isPlaying,
       onChangeIsPlaying,
       previewType,
@@ -36,23 +37,25 @@ export default class Turn extends React.PureComponent {
             {gameState.currentPlayer.name}&apos;s Turn
           </Text>
         )}
-        <Box
-          display="grid"
-          gridTemplateRows="100px 1fr"
-          justifyContent="center"
-        >
-          <DotsVisualizer isPlaying={isPlaying} />
-          {showReplayButton && (
-            <ReplayButton
-              deviceId={deviceId}
-              currentSong={gameState.currentSong}
-              isPlaying={isPlaying}
-              onChangeIsPlaying={onChangeIsPlaying}
-              previewType={previewType}
-              spotifyPlayer={spotifyPlayer}
-            />
-          )}
-        </Box>
+        {isCurrentPlayersTurn && (
+          <Box
+            display="grid"
+            gridTemplateRows="100px 1fr"
+            justifyContent="center"
+          >
+            <DotsVisualizer isPlaying={isPlaying} />
+            {showReplayButton && (
+              <ReplayButton
+                deviceId={deviceId}
+                currentSong={gameState.currentSong}
+                isPlaying={isPlaying}
+                onChangeIsPlaying={onChangeIsPlaying}
+                previewType={previewType}
+                spotifyPlayer={spotifyPlayer}
+              />
+            )}
+          </Box>
+        )}
       </Box>
     );
   }
