@@ -1,3 +1,4 @@
+import Fuse from "fuse.js";
 import React from "react";
 import { Async } from "react-async";
 import { LiaMicrophoneSolid } from "react-icons/lia";
@@ -8,6 +9,13 @@ import IconButton from "../../components/IconButton";
 import Input from "../../components/Input";
 
 import socketService from "../../services/socket";
+
+const correctThreshold = 0.7;
+
+const options = {
+  threshold: 0.3,
+  includeScore: true,
+};
 
 export default class Guess extends React.PureComponent {
   state = { artist: "", title: "" };
@@ -22,11 +30,16 @@ export default class Guess extends React.PureComponent {
     const currentSong = gameState?.currentSong;
     const playerId = gameState?.currentPlayer?.id;
 
-    const normalize = (str) => str.toLowerCase().trim();
-    const isArtistCorrect = currentSong.artists.some(
-      (artistName) => normalize(artistName) === normalize(artist)
-    );
-    const isTitleCorrect = normalize(currentSong.title) === normalize(title);
+    const artistFuse = new Fuse(currentSong.artists, options);
+    const artistResult = artistFuse.search(artist);
+    const artistScore = artistResult.length ? 1 - artistResult[0].score : 0;
+
+    const titleFuse = new Fuse([currentSong.title], options);
+    const titleResult = titleFuse.search(title);
+    const titleScore = titleResult.length ? 1 - titleResult[0].score : 0;
+
+    const isArtistCorrect = artistScore >= correctThreshold;
+    const isTitleCorrect = titleScore >= correctThreshold;
 
     let score = 0;
     if (isArtistCorrect) score += 1;
