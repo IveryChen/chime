@@ -2,6 +2,8 @@ from app.services.game import game_service
 from app.schemas.game import Player, GameState
 from datetime import datetime
 import random
+from fuzzywuzzy import fuzz
+from typing import Dict, Tuple
 
 def to_camel_case(snake_str):
     components = snake_str.split('_')
@@ -55,15 +57,60 @@ def register_sio_events(sio):
 
     sio.on('join-room', join_room_handler)
 
+    def validate_guess(guess: str, current_song: Dict) -> Tuple[bool, bool]:
+        """
+        Validate a guess against the current song.
+        Returns tuple of (is_artist_correct, is_title_correct)
+        """
+        threshold = 70  # Equivalent to 0.7 in frontend
+
+        # Check artist match
+        artist_scores = [
+            fuzz.ratio(guess.lower(), artist.lower())
+            for artist in current_song['artists']
+        ]
+        is_artist_correct = max(artist_scores, default=0) >= threshold
+
+        # Check title match
+        title_score = fuzz.ratio(guess.lower(), current_song['title'].lower())
+        is_title_correct = title_score >= threshold
+
+        return is_artist_correct, is_title_correct
+
     @sio.event
     async def submit_score(sid, data):
         try:
             room_code = data['roomCode']
             player_id = data['playerId']
-            score = data['score']
-            guess = data['guess']
+            guess_text = data.get('guess', {})
 
             room = game_service.get_room(room_code)
+            current_song = room.game_state.current_song
+
+            # Validate both artist and title guesses
+            artist_correct, title_correct = validate_guess(
+                guess_text.get('artist', ''),
+                current_song
+            )
+            title_correct, _ = validate_guess(
+                guess_text.get('title', ''),
+                current_song
+            )
+
+            # Calculate score
+            score = 0
+            if artist_correct:
+                score += 100
+            if title_correct:
+                score += 100
+
+            # Format guess data
+            formatted_guess = {
+                'artist': guess_text.get('artist', ''),
+                'title': guess_text.get('title', ''),
+                'isArtistCorrect': artist_correct,
+                'isTitleCorrect': title_correct,
+            }
 
             # Update player's score
             room.game_state.scores[player_id] += score
@@ -74,13 +121,58 @@ def register_sio_events(sio):
                 'scores': room.game_state.scores,
                 'lastGuess': {
                     'playerId': player_id,
-                    'guess': guess
+                    'guess': formatted_guess
                 },
                 'showAnswer': True
             }, room=room_code)
 
         except Exception as e:
             print(f"Error submitting score: {str(e)}")
+            await sio.emit('error', {'message': str(e)}, room=sid)
+
+    @sio.event
+    async def submit_voice_guess(sid, data):
+        try:
+            room_code = data['roomCode']
+            player_id = data['playerId']
+            voice_input = data['voiceInput']
+
+            room = game_service.get_room(room_code)
+            current_song = room.game_state.current_song
+
+            # Use same validation for voice input
+            artist_correct, title_correct = validate_guess(voice_input, current_song)
+
+            # Calculate score
+            score = 0
+            if artist_correct:
+                score += 100
+            if title_correct:
+                score += 100
+
+            # Format guess data
+            formatted_guess = {
+                'artist': voice_input if artist_correct else '',
+                'title': voice_input if title_correct else '',
+                'isArtistCorrect': artist_correct,
+                'isTitleCorrect': title_correct,
+            }
+
+            # Update player's score
+            room.game_state.scores[player_id] += score
+
+            # Emit score update to all players
+            await sio.emit('score_update', {
+                'scores': room.game_state.scores,
+                'lastGuess': {
+                    'playerId': player_id,
+                    'guess': formatted_guess
+                }
+            }, room=room_code)
+
+        except Exception as e:
+            print(f"Error processing voice guess: {str(e)}")
+            await sio.emit('error', {'message': str(e)}, room=sid)
 
     @sio.event
     async def update_room_status(sid, data):

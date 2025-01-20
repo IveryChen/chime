@@ -2,11 +2,13 @@ import Fuse from "fuse.js";
 import React from "react";
 import { Async } from "react-async";
 import { LiaMicrophoneSolid } from "react-icons/lia";
+import RecordRTC from "recordrtc";
 
 import { theme } from "../../constants/constants";
 import Box from "../../components/Box";
 import IconButton from "../../components/IconButton";
 import Input from "../../components/Input";
+import API_URL from "../../constants/apiUrl";
 
 import socketService from "../../services/socket";
 
@@ -18,45 +20,81 @@ const options = {
 };
 
 export default class Guess extends React.PureComponent {
-  state = { artist: "", title: "" };
+  state = { artist: "", isListening: false, title: "" };
 
   onChangeArtist = (artist) => this.setState({ artist });
 
   onChangeTitle = (title) => this.setState({ title });
 
+  handleVoiceInput = async () => {
+    const { gameState, roomCode } = this.props;
+    const playerId = gameState?.currentPlayer?.id;
+
+    try {
+      this.setState({ isListening: true });
+
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+
+      const recorder = new RecordRTC(stream, {
+        type: "audio",
+        mimeType: "audio/wav",
+        recorderType: RecordRTC.StereoAudioRecorder,
+      });
+
+      recorder.startRecording();
+
+      setTimeout(async () => {
+        recorder.stopRecording(async () => {
+          const blob = recorder.getBlob();
+          stream.getTracks().forEach((track) => track.stop());
+
+          const formData = new FormData();
+          formData.append("audio", blob, "recording.wav");
+
+          try {
+            const response = await fetch(`${API_URL}/game/speech-to-text`, {
+              method: "POST",
+              body: formData,
+            });
+
+            const data = await response.json();
+            console.log(data);
+            if (data.text) {
+              socketService.emit("submit_voice_guess", {
+                roomCode,
+                playerId,
+                voiceInput: data.text,
+              });
+            }
+          } catch (error) {
+            console.error("Speech to text error:", error);
+            this.setState({ error: "Failed to process voice input" });
+          }
+
+          this.setState({ isListening: false });
+        });
+      }, 5000);
+    } catch (error) {
+      console.error("Microphone access error:", error);
+      this.setState({
+        isListening: false,
+        error: "Could not access microphone",
+      });
+    }
+  };
+
   handleSubmitGuess = async () => {
     const { gameState, onChangeAnswer, roomCode } = this.props;
     const { artist, title } = this.state;
-    const currentSong = gameState?.currentSong;
     const playerId = gameState?.currentPlayer?.id;
-
-    const artistFuse = new Fuse(currentSong.artists, options);
-    const artistResult = artistFuse.search(artist);
-    const artistScore = artistResult.length ? 1 - artistResult[0].score : 0;
-
-    const titleFuse = new Fuse([currentSong.title], options);
-    const titleResult = titleFuse.search(title);
-    const titleScore = titleResult.length ? 1 - titleResult[0].score : 0;
-
-    const isArtistCorrect = artistScore >= correctThreshold;
-    const isTitleCorrect = titleScore >= correctThreshold;
-
-    let score = 0;
-    if (isArtistCorrect) score += 100;
-    if (isTitleCorrect) score += 100;
-
-    const guess = {
-      artist,
-      title,
-      isArtistCorrect,
-      isTitleCorrect,
-    };
 
     socketService.emit("submit_score", {
       roomCode,
       playerId,
-      score,
-      guess,
+      guess: {
+        artist,
+        title,
+      },
     });
 
     onChangeAnswer(true);
@@ -64,16 +102,12 @@ export default class Guess extends React.PureComponent {
     this.setState({
       artist: "",
       title: "",
-      submitStatus: {
-        artist: isArtistCorrect,
-        title: isTitleCorrect,
-      },
     });
   };
 
   render() {
     const { gameState } = this.props;
-    const { artist, title } = this.state;
+    const { artist, isListening, title } = this.state;
 
     if (!gameState) {
       return null;
@@ -106,9 +140,11 @@ export default class Guess extends React.PureComponent {
         <Box display="flex" justifyContent="space-between">
           <IconButton
             bg={theme.blue}
+            disabled={isListening}
             Icon={LiaMicrophoneSolid}
             justifySelf="end"
-            label="SPEAK TO GUESS"
+            label={isListening ? "Listening..." : "SPEAK TO GUESS"}
+            onClick={this.handleVoiceInput}
           />
           <Async deferFn={this.handleSubmitGuess}>
             {({ isPending, run }) => (
