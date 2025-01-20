@@ -152,8 +152,8 @@ def register_sio_events(sio):
 
             # Format guess data
             formatted_guess = {
-                'artist': voice_input if artist_correct else '',
-                'title': voice_input if title_correct else '',
+                'artist': voice_input,
+                'title': voice_input,
                 'isArtistCorrect': artist_correct,
                 'isTitleCorrect': title_correct,
             }
