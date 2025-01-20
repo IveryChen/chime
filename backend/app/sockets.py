@@ -77,6 +77,52 @@ def register_sio_events(sio):
 
         return is_artist_correct, is_title_correct
 
+    def calculate_match_scores(text: str, artist_names: list, title: str, threshold: int = 70) -> Tuple[bool, bool]:
+        artist_score = max(
+            (fuzz.ratio(text.lower(), artist.lower()) for artist in artist_names),
+            default=0
+        )
+        title_score = fuzz.ratio(text.lower(), title.lower())
+        return artist_score >= threshold, title_score >= threshold
+
+    def try_split_combination(first_part: str, second_part: str, current_song: Dict) -> Tuple[str, str, bool, bool, int]:
+        # Try first part as artist, second as title
+        is_artist1, is_title1 = calculate_match_scores(first_part, current_song['artists'], current_song['title'])
+        score1 = int(is_artist1) + int(is_title1)
+
+        # Try first part as title, second as artist
+        is_artist2, is_title2 = calculate_match_scores(second_part, current_song['artists'], current_song['title'])
+        score2 = int(is_artist2) + int(is_title2)
+
+        return (first_part, second_part, is_artist1, is_title1, score1) if score1 > score2 else (second_part, first_part, is_artist2, is_title2, score2)
+
+    def validate_voice_guess(voice_input: str, current_song: Dict) -> Tuple[str, str, bool, bool]:
+        words = voice_input.split()
+        if len(words) <= 1:
+            is_artist, is_title = calculate_match_scores(voice_input, current_song['artists'], current_song['title'])
+            return voice_input, voice_input, is_artist, is_title
+
+        # Try different split points
+        best_result = None
+        best_score = 0
+
+        for i in range(1, len(words)):
+            first_part = " ".join(words[:i])
+            second_part = " ".join(words[i:])
+
+            artist, title, is_artist, is_title, score = try_split_combination(first_part, second_part, current_song)
+            if score > best_score:
+                best_score = score
+                best_result = (artist, title, is_artist, is_title)
+
+        if best_result:
+            return best_result
+
+        # Fallback to whole string
+        is_artist, is_title = calculate_match_scores(voice_input, current_song['artists'], current_song['title'])
+        return voice_input, voice_input, is_artist, is_title
+
+
     @sio.event
     async def submit_score(sid, data):
         try:
@@ -140,8 +186,10 @@ def register_sio_events(sio):
             room = game_service.get_room(room_code)
             current_song = room.game_state.current_song
 
-            # Use same validation for voice input
-            artist_correct, title_correct = validate_guess(voice_input, current_song)
+            artist_guess, title_guess, artist_correct, title_correct = validate_voice_guess(
+                voice_input,
+                current_song
+            )
 
             # Calculate score
             score = 0
@@ -152,8 +200,8 @@ def register_sio_events(sio):
 
             # Format guess data
             formatted_guess = {
-                'artist': voice_input,
-                'title': voice_input,
+                'artist': artist_guess,
+                'title': title_guess,
                 'isArtistCorrect': artist_correct,
                 'isTitleCorrect': title_correct,
             }
