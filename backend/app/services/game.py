@@ -62,96 +62,13 @@ class GameService:
     async def select_songs_for_game(self, room_code: str, num_rounds: int = 5) -> List[Dict]:
         room = self.get_room(room_code)
         num_songs_needed = len(room.players) * num_rounds
-        all_tracks = []
 
-        for player in room.players:
-            if not player.selected_playlists:
-                continue
-
-            sp = spotipy.Spotify(auth=player.spotify_token)
-
-            # Check if user has Premium
-            try:
-                user_info = sp.current_user()
-                is_premium = user_info['product'] == 'premium'
-                print(f"User {player.name} premium status: {is_premium}")
-            except Exception as e:
-                print(f"Error checking premium status: {str(e)}")
-                is_premium = False
-
-            for playlist_id in player.selected_playlists:
-                try:
-                    print(f"Fetching tracks from playlist {playlist_id}")
-                    results = sp.playlist_tracks(playlist_id)
-                    tracks = results['items']
-
-                    while results['next']:
-                        results = sp.next(results)
-                        tracks.extend(results['items'])
-
-                    track_ids = [
-                        track['track']['id'] for track in tracks
-                        if track.get('track') and track['track'].get('id')
-                    ]
-
-                    # Fetch full track details in batches
-                    for i in range(0, len(track_ids), 50):
-                        batch_ids = track_ids[i:i + 50]
-                        full_tracks = sp.tracks(batch_ids)['tracks']
-
-                        tracks_info = []
-                        for track in full_tracks:
-                            playback_info = {
-                                'id': track['id'],
-                                'name': track['name'],
-                                'artists': track['artists'],
-                                'popularity': track.get('popularity', 0),
-                                'album_image': track['album']['images'][0]['url'] if track['album']['images'] else None  # Add this
-                            }
-                            tracks_info.append(playback_info)
-
-                        preview_urls = await self.get_deezer_previews_batch(tracks_info)
-
-                        for track_info, preview_url in zip(tracks_info, preview_urls):
-                            if preview_url:
-                                track_info['preview_type'] = 'deezer'
-                                track_info['preview_url'] = preview_url
-                                all_tracks.append({'track': track_info})
-                            elif is_premium:
-                                # Fallback to Spotify SDK for premium users
-                                track_info['preview_type'] = 'spotify_sdk'
-                                track_info['uri'] = track['uri']
-                                all_tracks.append({'track': track_info})
-
-                except Exception as e:
-                    print(f"Error fetching playlist {playlist_id}: {str(e)}")
-                    continue
-
-        if not all_tracks:
-            raise ValueError("No tracks with previews found in playlists")
-
-        print(f"Total playable tracks: {len(all_tracks)}")
-
-        # Try different popularity thresholds until we get enough songs
-        thresholds = [60, 40, 20, 0]
-        filtered_songs = []
-
-        for threshold in thresholds:
-            filtered_songs = [
-                track for track in all_tracks
-                if track['track'].get('popularity', 0) >= threshold
-            ]
-
-            print(f"Found {len(filtered_songs)} songs with popularity >= {threshold}")
-
-            if len(filtered_songs) >= num_songs_needed:
-                print(f"Using popularity threshold of {threshold}")
-                break
-
-        if len(filtered_songs) < num_songs_needed:
-            raise ValueError(f"Not enough songs with previews. Need {num_songs_needed}, found {len(filtered_songs)}")
+        filtered_songs = await self.get_filtered_tracks(room)
+        assert len(filtered_songs) >= num_songs_needed, "Not enough songs - this should have been caught earlier"
 
         selected_songs = random.sample(filtered_songs, num_songs_needed)
+
+        sp = spotipy.Spotify(auth=room.players[0].spotify_token)
 
         artist_ids = list(set(
             song['track']['artists'][0]['id']
@@ -203,5 +120,92 @@ class GameService:
             for track in tracks
         ]
         return await asyncio.gather(*tasks)
+
+    async def count_available_songs(self, room_code: str) -> int:
+        """Count how many playable songs are available"""
+        room = self.get_room(room_code)
+        filtered_songs = await self.get_filtered_tracks(room)
+        return len(filtered_songs)
+
+    async def get_filtered_tracks(self, room: GameRoom) -> List[Dict]:
+        """Helper function to get all playable tracks from selected playlists"""
+        all_tracks = []
+
+        for player in room.players:
+            if not player.selected_playlists:
+                continue
+
+            sp = spotipy.Spotify(auth=player.spotify_token)
+
+            # Check if user has Premium
+            try:
+                user_info = sp.current_user()
+                is_premium = user_info['product'] == 'premium'
+                print(f"User {player.name} premium status: {is_premium}")
+            except Exception as e:
+                print(f"Error checking premium status: {str(e)}")
+                is_premium = False
+
+            for playlist_id in player.selected_playlists:
+                try:
+                    print(f"Fetching tracks from playlist {playlist_id}")
+                    results = sp.playlist_tracks(playlist_id)
+                    tracks = results['items']
+
+                    while results['next']:
+                        results = sp.next(results)
+                        tracks.extend(results['items'])
+
+                    track_ids = [
+                        track['track']['id'] for track in tracks
+                        if track.get('track') and track['track'].get('id')
+                    ]
+
+                    # Fetch full track details in batches
+                    for i in range(0, len(track_ids), 50):
+                        batch_ids = track_ids[i:i + 50]
+                        full_tracks = sp.tracks(batch_ids)['tracks']
+
+                        tracks_info = []
+                        for track in full_tracks:
+                            playback_info = {
+                                'id': track['id'],
+                                'name': track['name'],
+                                'artists': track['artists'],
+                                'popularity': track.get('popularity', 0),
+                                'album_image': track['album']['images'][0]['url'] if track['album']['images'] else None
+                            }
+                            tracks_info.append(playback_info)
+
+                        preview_urls = await self.get_deezer_previews_batch(tracks_info)
+
+                        for track_info, preview_url in zip(tracks_info, preview_urls):
+                            if preview_url:
+                                track_info['preview_type'] = 'deezer'
+                                track_info['preview_url'] = preview_url
+                                all_tracks.append({'track': track_info})
+                            elif is_premium:
+                                track_info['preview_type'] = 'spotify_sdk'
+                                track_info['uri'] = track['uri']
+                                all_tracks.append({'track': track_info})
+
+                except Exception as e:
+                    print(f"Error fetching playlist {playlist_id}: {str(e)}")
+                    continue
+
+        if not all_tracks:
+            return []
+
+        # Try different popularity thresholds until we get enough songs
+        for threshold in [60, 40, 20, 0]:
+            filtered_songs = [
+                track for track in all_tracks
+                if track['track'].get('popularity', 0) >= threshold
+            ]
+            if filtered_songs:
+                print(f"Found {len(filtered_songs)} songs with popularity >= {threshold}")
+                return filtered_songs
+
+        return []
 
 game_service = GameService()

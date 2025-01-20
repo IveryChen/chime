@@ -139,6 +139,17 @@ def register_sio_events(sio):
             if host_player and player_id == host_player.id:
                 host_player.selected_playlists = playlist_ids
 
+                num_songs_needed = len(room.players) * 5
+                available_songs = await game_service.count_available_songs(room_code)
+
+                if available_songs < num_songs_needed:
+                    await sio.emit('playlist_error', {
+                        'message': f'Not enough songs with previews. Need {num_songs_needed}, found {available_songs}. Please select more playlists.',
+                        'songs_needed': num_songs_needed,
+                        'songs_available': available_songs
+                    }, room=room_code)
+                    return
+
                 # Update room status to loading
                 room.status = "loading_songs"
                 print(f"Room status updated to: {room.status}")

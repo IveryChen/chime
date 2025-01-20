@@ -18,6 +18,7 @@ export default class PlaylistView extends React.PureComponent {
   state = {
     currentPlaylist: null,
     currentPlaylistId: null,
+    error: null,
     selectedPlaylists: [],
     status: null,
     submittedPlayers: new Set(),
@@ -33,18 +34,36 @@ export default class PlaylistView extends React.PureComponent {
       "all_playlists_submitted",
       this.handleAllPlaylistsSubmitted
     );
+    socketService.on("playlist_error", this.handlePlaylistError);
     socketService.on("playlist_submitted", this.handlePlaylistSubmitted);
     socketService.on("players-update", this.handlePlayersUpdate);
   }
 
   componentWillUnmount() {
     socketService.off("playlist_submitted", this.handlePlaylistSubmitted);
+    socketService.off("playlist_error", this.handlePlaylistError);
     socketService.off(
       "all_playlists_submitted",
       this.handleAllPlaylistsSubmitted
     );
     socketService.off("players-update", this.handlePlayersUpdate);
   }
+
+  handlePlaylistError = (data) => {
+    const { message } = data;
+    const { playerId } = this.props;
+
+    this.setState((prev) => {
+      const newSubmittedPlayers = new Set(prev.submittedPlayers);
+      newSubmittedPlayers.delete(playerId);
+
+      return {
+        error: message,
+        status: null,
+        submittedPlayers: newSubmittedPlayers,
+      };
+    });
+  };
 
   handlePlaylistSubmitted = ({ player_id, submitted }) => {
     this.setState((prev) => {
@@ -55,8 +74,8 @@ export default class PlaylistView extends React.PureComponent {
         newSubmittedPlayers.delete(player_id);
       }
       return {
-        submittedPlayers: newSubmittedPlayers,
         status: "waiting",
+        submittedPlayers: newSubmittedPlayers,
       };
     });
   };
@@ -102,6 +121,7 @@ export default class PlaylistView extends React.PureComponent {
     });
 
     this.setState({
+      error: null,
       status: "waiting",
       submittedPlayers: new Set([...submittedPlayers, playerId]),
     });
@@ -145,6 +165,7 @@ export default class PlaylistView extends React.PureComponent {
     const {
       currentPlaylist,
       currentPlaylistId,
+      error,
       submittedPlayers,
       status,
       tracksData,
@@ -153,12 +174,9 @@ export default class PlaylistView extends React.PureComponent {
 
     return (
       <>
-        {status === "waiting" && (
-          <Text bg={theme.yellow}>Submitting selection...</Text>
-        )}
-        {status === "loading_songs" && (
-          <Text bg={theme.yellow}>Randomly selecting songs...</Text>
-        )}
+        {status === "waiting" && <Text>Submitting selection...</Text>}
+        {status === "loading_songs" && <Text>Randomly selecting songs...</Text>}
+        {error && <Text>{error}</Text>}
         <Box
           display="grid"
           gap="16px"
