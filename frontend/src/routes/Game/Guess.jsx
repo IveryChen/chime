@@ -1,4 +1,3 @@
-import Fuse from "fuse.js";
 import React from "react";
 import { Async } from "react-async";
 import { LiaMicrophoneSolid } from "react-icons/lia";
@@ -11,13 +10,6 @@ import Input from "../../components/Input";
 import API_URL from "../../constants/apiUrl";
 
 import socketService from "../../services/socket";
-
-const correctThreshold = 0.7;
-
-const options = {
-  threshold: 0.3,
-  includeScore: true,
-};
 
 export default class Guess extends React.PureComponent {
   state = { artist: "", isListening: false, title: "" };
