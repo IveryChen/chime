@@ -42,8 +42,8 @@ export default class Guess extends React.PureComponent {
     const isTitleCorrect = titleScore >= correctThreshold;
 
     let score = 0;
-    if (isArtistCorrect) score += 1;
-    if (isTitleCorrect) score += 1;
+    if (isArtistCorrect) score += 100;
+    if (isTitleCorrect) score += 100;
 
     const guess = {
       artist,
