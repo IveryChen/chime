@@ -62,7 +62,12 @@ class Scoreboard extends React.PureComponent {
                 +{winner.score}
               </Text>
             </Box>
-            <Box display="flex" flexWrap="wrap" gap="16px">
+            <Box
+              display="flex"
+              flexWrap="wrap"
+              gap="16px"
+              justifyContent="center"
+            >
               {map(finalRanking, (player, index) => {
                 if (index > 0) {
                   return (
@@ -79,12 +84,14 @@ class Scoreboard extends React.PureComponent {
                         borderRadius="50%"
                         borderStyle="solid"
                         borderWidth={1}
-                        size={42}
+                        size={72}
                       />
-                      <Text fontSize="12px" fontStyle="italic">
+                      <Text fontSize="36px" fontStyle="italic">
                         {player.name}
                       </Text>
-                      <Text fontStyle="italic">+{player.score}</Text>
+                      <Text fontSize="24px" fontStyle="italic">
+                        +{player.score}
+                      </Text>
                     </Box>
                   );
                 }
