@@ -3,7 +3,7 @@ from app.schemas.game import Player, GameState
 from datetime import datetime
 import random
 from fuzzywuzzy import fuzz
-from typing import Dict, Tuple
+from typing import Dict, Tuple, List
 
 def to_camel_case(snake_str):
     components = snake_str.split('_')
@@ -77,51 +77,80 @@ def register_sio_events(sio):
 
         return is_artist_correct, is_title_correct
 
-    def calculate_match_scores(text: str, artist_names: list, title: str, threshold: int = 70) -> Tuple[bool, bool]:
+    def calculate_match_scores(text: str, artist_names: list, title: str) -> Tuple[float, float]:
+        """
+        Calculates similarity scores of input text against artist names and song title.
+        Returns the highest match score for each category.
+        """
         artist_score = max(
             (fuzz.ratio(text.lower(), artist.lower()) for artist in artist_names),
-            default=0
+            default=0  # Ensure it doesn't break if artist_names is empty
         )
         title_score = fuzz.ratio(text.lower(), title.lower())
-        return artist_score >= threshold, title_score >= threshold
 
-    def try_split_combination(first_part: str, second_part: str, current_song: Dict) -> Tuple[str, str, bool, bool, int]:
-        # Try first part as artist, second as title
-        is_artist1, is_title1 = calculate_match_scores(first_part, current_song['artists'], current_song['title'])
-        score1 = int(is_artist1) + int(is_title1)
+        return artist_score, title_score
 
-        # Try first part as title, second as artist
-        is_artist2, is_title2 = calculate_match_scores(second_part, current_song['artists'], current_song['title'])
-        score2 = int(is_artist2) + int(is_title2)
+    def find_matching_phrases(text: str, current_song: Dict) -> List[str]:
+        """
+        Find phrases in the input that match parts of the song title or artist names
+        """
+        # Get all possible phrases to match against
+        phrases_to_match = [current_song['title']] + current_song['artists']
 
-        return (first_part, second_part, is_artist1, is_title1, score1) if score1 > score2 else (second_part, first_part, is_artist2, is_title2, score2)
+        # Normalize everything for comparison
+        text = text.lower()
+        phrases_to_match = [p.lower() for p in phrases_to_match]
+
+        # Find any matching substrings
+        matches = []
+        words = text.split()
+
+        # Try different word combinations
+        for i in range(len(words)):
+            for j in range(i + 1, len(words) + 1):
+                phrase = " ".join(words[i:j])
+                # Check if this phrase is similar to any song title or artist name
+                for target in phrases_to_match:
+                    if fuzz.ratio(phrase, target) > 80:  # High threshold for matches
+                        matches.append(phrase)
+
+        return sorted(set(matches), key=len, reverse=True)
 
     def validate_voice_guess(voice_input: str, current_song: Dict) -> Tuple[str, str, bool, bool]:
-        words = voice_input.split()
-        if len(words) <= 1:
-            is_artist, is_title = calculate_match_scores(voice_input, current_song['artists'], current_song['title'])
-            return voice_input, voice_input, is_artist, is_title
+        print(f"Processing voice input: '{voice_input}'")
+        print(f"Actual song - Artists: {current_song['artists']}, Title: {current_song['title']}")
 
-        # Try different split points
-        best_result = None
-        best_score = 0
+        matching_phrases = find_matching_phrases(voice_input, current_song)
+        print(f"Found matching phrases: {matching_phrases}")
 
-        for i in range(1, len(words)):
-            first_part = " ".join(words[:i])
-            second_part = " ".join(words[i:])
+        threshold = 85
+        best_artist_match = None
+        best_title_match = None
+        best_artist_score = 0
+        best_title_score = 0
 
-            artist, title, is_artist, is_title, score = try_split_combination(first_part, second_part, current_song)
-            if score > best_score:
-                best_score = score
-                best_result = (artist, title, is_artist, is_title)
+        for phrase in matching_phrases:
+            artist_score, title_score = calculate_match_scores(
+                phrase,
+                current_song['artists'],
+                current_song['title']
+            )
 
-        if best_result:
-            return best_result
+            # Track best artist match
+            if artist_score > best_artist_score:
+                best_artist_score = artist_score
+                best_artist_match = phrase
 
-        # Fallback to whole string
-        is_artist, is_title = calculate_match_scores(voice_input, current_song['artists'], current_song['title'])
-        return voice_input, voice_input, is_artist, is_title
+            # Track best title match
+            if title_score > best_title_score:
+                best_title_score = title_score
+                best_title_match = phrase
 
+        # If no good match is found, fall back to the entire voice input
+        final_artist = best_artist_match if best_artist_score >= threshold else voice_input
+        final_title = best_title_match if best_title_score >= threshold else voice_input
+
+        return final_artist, final_title, best_artist_score >= threshold, best_title_score >= threshold
 
     @sio.event
     async def submit_score(sid, data):
@@ -190,6 +219,8 @@ def register_sio_events(sio):
                 voice_input,
                 current_song
             )
+
+            print( artist_guess, title_guess, artist_correct, title_correct )
 
             # Calculate score
             score = 0
