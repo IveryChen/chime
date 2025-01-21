@@ -16,56 +16,21 @@ export default class Guess extends React.PureComponent {
 
   onChangeArtist = (artist) => this.setState({ artist });
 
+  onChangeIsListening = () =>
+    this.setState({ isListening: !this.state.isListening });
+
   onChangeTitle = (title) => this.setState({ title });
 
-  handleVoiceInput = async () => {
-    const { gameState, roomCode } = this.props;
-    const playerId = gameState?.currentPlayer?.id;
-
+  handleStartRecording = async () => {
+    this.setState({ isListening: true });
     try {
-      this.setState({ isListening: true });
-
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-
-      const recorder = new RecordRTC(stream, {
+      this.stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      this.recorder = new RecordRTC(this.stream, {
         type: "audio",
         mimeType: "audio/wav",
         recorderType: RecordRTC.StereoAudioRecorder,
       });
-
-      recorder.startRecording();
-
-      setTimeout(async () => {
-        recorder.stopRecording(async () => {
-          const blob = recorder.getBlob();
-          stream.getTracks().forEach((track) => track.stop());
-
-          const formData = new FormData();
-          formData.append("audio", blob, "recording.wav");
-
-          try {
-            const response = await fetch(`${API_URL}/game/speech-to-text`, {
-              method: "POST",
-              body: formData,
-            });
-
-            const data = await response.json();
-            console.log(data);
-            if (data.text) {
-              socketService.emit("submit_voice_guess", {
-                roomCode,
-                playerId,
-                voiceInput: data.text,
-              });
-            }
-          } catch (error) {
-            console.error("Speech to text error:", error);
-            this.setState({ error: "Failed to process voice input" });
-          }
-
-          this.setState({ isListening: false });
-        });
-      }, 5000);
+      this.recorder.startRecording();
     } catch (error) {
       console.error("Microphone access error:", error);
       this.setState({
@@ -73,6 +38,42 @@ export default class Guess extends React.PureComponent {
         error: "Could not access microphone",
       });
     }
+  };
+
+  handleStopRecording = async () => {
+    if (!this.recorder) return;
+
+    this.recorder.stopRecording(async () => {
+      const blob = this.recorder.getBlob();
+      this.stream.getTracks().forEach((track) => track.stop());
+
+      const formData = new FormData();
+      formData.append("audio", blob, "recording.wav");
+
+      try {
+        const response = await fetch(`${API_URL}/game/speech-to-text`, {
+          method: "POST",
+          body: formData,
+        });
+
+        const data = await response.json();
+        if (data.text) {
+          const { gameState, roomCode } = this.props;
+          const playerId = gameState?.currentPlayer?.id;
+
+          socketService.emit("submit_voice_guess", {
+            roomCode,
+            playerId,
+            voiceInput: data.text,
+          });
+        }
+      } catch (error) {
+        console.error("Speech to text error:", error);
+        this.setState({ error: "Failed to process voice input" });
+      }
+
+      this.setState({ isListening: false });
+    });
   };
 
   handleSubmitGuess = async () => {
@@ -136,7 +137,9 @@ export default class Guess extends React.PureComponent {
             Icon={LiaMicrophoneSolid}
             justifySelf="end"
             label={isListening ? "Listening..." : "SPEAK TO GUESS"}
-            onClick={this.handleVoiceInput}
+            onClick={this.onChangeIsListening}
+            onLongPress={this.handleStartRecording}
+            onLongPressEnd={this.handleStopRecording}
           />
           <Async deferFn={this.handleSubmitGuess}>
             {({ isPending, run }) => (
