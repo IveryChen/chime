@@ -66,9 +66,11 @@ class GameService:
         num_songs_needed = len(room.players) * num_rounds
 
         filtered_songs = await self.get_filtered_tracks(room)
-        assert len(filtered_songs) >= num_songs_needed, "Not enough songs - this should have been caught earlier"
 
-        selected_songs = random.sample(filtered_songs, num_songs_needed)
+        valid_songs = [song for song in filtered_songs if song['track'].get('preview_url')]
+        assert len(valid_songs) >= num_songs_needed, "Not enough songs - this should have been caught earlier"
+
+        selected_songs = random.sample(valid_songs, num_songs_needed)
 
         sp = spotipy.Spotify(auth=room.players[0].spotify_token)
 
@@ -91,7 +93,7 @@ class GameService:
             'title': song['track']['name'],
             'artists': [artist['name'] for artist in song['track']['artists']],
             'artist_ids': [artist['id'] for artist in song['track']['artists']],
-            'preview_type': song['track']['preview_type'],
+            'preview_type': 'deezer',
             'preview_url': song['track'].get('preview_url'),
             'uri': song['track'].get('uri'),
             'popularity': song['track']['popularity'],
@@ -145,7 +147,16 @@ class GameService:
         """Count how many playable songs are available"""
         room = self.get_room(room_code)
         filtered_songs = await self.get_filtered_tracks(room)
-        return len(filtered_songs)
+        seen_ids = set()
+        valid_songs = 0
+        for song in filtered_songs:
+            song_id = song['track']['id']
+            if song['track'].get('preview_url') and song_id not in seen_ids:
+                seen_ids.add(song_id)
+                valid_songs += 1
+
+        return valid_songs
+
 
     async def get_filtered_tracks(self, room: GameRoom) -> List[Dict]:
         """Helper function to get all playable tracks from selected playlists"""
