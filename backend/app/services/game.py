@@ -7,6 +7,8 @@ import spotipy
 import requests
 import aiohttp
 import asyncio
+import re
+from fuzzywuzzy import fuzz
 
 class GameService:
     def __init__(self):
@@ -101,16 +103,34 @@ class GameService:
         return formatted_songs
 
     async def get_deezer_previews_batch(self, tracks: List[Dict]) -> List[Optional[str]]:
-        """Fetch multiple Deezer previews concurrently"""
         async def fetch_single_preview(title: str, artist: str) -> Optional[str]:
             try:
-                search_query = f"{title} {artist}".replace(' ', '+')
+                # Clean title and artist
+                clean_title = re.sub(r'\([^)]*\)|feat\.[^,]*', '', title).strip()
+                clean_artist = re.sub(r'\([^)]*\)', '', artist).strip()
+
+                search_query = f"{clean_title} {clean_artist}".replace(' ', '+')
+
                 async with aiohttp.ClientSession() as session:
                     async with session.get(f"https://api.deezer.com/search?q={search_query}") as response:
                         if response.status == 200:
                             data = await response.json()
-                            if data.get('data') and len(data['data']) > 0:
-                                return data['data'][0].get('preview')
+                            if data.get('data'):
+                                # Find best match using fuzzy matching
+                                best_match = None
+                                highest_score = 0
+
+                                for track in data['data'][:5]:  # Check top 5 results
+                                    title_score = fuzz.ratio(clean_title.lower(), track['title'].lower())
+                                    artist_score = fuzz.ratio(clean_artist.lower(), track['artist']['name'].lower())
+                                    avg_score = (title_score + artist_score) / 2
+
+                                    if avg_score > highest_score and avg_score > 75:  # Threshold of 75%
+                                        highest_score = avg_score
+                                        best_match = track
+
+                                return best_match['preview'] if best_match else None
+
             except Exception as e:
                 print(f"Deezer API error for {title} - {artist}: {str(e)}")
             return None
