@@ -19,13 +19,11 @@ import Scoreboard from "./Scoreboard";
 
 class GameView extends React.PureComponent {
   state = {
-    deviceId: null,
     finalRanking: null,
     isPlaying: false,
     showPlayerName: false,
     showReplayButton: false,
     showRoundText: false,
-    spotifyPlayer: null,
   };
 
   onChangeDeviceId = (deviceId) => this.setState({ deviceId });
@@ -41,6 +39,7 @@ class GameView extends React.PureComponent {
     socketService.on("game_state_update", this.handleGameStateUpdate);
     socketService.on("score_update", this.handleScoreUpdate);
     socketService.on("game_over", this.handleGameOver);
+    socketService.on("play_snippet", this.handlePlaySnippet);
 
     initializeSpotifySDK(this.onChangeDeviceId, this.onChangeSpotifyPlayer);
   }
@@ -49,6 +48,7 @@ class GameView extends React.PureComponent {
     socketService.off("game_state_update", this.handleGameStateUpdate);
     socketService.off("score_update", this.handleScoreUpdate);
     socketService.off("game_over", this.handleGameOver);
+    socketService.off("play_snippet", this.handlePlaySnippet);
 
     if (this.state.spotifyPlayer) {
       this.state.spotifyPlayer.disconnect();
@@ -96,6 +96,19 @@ class GameView extends React.PureComponent {
     });
   };
 
+  handlePlaySnippet = async (data) => {
+    console.log("handlePlaySnippet");
+    const { currentSongUri } = data;
+    if (!currentSongUri) return;
+
+    this.setState({ isPlaying: true });
+    await playSnippet(currentSongUri);
+    this.setState({
+      isPlaying: false,
+      showReplayButton: true,
+    });
+  };
+
   startRoundSequence = () => {
     // Reset states
     this.setState(
@@ -121,7 +134,8 @@ class GameView extends React.PureComponent {
               showPlayerName: false,
             },
             () => {
-              this.playInitialSnippet();
+              const { roomCode } = this.props;
+              socketService.emit("request_play_snippet", { roomCode });
             }
           );
         }, 3000);
@@ -129,39 +143,14 @@ class GameView extends React.PureComponent {
     );
   };
 
-  playInitialSnippet = async () => {
-    const { deviceId, spotifyPlayer } = this.state;
-    const { gameState } = this.props;
-    const currentSong = gameState?.currentSong;
-    const currentSongUri = currentSong?.uri || currentSong?.previewUrl;
-
-    if (currentSongUri && deviceId && spotifyPlayer) {
-      this.setState({ isPlaying: true });
-
-      await playSnippet(
-        deviceId,
-        spotifyPlayer,
-        currentSongUri,
-        currentSong.previewType
-      );
-
-      this.setState({
-        isPlaying: false,
-        showReplayButton: true,
-      });
-    }
-  };
-
   render() {
     const { gameState, roomCode, user } = this.props;
     const {
-      deviceId,
       finalRanking,
       isPlaying,
       showPlayerName,
       showReplayButton,
       showRoundText,
-      spotifyPlayer,
     } = this.state;
 
     if (!gameState) {
@@ -207,15 +196,15 @@ class GameView extends React.PureComponent {
           ) : (
             <>
               <Turn
-                deviceId={deviceId}
                 gameState={gameState}
                 isCurrentPlayersTurn={isCurrentPlayersTurn}
                 isPlaying={isPlaying}
-                onChangeIsPlaying={this.onChangeIsPlaying}
                 showPlayerName={showPlayerName}
                 showReplayButton={showReplayButton}
                 showRoundText={showRoundText}
-                spotifyPlayer={spotifyPlayer}
+                onReplay={() =>
+                  socketService.emit("request_play_snippet", { roomCode })
+                }
               />
               {isCurrentPlayersTurn && (
                 <Guess

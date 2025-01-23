@@ -11,16 +11,13 @@ class Turn extends React.PureComponent {
   render() {
     const {
       currentRoom,
-      deviceId,
       gameState,
       isCurrentPlayersTurn,
       isPlaying,
-      onChangeIsPlaying,
-      previewType,
+      onReplay,
       showPlayerName,
       showReplayButton,
       showRoundText,
-      spotifyPlayer,
     } = this.props;
 
     if (!gameState) {
@@ -50,14 +47,7 @@ class Turn extends React.PureComponent {
           >
             <DotsVisualizer isPlaying={isPlaying} />
             {showReplayButton && (
-              <ReplayButton
-                deviceId={deviceId}
-                currentSong={gameState.currentSong}
-                isPlaying={isPlaying}
-                onChangeIsPlaying={onChangeIsPlaying}
-                previewType={previewType}
-                spotifyPlayer={spotifyPlayer}
-              />
+              <ReplayButton isPlaying={isPlaying} onReplay={onReplay} />
             )}
           </Box>
         )}
