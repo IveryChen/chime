@@ -157,52 +157,35 @@ def register_sio_events(sio):
         try:
             room_code = data['roomCode']
             player_id = data['playerId']
-            guess_text = data.get('guess', {})
+            guess = data.get('guess', {})
 
             room = game_service.get_room(room_code)
             current_song = room.game_state.current_song
 
-            # Validate both artist and title guesses
-            artist_correct, title_correct = validate_guess(
-                guess_text.get('artist', ''),
-                current_song
-            )
-            title_correct, _ = validate_guess(
-                guess_text.get('title', ''),
-                current_song
-            )
+            artist_correct, _ = validate_guess(guess.get('artist', ''), current_song)
+            _, title_correct = validate_guess(guess.get('title', ''), current_song)
 
-            # Calculate score
-            score = 0
-            if artist_correct:
-                score += 100
-            if title_correct:
-                score += 100
+            score = (artist_correct + title_correct) * 100
 
-            # Format guess data
-            formatted_guess = {
-                'artist': guess_text.get('artist', ''),
-                'title': guess_text.get('title', ''),
-                'isArtistCorrect': artist_correct,
-                'isTitleCorrect': title_correct,
-            }
-
-            # Update player's score
             room.game_state.scores[player_id] += score
             room.game_state.show_answer = True
 
-            # Emit score update to all players
             await sio.emit('score_update', {
                 'scores': room.game_state.scores,
                 'lastGuess': {
                     'playerId': player_id,
-                    'guess': formatted_guess
+                    'guess': {
+                        'artist': guess.get('artist', ''),
+                        'title': guess.get('title', ''),
+                        'isArtistCorrect': artist_correct,
+                        'isTitleCorrect': title_correct
+                    }
                 },
                 'showAnswer': True
             }, room=room_code)
 
         except Exception as e:
-            print(f"Error submitting score: {str(e)}")
+            print(f"Error submitting score: {e}")
             await sio.emit('error', {'message': str(e)}, room=sid)
 
     @sio.event
