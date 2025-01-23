@@ -393,7 +393,7 @@ def register_sio_events(sio):
                     scores={p.id: 0 for p in room.players},
                     current_player=first_player,
                     current_song=first_song,
-                    round_state={},
+                    round_state={'used_songs': [first_song['id']] if first_song else []},
                     show_answer=False,
                     timestamp=datetime.now()
                 )
@@ -419,6 +419,20 @@ def register_sio_events(sio):
             if not room.game_state:
                 raise ValueError("Game not initialized")
 
+            used_songs = set(room.game_state.round_state.get('used_songs', []))
+            current_song_id = room.game_state.current_song['id'] if room.game_state.current_song else None
+
+            if current_song_id:
+                used_songs.add(current_song_id)
+
+            available_songs = [
+                song for song in room.selected_songs
+                if song['id'] not in used_songs
+            ]
+
+            # print(f"Current used songs: {room.game_state.round_state.get('used_songs', [])}")
+            # print(f"Available song IDs: {[song['id'] for song in room.selected_songs]}")
+
             total_rounds = 5 * len(room.players)  # Or get from room.settings in the future
 
             if room.game_state.current_round >= total_rounds:
@@ -443,17 +457,7 @@ def register_sio_events(sio):
 
             # Get next player
             current_player_index = room.players.index(room.game_state.current_player)
-            next_player_index = (current_player_index + 1) % len(room.players)
-            next_player = room.players[next_player_index]
-
-            # Get a new random song that hasn't been used yet
-            used_song_ids = {
-                song['id'] for song in room.game_state.round_state.get('used_songs', [])
-            }
-            available_songs = [
-                song for song in room.selected_songs
-                if song['id'] not in used_song_ids
-            ]
+            next_player = room.players[(current_player_index + 1) % len(room.players)]
 
             if not available_songs:
                 # Game is over - no more songs
@@ -461,8 +465,8 @@ def register_sio_events(sio):
                 room.game_state.is_game_over = True
 
                 final_ranking = calculate_final_ranking(
-                room.game_state.scores,
-                room.players
+                    room.game_state.scores,
+                    room.players
                 )
 
                 game_state_dict = room.game_state.dict()
@@ -477,18 +481,13 @@ def register_sio_events(sio):
                 return
 
             next_song = random.choice(available_songs)
+            room.game_state.round_state['used_songs'] = list(used_songs)
 
             # Update game state
             room.game_state.current_round += 1
             room.game_state.current_player = next_player
             room.game_state.current_song = next_song
             room.game_state.timestamp = datetime.now()
-
-            # Track used songs
-            if 'used_songs' not in room.game_state.round_state:
-                room.game_state.round_state['used_songs'] = []
-            room.game_state.round_state['used_songs'].append(next_song)
-
             room.game_state.show_answer = False
 
             game_state_dict = room.game_state.dict()
