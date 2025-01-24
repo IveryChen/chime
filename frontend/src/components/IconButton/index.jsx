@@ -14,9 +14,7 @@ export default class IconButton extends React.PureComponent {
 
     this.isPressed = true;
     this.pressStartTime = Date.now();
-    this.longPressTimer = setTimeout(() => {
-      onLongPress();
-    }, 800);
+    this.longPressTimer = setTimeout(onLongPress, 800);
   };
 
   handleEndPress = () => {
@@ -56,15 +54,7 @@ export default class IconButton extends React.PureComponent {
   }
 
   render() {
-    const {
-      disabled,
-      Icon,
-      label,
-      onClick,
-      onLongPress,
-      onLongPressEnd,
-      ...restProps
-    } = this.props;
+    const { disabled, Icon, label, ...restProps } = this.props;
 
     return (
       <Box
@@ -76,7 +66,6 @@ export default class IconButton extends React.PureComponent {
         display="grid"
         gap="6px"
         gridTemplateColumns={Icon ? "auto 1fr" : "1fr"}
-        onClick={onClick}
         onMouseDown={(e) => {
           e.preventDefault();
           this.handleStartPress(e);
