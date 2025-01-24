@@ -17,16 +17,8 @@ export default class DotsVisualizer extends React.PureComponent {
   interval = null;
 
   componentDidMount() {
-    this.startAnimation();
-  }
-
-  componentDidUpdate(prevProps) {
-    if (prevProps.isPlaying !== this.props.isPlaying) {
-      if (this.props.isPlaying) {
-        this.startAnimation();
-      } else {
-        this.stopAnimation();
-      }
+    if (this.props.isPlaying) {
+      this.startAnimation();
     }
   }
 
@@ -35,6 +27,7 @@ export default class DotsVisualizer extends React.PureComponent {
   }
 
   startAnimation = () => {
+    this.stopAnimation();
     this.interval = setInterval(() => {
       this.setState({
         scales: map(fill(Array(16)), () => 0.5 + Math.random()),

@@ -40,11 +40,9 @@ class Turn extends React.PureComponent {
                 showPlay={showPlay}
                 showPlayonReplay={onReplay}
               />
-            ) : null}
-            <DotsVisualizer
-              display={showReplayButton ? "none" : "block"}
-              isPlaying={isPlaying}
-            />
+            ) : (
+              <DotsVisualizer isPlaying={isPlaying} />
+            )}
           </Box>
         ) : (
           <Box>
