@@ -22,6 +22,16 @@ export default class DotsVisualizer extends React.PureComponent {
     }
   }
 
+  componentDidUpdate(prevProps) {
+    if (prevProps.isPlaying !== this.props.isPlaying) {
+      if (this.props.isPlaying) {
+        this.startAnimation();
+      } else {
+        this.stopAnimation();
+      }
+    }
+  }
+
   componentWillUnmount() {
     this.stopAnimation();
   }
