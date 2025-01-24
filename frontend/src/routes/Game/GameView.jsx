@@ -97,7 +97,6 @@ class GameView extends React.PureComponent {
   };
 
   handlePlaySnippet = async (data) => {
-    console.log("handlePlaySnippet");
     const { currentSongUri } = data;
     if (!currentSongUri) return;
 

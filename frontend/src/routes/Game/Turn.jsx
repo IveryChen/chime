@@ -24,6 +24,8 @@ class Turn extends React.PureComponent {
       return null;
     }
 
+    console.log(isPlaying);
+
     const players = currentRoom.players;
     const displayRound = Math.ceil(gameState.currentRound / players.length);
 
@@ -33,9 +35,11 @@ class Turn extends React.PureComponent {
           <Box alignContent="center" display="grid" justifyContent="center">
             {showReplayButton ? (
               <ReplayButton isPlaying={isPlaying} onReplay={onReplay} />
-            ) : (
-              <DotsVisualizer isPlaying={isPlaying} />
-            )}
+            ) : null}
+            <DotsVisualizer
+              display={showReplayButton ? "none" : "block"}
+              isPlaying={isPlaying}
+            />
           </Box>
         ) : (
           <Box>
