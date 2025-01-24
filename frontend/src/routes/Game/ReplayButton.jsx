@@ -15,10 +15,11 @@ export default class ReplayButton extends React.PureComponent {
     return (
       <IconButton
         bg={theme.blue}
-        Icon={MdReplay}
+        Icon={showPlay ? null : MdReplay}
         justifySelf="center"
         label={showPlay ? "Play" : "Replay"}
         onClick={onReplay}
+        userSelection="none"
       />
     );
   }
