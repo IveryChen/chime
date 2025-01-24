@@ -13,7 +13,6 @@ import Answer from "./Answer";
 import Guess from "./Guess";
 import GameStatus from "./GameStatus";
 import Turn from "./Turn";
-import initializeSpotifySDK from "./initializeSpotifySDK";
 import playSnippet from "./playSnippet";
 import Scoreboard from "./Scoreboard";
 
@@ -26,10 +25,6 @@ class GameView extends React.PureComponent {
     showRoundText: false,
   };
 
-  onChangeDeviceId = (deviceId) => this.setState({ deviceId });
-
-  onChangeSpotifyPlayer = (spotifyPlayer) => this.setState({ spotifyPlayer });
-
   onChangeIsPlaying = (isPlaying) => this.setState({ isPlaying });
 
   componentDidMount() {
@@ -41,7 +36,10 @@ class GameView extends React.PureComponent {
     socketService.on("game_over", this.handleGameOver);
     socketService.on("play_snippet", this.handlePlaySnippet);
 
-    initializeSpotifySDK(this.onChangeDeviceId, this.onChangeSpotifyPlayer);
+    if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+      const audio = new Audio();
+      audio.play().catch(() => {});
+    }
   }
 
   componentWillUnmount() {
