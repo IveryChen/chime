@@ -178,7 +178,7 @@ class GameView extends React.PureComponent {
         </Header>
         <Box
           display="grid"
-          gridTemplateRows={gameState.showAnswer ? "auto 1fr" : "32% 1fr auto"}
+          gridTemplateRows={gameState.showAnswer ? "auto 1fr" : "auto 1fr auto"}
         >
           <Players />
           {gameState.showAnswer ? (

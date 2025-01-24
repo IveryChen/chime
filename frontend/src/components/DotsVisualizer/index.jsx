@@ -56,6 +56,7 @@ export default class DotsVisualizer extends React.PureComponent {
 
     return (
       <Box
+        alignContent="center"
         display="grid"
         gap="16px"
         gridTemplateColumns="repeat(4, 1fr)"
