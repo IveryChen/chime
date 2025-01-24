@@ -77,6 +77,7 @@ export default class IconButton extends React.PureComponent {
         opacity={disabled ? 0.6 : 1}
         px="8px"
         py="6px"
+        userSelect="none"
         {...restProps}
       >
         <Text fontFamily="Bebas Neue" fontSize="24px" lineHeight={1} pt="2px">
