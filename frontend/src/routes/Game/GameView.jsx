@@ -20,6 +20,7 @@ class GameView extends React.PureComponent {
   state = {
     finalRanking: null,
     isPlaying: false,
+    showPlay: false,
     showPlayerName: false,
     showReplayButton: false,
     showRoundText: false,
@@ -35,11 +36,6 @@ class GameView extends React.PureComponent {
     socketService.on("score_update", this.handleScoreUpdate);
     socketService.on("game_over", this.handleGameOver);
     socketService.on("play_snippet", this.handlePlaySnippet);
-
-    if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
-      const audio = new Audio();
-      audio.play().catch(() => {});
-    }
   }
 
   componentWillUnmount() {
@@ -98,7 +94,19 @@ class GameView extends React.PureComponent {
     const { currentSongUri } = data;
     if (!currentSongUri) return;
 
-    this.setState({ isPlaying: true });
+    const isMobile = /iPhone|iPad|iPod/i.test(navigator.userAgent);
+    const isNewRoundFirstPlay = !this.state.showReplayButton;
+
+    if (isMobile && isNewRoundFirstPlay) {
+      this.setState({
+        isPlaying: false,
+        showReplayButton: true,
+        showPlay: true,
+      });
+      return;
+    }
+
+    this.setState({ isPlaying: true, showPlay: false });
     await playSnippet(currentSongUri);
     this.setState({
       isPlaying: false,
@@ -145,6 +153,7 @@ class GameView extends React.PureComponent {
     const {
       finalRanking,
       isPlaying,
+      showPlay,
       showPlayerName,
       showReplayButton,
       showRoundText,
@@ -196,6 +205,7 @@ class GameView extends React.PureComponent {
                 gameState={gameState}
                 isCurrentPlayersTurn={isCurrentPlayersTurn}
                 isPlaying={isPlaying}
+                showPlay={showPlay}
                 showPlayerName={showPlayerName}
                 showReplayButton={showReplayButton}
                 showRoundText={showRoundText}

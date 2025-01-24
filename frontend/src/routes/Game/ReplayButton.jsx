@@ -6,7 +6,7 @@ import IconButton from "../../components/IconButton";
 
 export default class ReplayButton extends React.PureComponent {
   render() {
-    const { isPlaying, onReplay } = this.props;
+    const { isPlaying, onReplay, showPlay } = this.props;
 
     if (isPlaying) {
       return null;
@@ -17,7 +17,7 @@ export default class ReplayButton extends React.PureComponent {
         bg={theme.blue}
         Icon={MdReplay}
         justifySelf="center"
-        label="Replay"
+        label={showPlay ? "Play" : "Replay"}
         onClick={onReplay}
       />
     );

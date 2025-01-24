@@ -15,6 +15,7 @@ class Turn extends React.PureComponent {
       isCurrentPlayersTurn,
       isPlaying,
       onReplay,
+      showPlay,
       showPlayerName,
       showReplayButton,
       showRoundText,
@@ -34,7 +35,11 @@ class Turn extends React.PureComponent {
         {isCurrentPlayersTurn ? (
           <Box alignContent="center" display="grid" justifyContent="center">
             {showReplayButton ? (
-              <ReplayButton isPlaying={isPlaying} onReplay={onReplay} />
+              <ReplayButton
+                isPlaying={isPlaying}
+                showPlay={showPlay}
+                showPlayonReplay={onReplay}
+              />
             ) : null}
             <DotsVisualizer
               display={showReplayButton ? "none" : "block"}
