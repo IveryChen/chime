@@ -72,14 +72,8 @@ export default class IconButton extends React.PureComponent {
         }}
         onMouseUp={this.handleEndPress}
         onMouseLeave={this.handleLeave}
-        onTouchStart={(e) => {
-          e.preventDefault();
-          this.handleStartPress(e);
-        }}
-        onTouchEnd={(e) => {
-          e.preventDefault();
-          this.handleEndPress();
-        }}
+        onTouchStart={this.handleStartPress}
+        onTouchEnd={this.handleEndPress}
         opacity={disabled ? 0.6 : 1}
         px="8px"
         py="6px"
