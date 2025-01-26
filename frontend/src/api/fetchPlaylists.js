@@ -1,5 +1,10 @@
 export default async function fetchPlaylists(props, abortController) {
   const { spotifyToken } = props;
+
+  if (!spotifyToken) {
+    throw new Error("No Spotify token provided");
+  }
+
   const response = await fetch("https://api.spotify.com/v1/me/playlists", {
     headers: {
       Authorization: `Bearer ${spotifyToken}`,

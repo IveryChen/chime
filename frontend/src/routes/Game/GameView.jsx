@@ -70,6 +70,7 @@ class GameView extends React.PureComponent {
     const { roomCode } = this.props;
 
     localStorage.removeItem("gameRoom");
+    localStorage.removeItem("spotify_access_token");
     socketService.leaveRoom(roomCode);
     socketService.disconnect();
     window.location.href = "/lobby";
