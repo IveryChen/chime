@@ -131,7 +131,7 @@ export default class PlaylistView extends React.PureComponent {
 
   render() {
     const { players } = this.props;
-    const { submittedPlayers } = this.state;
+    const { error, status, submittedPlayers } = this.state;
 
     return (
       <>
@@ -141,7 +141,11 @@ export default class PlaylistView extends React.PureComponent {
         <Box
           display="grid"
           gap="16px"
-          gridTemplateRows="auto auto 1fr"
+          gridTemplateRows={
+            status === "waiting" || status === "loading_songs" || error
+              ? "auto auto auto 1fr"
+              : "auto auto 1fr"
+          }
           overflow="hidden"
         >
           <Players data={players} submittedPlayers={submittedPlayers} />
