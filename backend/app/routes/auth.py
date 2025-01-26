@@ -16,13 +16,13 @@ def get_auth_manager():
             "user-read-private",
             "user-library-read",
             "playlist-read-private",
+            "playlist-read-collaborative",
             "user-top-read",
             "user-read-playback-state",
             "user-modify-playback-state",
             "app-remote-control"
-        ]),
-        cache_handler=None  # Disable caching
-    )
+        ])
+        )
 
 @router.get("/login")
 async def login():

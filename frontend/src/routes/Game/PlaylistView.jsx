@@ -141,7 +141,7 @@ export default class PlaylistView extends React.PureComponent {
         <Box
           display="grid"
           gap="16px"
-          gridTemplateRows="auto 1fr auto"
+          gridTemplateRows="auto auto 1fr"
           overflow="hidden"
         >
           <Players data={players} submittedPlayers={submittedPlayers} />
