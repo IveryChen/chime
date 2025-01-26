@@ -1,9 +1,5 @@
-import { apiClient } from "../../api/apiClient";
-import spotifyApi from "../../library/spotify";
-
-const tryOpenSpotifyApp = () => {
+export default function tryOpenSpotifyApp() {
   return new Promise((resolve) => {
-    // Different URL format for mobile app auth
     const spotifyAppUrl =
       `spotify:authorize:` +
       `?client_id=${import.meta.env.VITE_SPOTIFY_CLIENT_ID}` +
@@ -33,7 +29,6 @@ const tryOpenSpotifyApp = () => {
 
     document.addEventListener("visibilitychange", handleVisibilityChange);
 
-    // Try to open the app
     window.location.href = spotifyAppUrl;
 
     // Fallback after 1 second if app doesn't open
@@ -42,6 +37,4 @@ const tryOpenSpotifyApp = () => {
       resolve(false);
     }, 1000);
   });
-};
-
-// ... rest of handleAuth.js remains the same ...
+}
