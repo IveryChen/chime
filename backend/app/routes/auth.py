@@ -21,8 +21,9 @@ def get_auth_manager():
             "user-read-playback-state",
             "user-modify-playback-state",
             "app-remote-control"
-        ])
-        )
+        ]),
+        cache_handler=None
+    )
 
 @router.get("/login")
 async def login():
