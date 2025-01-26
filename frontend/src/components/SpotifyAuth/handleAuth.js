@@ -1,5 +1,6 @@
 import { apiClient } from "../../api/apiClient";
 import spotifyApi from "../../library/spotify";
+import openSpotifyApp from "./openSpotifyApp";
 
 export default async function handleAuth() {
   const storedToken = localStorage.getItem("spotify_access_token");
@@ -15,8 +16,20 @@ export default async function handleAuth() {
   if (accessToken) {
     localStorage.setItem("spotify_access_token", accessToken);
     spotifyApi.setAccessToken(accessToken);
-
     return { isAuthenticated: true };
+  }
+
+  const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+
+  if (isMobile) {
+    try {
+      const appOpened = await openSpotifyApp();
+      if (appOpened) {
+        return { redirectToLogin: true };
+      }
+    } catch (error) {
+      console.error("Error opening Spotify app:", error);
+    }
   }
 
   try {
