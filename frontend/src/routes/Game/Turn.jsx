@@ -25,8 +25,6 @@ class Turn extends React.PureComponent {
       return null;
     }
 
-    console.log(isPlaying);
-
     const players = currentRoom.players;
     const displayRound = Math.ceil(gameState.currentRound / players.length);
 
