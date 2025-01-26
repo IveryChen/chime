@@ -1,15 +1,26 @@
-export default function tryOpenSpotifyApp() {
-  return new Promise((resolve) => {
-    const spotifyAppUrl = `spotify://authenticate?client_id=${
-      import.meta.env.VITE_SPOTIFY_CLIENT_ID
-    }&response_type=code&redirect_uri=${encodeURIComponent(
-      import.meta.env.VITE_SPOTIFY_REDIRECT_URI
-    )}`;
+import { apiClient } from "../../api/apiClient";
+import spotifyApi from "../../library/spotify";
 
-    // Store current visibility state
+const tryOpenSpotifyApp = () => {
+  return new Promise((resolve) => {
+    // Different URL format for mobile app auth
+    const spotifyAppUrl =
+      `spotify:authorize:` +
+      `?client_id=${import.meta.env.VITE_SPOTIFY_CLIENT_ID}` +
+      `&response_type=code` +
+      `&redirect_uri=${encodeURIComponent(
+        import.meta.env.VITE_SPOTIFY_REDIRECT_URI
+      )}` +
+      `&scope=${encodeURIComponent(
+        [
+          "playlist-read-private",
+          "playlist-read-collaborative",
+          // add any other scopes you need
+        ].join(" ")
+      )}`;
+
     const wasHidden = document.hidden;
 
-    // Listen for visibility change (app opened)
     const handleVisibilityChange = () => {
       if (document.hidden !== wasHidden) {
         document.removeEventListener(
@@ -31,4 +42,6 @@ export default function tryOpenSpotifyApp() {
       resolve(false);
     }, 1000);
   });
-}
+};
+
+// ... rest of handleAuth.js remains the same ...
