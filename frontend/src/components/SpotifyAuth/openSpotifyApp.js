@@ -1,7 +1,6 @@
 export default function tryOpenSpotifyApp() {
   return new Promise((resolve) => {
-    // Just try to open the Spotify app first
-    const spotifyAppUrl = "spotify:";
+    const spotifyAuthUrl = "spotify://login";
 
     const wasHidden = document.hidden;
 
@@ -17,9 +16,8 @@ export default function tryOpenSpotifyApp() {
 
     document.addEventListener("visibilitychange", handleVisibilityChange);
 
-    window.location.href = spotifyAppUrl;
+    window.location.href = spotifyAuthUrl;
 
-    // Fallback after 1 second if app doesn't open
     setTimeout(() => {
       document.removeEventListener("visibilitychange", handleVisibilityChange);
       resolve(false);
