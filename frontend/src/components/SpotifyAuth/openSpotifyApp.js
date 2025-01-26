@@ -1,6 +1,6 @@
 export default function tryOpenSpotifyApp() {
   return new Promise((resolve) => {
-    const spotifyAuthUrl = "spotify://login";
+    const spotifyAuthUrl = "spotify://authenticate";
 
     const wasHidden = document.hidden;
 
