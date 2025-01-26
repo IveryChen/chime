@@ -30,7 +30,7 @@ class Turn extends React.PureComponent {
 
     return (
       <>
-        {isCurrentPlayersTurn ? (
+        {isCurrentPlayersTurn && (
           <Box alignContent="center" display="grid" justifyContent="center">
             {showReplayButton ? (
               <ReplayButton
@@ -42,20 +42,19 @@ class Turn extends React.PureComponent {
               <DotsVisualizer isPlaying={isPlaying} />
             )}
           </Box>
-        ) : (
-          <Box>
-            {showRoundText && (
-              <Text fontSize="32px" fontWeight="bold" textAlign="center">
-                Round {displayRound}
-              </Text>
-            )}
-            {showPlayerName && (
-              <Text fontSize="24px" textAlign="center">
-                {gameState.currentPlayer.name}&apos;s Turn
-              </Text>
-            )}
-          </Box>
         )}
+        <Box>
+          {showRoundText && (
+            <Text fontSize="32px" fontWeight="bold" textAlign="center">
+              Round {displayRound}
+            </Text>
+          )}
+          {showPlayerName && (
+            <Text fontSize="24px" textAlign="center">
+              {gameState.currentPlayer.name}&apos;s Turn
+            </Text>
+          )}
+        </Box>
       </>
     );
   }
