@@ -3,6 +3,7 @@ import React from "react";
 
 import Box from "../../components/Box";
 import Header from "../../components/Header";
+import Text from "../../components/Text";
 import { withRouter } from "../../utils/withRouter";
 
 import GameStatus from "./GameStatus";
@@ -22,7 +23,7 @@ class WaitingView extends React.PureComponent {
           height="100%"
           justifyContent="center"
         >
-          <div>Waiting for host to select songs...</div>
+          <Text>Waiting for host to select songs...</Text>
         </Box>
       </>
     );

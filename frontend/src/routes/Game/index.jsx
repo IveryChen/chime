@@ -85,7 +85,14 @@ class Game extends React.PureComponent {
     return (
       <Box display="grid" gridTemplateRows="auto 1fr" height="100%">
         {status === "loading_songs" && (
-          <Text textAlign="center">Randomly selecting songs...</Text>
+          <Box
+            alignItems="center"
+            display="flex"
+            height="100%"
+            justifyContent="center"
+          >
+            <Text>Randomly selecting songs...</Text>
+          </Box>
         )}
         {status === "waiting" && (
           <LobbyView
