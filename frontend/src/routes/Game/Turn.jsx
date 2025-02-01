@@ -3,9 +3,9 @@ import React from "react";
 
 import Box from "../../components/Box";
 import DotsVisualizer from "../../components/DotsVisualizer";
-import Text from "../../components/Text";
 
 import ReplayButton from "./ReplayButton";
+import Animation from "./Animation";
 
 class Turn extends React.PureComponent {
   render() {
@@ -45,18 +45,12 @@ class Turn extends React.PureComponent {
             </Box>
           )
         ) : (
-          <Box>
-            {showRoundText && (
-              <Text fontSize="32px" fontWeight="bold" textAlign="center">
-                Round {displayRound}
-              </Text>
-            )}
-            {showPlayerName && (
-              <Text fontSize="24px" textAlign="center">
-                {gameState.currentPlayer.name}&apos;s Turn
-              </Text>
-            )}
-          </Box>
+          <Animation
+            name={gameState.currentPlayer.name}
+            round={displayRound}
+            showPlayerName={showPlayerName}
+            showRoundText={showRoundText}
+          />
         )}
       </Box>
     );
