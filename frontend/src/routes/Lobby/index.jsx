@@ -24,6 +24,16 @@ class Lobby extends Component {
   };
 
   componentDidMount() {
+    const params = new URLSearchParams(window.location.search);
+    const roomCode = params.get("roomCode");
+
+    if (roomCode) {
+      this.setState({
+        roomCode,
+        tab: "join",
+      });
+    }
+
     const hasSpotifyToken = Boolean(
       localStorage.getItem("spotify_access_token")
     );
@@ -36,8 +46,11 @@ class Lobby extends Component {
     this.setState({ isLoadingProfile: true });
     try {
       await loadUserProfile();
-      // Switch to create tab after successful auth
-      this.setState({ tab: "create" });
+      const params = new URLSearchParams(window.location.search);
+      const roomCode = params.get("roomCode");
+      if (!roomCode) {
+        this.setState({ tab: "create" });
+      }
     } catch (error) {
       this.setState({ error: error.message });
     } finally {

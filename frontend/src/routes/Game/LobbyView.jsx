@@ -20,9 +20,20 @@ class LobbyView extends React.PureComponent {
 
   onClick = () => this.props.onUpdateGameStage("selecting_playlist");
 
-  handleShare = () => {
-    const { roomCode } = this.props;
-    const url = `${window.location.origin}/game?roomCode=${roomCode}`;
+  handleShare = async () => {
+    const url = `${window.location.origin}/lobby?roomCode=${this.props.roomCode}`;
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: "Link to join my Cassette game!",
+          url: url,
+        });
+        return;
+      } catch (err) {
+        console.log("Error sharing:", err);
+      }
+    }
+
     navigator.clipboard.writeText(url);
 
     this.setState({ isPending: true, tooltipText: "Copied!" });
