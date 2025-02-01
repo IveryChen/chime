@@ -28,7 +28,7 @@ const StyledInput = styled.input`
   transition: all 0.2s ease-in-out;
 `;
 
-export default class Input extends React.PureComponent {
+class Input extends React.PureComponent {
   handleChange = (e) => {
     const value = this.props.toUpperCase
       ? e.target.value.toUpperCase()
@@ -47,6 +47,7 @@ export default class Input extends React.PureComponent {
       focusBorderColor,
       fontFamily,
       fontSize,
+      forwardedRef,
       label,
       padding,
       placeholder,
@@ -76,6 +77,7 @@ export default class Input extends React.PureComponent {
           padding={padding}
           placeholder={placeholder}
           placeholderColor={placeholderColor}
+          ref={forwardedRef}
           required={required}
           type="text"
           value={value}
@@ -84,3 +86,7 @@ export default class Input extends React.PureComponent {
     );
   }
 }
+
+export default React.forwardRef((props, ref) => (
+  <Input {...props} forwardedRef={ref} />
+));
