@@ -7,6 +7,7 @@ import Box from "../../components/Box";
 import socketService from "../../services/socket";
 import state from "../../state";
 import { withRouter } from "../../utils/withRouter";
+import Text from "../../components/Text";
 
 import GameView from "./GameView";
 import LobbyView from "./LobbyView";
@@ -83,6 +84,9 @@ class Game extends React.PureComponent {
 
     return (
       <Box display="grid" gridTemplateRows="auto 1fr" height="100%">
+        {status === "loading_songs" && (
+          <Text textAlign="center">Randomly selecting songs...</Text>
+        )}
         {status === "waiting" && (
           <LobbyView
             onUpdateGameStage={this.updateGameStage}

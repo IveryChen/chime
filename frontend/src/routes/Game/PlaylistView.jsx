@@ -179,7 +179,6 @@ export default class PlaylistView extends React.PureComponent {
     return (
       <>
         {status === "waiting" && <Text>Submitting selection...</Text>}
-        {status === "loading_songs" && <Text>Randomly selecting songs...</Text>}
         {error && <Text>{error}</Text>}
         <Box
           display="grid"
