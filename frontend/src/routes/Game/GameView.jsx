@@ -201,18 +201,18 @@ class GameView extends React.PureComponent {
               )}
             </>
           ) : (
-            <>
+            <Box display="grid" gridTemplateRows="1fr auto">
               <Turn
                 gameState={gameState}
                 isCurrentPlayersTurn={isCurrentPlayersTurn}
                 isPlaying={isPlaying}
+                onReplay={() =>
+                  socketService.emit("request_play_snippet", { roomCode })
+                }
                 showPlay={showPlay}
                 showPlayerName={showPlayerName}
                 showReplayButton={showReplayButton}
                 showRoundText={showRoundText}
-                onReplay={() =>
-                  socketService.emit("request_play_snippet", { roomCode })
-                }
               />
               {isCurrentPlayersTurn && (
                 <Guess
@@ -221,7 +221,7 @@ class GameView extends React.PureComponent {
                   roomCode={roomCode}
                 />
               )}
-            </>
+            </Box>
           )}
         </Box>
       </>

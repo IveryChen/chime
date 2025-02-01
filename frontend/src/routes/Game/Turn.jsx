@@ -29,33 +29,36 @@ class Turn extends React.PureComponent {
     const displayRound = Math.ceil(gameState.currentRound / players.length);
 
     return (
-      <>
-        {isCurrentPlayersTurn && (
-          <Box alignContent="center" display="grid" justifyContent="center">
-            {showReplayButton ? (
-              <ReplayButton
-                isPlaying={isPlaying}
-                onReplay={onReplay}
-                showPlay={showPlay}
-              />
-            ) : (
-              <DotsVisualizer isPlaying={isPlaying} />
+      <Box alignItems="center" display="grid">
+        {isPlaying ? (
+          isCurrentPlayersTurn && (
+            <Box alignContent="center" display="grid" justifyContent="center">
+              {showReplayButton ? (
+                <ReplayButton
+                  isPlaying={isPlaying}
+                  onReplay={onReplay}
+                  showPlay={showPlay}
+                />
+              ) : (
+                <DotsVisualizer isPlaying={isPlaying} />
+              )}
+            </Box>
+          )
+        ) : (
+          <Box>
+            {showRoundText && (
+              <Text fontSize="32px" fontWeight="bold" textAlign="center">
+                Round {displayRound}
+              </Text>
+            )}
+            {showPlayerName && (
+              <Text fontSize="24px" textAlign="center">
+                {gameState.currentPlayer.name}&apos;s Turn
+              </Text>
             )}
           </Box>
         )}
-        <Box>
-          {showRoundText && (
-            <Text fontSize="32px" fontWeight="bold" textAlign="center">
-              Round {displayRound}
-            </Text>
-          )}
-          {showPlayerName && (
-            <Text fontSize="24px" textAlign="center">
-              {gameState.currentPlayer.name}&apos;s Turn
-            </Text>
-          )}
-        </Box>
-      </>
+      </Box>
     );
   }
 }

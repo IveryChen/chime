@@ -79,7 +79,7 @@ class LobbyView extends React.PureComponent {
               />
             </Tip>
           </Box>
-          <Box display="flex" gap="16px" flexWrap="wrap">
+          <Box display="flex" gap="16px" flexWrap="wrap" pt="16px">
             {map(players, (player) => (
               <Box
                 alignItems="center"
