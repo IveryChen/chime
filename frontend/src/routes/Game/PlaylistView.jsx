@@ -210,7 +210,7 @@ export default class PlaylistView extends React.PureComponent {
         </Box>
         <IconButton
           bg={theme.blue}
-          disabled={isPending || hasSubmitted}
+          disabled={isPending || hasSubmitted || error}
           fontSize={16}
           justifySelf="end"
           label="DONE"
