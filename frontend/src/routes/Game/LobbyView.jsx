@@ -2,7 +2,7 @@ import { branch } from "baobab-react/higher-order";
 import { map } from "lodash";
 import React from "react";
 import { LiaArrowRightSolid } from "react-icons/lia";
-import { RiFileCopyLine } from "react-icons/ri";
+import { RiShareLine } from "react-icons/ri";
 
 import { theme } from "../../constants/constants";
 import Box from "../../components/Box";
@@ -11,24 +11,25 @@ import IconButton from "../../components/IconButton";
 import Logo from "../../components/Logo";
 import Text from "../../components/Text";
 import Tip from "../../components/Tip";
+
 class LobbyView extends React.PureComponent {
   state = {
     isPending: false,
-    tooltipText: "Click to copy",
+    tooltipText: "Copy game link",
   };
+
   onClick = () => this.props.onUpdateGameStage("selecting_playlist");
 
-  handleCopyCode = async () => {
+  handleShare = () => {
     const { roomCode } = this.props;
-    try {
-      await navigator.clipboard.writeText(roomCode);
-      this.setState({ isPending: true, tooltipText: "Copied!" });
-      setTimeout(() => {
-        this.setState({ isPending: false, tooltipText: "Click to copy" });
-      }, 200);
-    } catch (err) {
-      console.error("Failed to copy room code:", err);
-    }
+    const url = `${window.location.origin}/game?roomCode=${roomCode}`;
+    navigator.clipboard.writeText(url);
+
+    this.setState({ isPending: true, tooltipText: "Copied!" });
+
+    setTimeout(() => {
+      this.setState({ isPending: false, tooltipText: "Copy game link" });
+    }, 200);
   };
 
   render() {
@@ -44,24 +45,24 @@ class LobbyView extends React.PureComponent {
         <Box display="grid" gridTemplateRows="auto 1fr auto">
           <Box
             alignItems="center"
-            cursor="pointer"
             display="flex"
             gap="4px"
             justifyContent="center"
-            onClick={this.handleCopyCode}
           >
-            <Tip onClick={this.handleCopyCode} tooltipText={tooltipText}>
-              <Text
-                lineHeight={1}
-                fontSize="42px"
-                fontStyle="italic"
-                fontWeight="bold"
-                justifySelf="center"
-              >
-                {roomCode}
-              </Text>
+            <Text
+              lineHeight={1}
+              fontSize="42px"
+              fontStyle="italic"
+              fontWeight="bold"
+              justifySelf="center"
+            >
+              {roomCode}
+            </Text>
+            <Tip tooltipText={tooltipText}>
               <Box
-                as={RiFileCopyLine}
+                as={RiShareLine}
+                cursor="pointer"
+                onClick={this.handleShare}
                 opacity={isPending ? 0.5 : 1}
                 size={36}
               />
