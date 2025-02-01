@@ -30,7 +30,7 @@ class Turn extends React.PureComponent {
 
     return (
       <Box alignItems="center" display="grid">
-        {isPlaying ? (
+        {isPlaying || showReplayButton ? (
           isCurrentPlayersTurn && (
             <Box alignContent="center" display="grid" justifyContent="center">
               {showReplayButton ? (
