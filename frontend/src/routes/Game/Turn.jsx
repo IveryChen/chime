@@ -21,7 +21,7 @@ class Turn extends React.PureComponent {
       showRoundText,
     } = this.props;
 
-    if (!gameState) {
+    if (!gameState || !gameState.currentPlayer) {
       return null;
     }
 
