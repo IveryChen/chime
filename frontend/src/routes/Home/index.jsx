@@ -1,6 +1,7 @@
 import styled from "@emotion/styled";
 import React from "react";
 
+import cassette_temp from "../../assets/cassette_temp.png";
 import { theme } from "../../constants/constants";
 import Box from "../../components/Box";
 import Text from "../../components/Text";
@@ -175,7 +176,7 @@ class Home extends React.PureComponent {
             />
           </StyledHeading>
           <StyledSmallBox>
-            <StyledCassette as="canvas" justifySelf="center" ref={this.ref} />
+            <StyledCassette as="img" src={cassette_temp} size="100%" />
             <StyledButtonGroup>
               <StyledButton
                 bg={theme.blue}
