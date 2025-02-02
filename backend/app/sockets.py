@@ -358,12 +358,14 @@ def register_sio_events(sio):
         try:
             room_code = data['roomCode']
             room = game_service.get_room(room_code)
-            print('request_play_snippet!!', room.game_state.current_song)
             current_song = room.game_state.current_song
             current_song_uri = current_song.get('preview_url') or current_song.get('uri') if current_song else None
 
             if current_song_uri:
-                await sio.emit('play_snippet', {'currentSongUri': current_song_uri}, room=room_code)
+                await sio.emit('play_snippet', {
+                    'currentSongUri': current_song_uri
+                }, room=room_code)
+
         except Exception as e:
             print(f"Error in request_play_snippet: {e}")
 
