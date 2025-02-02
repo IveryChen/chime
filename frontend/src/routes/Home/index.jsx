@@ -86,9 +86,11 @@ const StyledCursor = styled(Box)`
 const StyledCassette = styled(Box)`
   height: 320px;
   width: 100%;
+  margin: 0 auto;
 
   @media (min-width: 768px) {
     height: auto;
+    max-width: 800px;
     width: 90%;
   }
 `;
@@ -192,7 +194,7 @@ class Home extends React.PureComponent {
                 userSelect="none"
               >
                 <Text fontFamily="Bebas Neue" fontSize="20px" pt="2px">
-                  I’M READY TO CUE IN
+                  I'M READY TO CUE IN
                 </Text>
               </StyledButton>
               <StyledCursor alt="Profile" as="img" size={120} src={cursor} />
