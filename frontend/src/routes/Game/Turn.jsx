@@ -21,7 +21,7 @@ class Turn extends React.PureComponent {
       showRoundText,
     } = this.props;
 
-    if (!gameState || !gameState.currentPlayer) {
+    if (!gameState) {
       return null;
     }
 
@@ -46,7 +46,7 @@ class Turn extends React.PureComponent {
           )
         ) : (
           <Animation
-            name={gameState.currentPlayer.name}
+            name={gameState.currentPlayer?.name}
             round={displayRound}
             showPlayerName={showPlayerName}
             showRoundText={showRoundText}
