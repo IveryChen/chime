@@ -1,5 +1,6 @@
 import { branch } from "baobab-react/higher-order";
 import { Component } from "react";
+import { PiUserLight } from "react-icons/pi";
 
 import { theme } from "../../constants/constants";
 import { withRouter } from "../../utils/withRouter";
@@ -24,48 +25,55 @@ class Header extends Component {
     const { children, user } = this.props;
     const { isDropdownOpen } = this.state;
 
-    const hasProfileImage =
+    const profileImage =
       user && user.images && user.images[0] && user.images[0].url;
 
     return (
       <Box display="grid" gridTemplateColumns="1fr auto" height={42}>
         {children}
-        {hasProfileImage && (
-          <Box position="relative">
+        <Box position="relative">
+          {profileImage ? (
             <Box
-              alt="Profile"
               as="img"
               borderRadius="50%"
               borderStyle="solid"
               borderWidth={1}
               onClick={this.toggleDropdown}
-              size={42}
-              src={user.images[0].url}
+              size={36}
+              src={profileImage}
             />
-
-            {isDropdownOpen && (
-              <Box
-                bg="white"
-                borderRadius="8px"
-                borderStyle="solid"
-                borderWidth={1}
-                cursor="pointer"
-                display="grid"
-                justifyContent="center"
-                onClick={this.handleLogout}
-                position="absolute"
-                right={0}
-                top="100%"
-                width={64}
-                zIndex={1}
-              >
-                <Text color={theme.darkgray} fontSize="12px">
-                  Sign out
-                </Text>
-              </Box>
-            )}
-          </Box>
-        )}
+          ) : (
+            <Box
+              as={PiUserLight}
+              borderRadius="50%"
+              borderStyle="solid"
+              borderWidth={1}
+              onClick={this.toggleDropdown}
+              size={36}
+            />
+          )}
+          {isDropdownOpen && (
+            <Box
+              bg="white"
+              borderRadius="8px"
+              borderStyle="solid"
+              borderWidth={1}
+              cursor="pointer"
+              display="grid"
+              justifyContent="center"
+              onClick={this.handleLogout}
+              position="absolute"
+              right={0}
+              top="100%"
+              width={64}
+              zIndex={1}
+            >
+              <Text color={theme.darkgray} fontSize="12px">
+                Sign out
+              </Text>
+            </Box>
+          )}
+        </Box>
       </Box>
     );
   }
