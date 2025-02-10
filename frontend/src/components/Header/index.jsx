@@ -11,7 +11,14 @@ class Header extends Component {
   state = { isDropdownOpen: false };
 
   handleLogout = () => {
+    localStorage.removeItem("spotify_access_token");
     localStorage.clear();
+
+    document.cookie.split(";").forEach((cookie) => {
+      const name = cookie.split("=")[0].trim();
+      document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=.spotify.com`;
+    });
+
     window.location.href = "/";
   };
 
