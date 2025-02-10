@@ -60,7 +60,7 @@ class Header extends Component {
                 zIndex={1}
               >
                 <Text color={theme.darkgray} fontSize="12px">
-                  Logout
+                  Sign out
                 </Text>
               </Box>
             )}
